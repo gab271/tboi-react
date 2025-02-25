@@ -1,0 +1,118 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Pixeboy', sans-serif;
+}
+
+body{
+  background: url('./assets/portadaisaac.jpg') no-repeat center center/cover;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before{
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+a{
+  text-decoration: none;
+}
+
+header{
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  padding: 2rem 0;
+}
+
+.container{
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.container nav{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container nav .logo{
+  color: #212a3c;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.container .nav-link{
+  display: flex;
+}
+
+.container .nav-link li{
+  list-style: none;
+  margin: 0 0.5rem;
+}
+
+.container ul li a{
+  color: #212a3c;
+  font-size: 1.3rem;
+  padding: 0.7rem 1rem;
+  display: block;
+  border-radius: 10px;
+  border-radius: 4px;
+}
+
+.container ul li a:hover,
+.container ul li a.active {
+  background-color: #ecf0f1;
+}
+
+.content{
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+.content h2{
+  font-size: 6rem;
+  color: #fff;
+}
+
+.icon{
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: none;
+}
+
+@media(max-width: 768px){
+  .content h2{
+    font-size: 4rem;
+    text-align: center;
+  }
+
+  .icon{
+    display: block;
+  }
+
+  .container .nav-link {
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: #fff;
+    position: absolute;
+    width: 350px;
+    height: 60vh;
+    top: -800px;
+    right: 0;
+    z-index: 10;
+  }
+
+  .nav-link.active {
+    top: 10%;
+  }
+}
