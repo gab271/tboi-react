@@ -1,13 +1,12 @@
 import Banner from "../../components/banner/Banner"
 import Footer from "../../components/footer/Footer"
 import Header from "../../components/header/Header"
-
-function Home() {
+function Characters() {
 
   return (
     <>
       <Header />
-      <Banner title={"The Binding of isaac"} />
+      <Banner title={"Characters"} />
       
       <Footer />
     </>
@@ -15,4 +14,4 @@ function Home() {
 
 }
 
-export default Home
+export default Characters
