@@ -1,0 +1,18 @@
+.characters-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px; /* Aumenta el espacio entre los elementos */
+  padding: 20px; /* Espacio interno del contenedor */
+  margin-top: 20px; /* Espacio superior para colocar debajo del logo */
+}
+
+.character {
+  flex: 1 1 400px; /* Ajusta el tamaño de los elementos */
+  max-width: 500px; /* Tamaño máximo de los elementos */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Sombra para los elementos */
+  padding: 20px; /* Espacio interno de los elementos */
+  border-radius: 5px; /* Bordes redondeados */
+  background-color: #fff; /* Fondo blanco */
+}

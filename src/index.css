@@ -8,6 +8,7 @@
 body{
   min-height: 100vh;
   position: relative;
+  
 }
 
 body::before{
@@ -97,6 +98,8 @@ header{
 
   .icon{
     display: block;
+    position: relative;
+    z-index: 11; /* Asegúrate de que la hamburguesa esté por encima del menú */
   }
 
   .container .nav-link {
@@ -109,9 +112,11 @@ header{
     top: -800px;
     right: 0;
     z-index: 10;
+    transition: top 0.3s ease; /* Transición suave */
   }
 
   .nav-link.active {
-    top: 10%;
+    top: 60px; /* Ajusta esta altura para que el menú se abra un poco más abajo de la hamburguesa */
+    height: 30vh; /* Nueva altura más pequeña */
   }
 }
