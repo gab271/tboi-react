@@ -9,13 +9,13 @@ const charactersData = [
     name: "Magdalene",
     image: "magdalene.png", 
     life: "4 ❤️",
-    description: "Magdalene starts with four red heart containers and the Yum Heart."
+    description: "Magdalene starts with four red heart containers and the Yum Heart. She is unlocked by having seven or more heart containers in one playthrough."
   },
   {
     name: "lost",
     image: "lost.jpg", 
     life: "0 ❤️",
-    description: "The Lost starts with no health and cannot gain health by any means. Therefore, he will die from any damage taken."
+    description: "The Lost starts with no health and cannot gain health by any means. Therefore, he will die from any damage taken. This character is unlocked by dying in a sacrifice room while holding the missing poster trinket."
   },
   {
     name: "Judas",
