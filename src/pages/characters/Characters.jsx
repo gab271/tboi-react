@@ -1,11 +1,12 @@
-import Banner from "../../components/banner/Banner"
-import Header from "../../components/header/Header"
-import charactersData from "../../services/charactersData"
-import Character from "../../components/character/Character"
-import "./Characters.css"
+import React from 'react';
+import Banner from "../../components/banner/Banner";
+import Header from "../../components/header/Header";
+import charactersData from "../../services/charactersData";
+import Character from "../../components/character/Character";
+import Footer from "../../components/footer/Footer"; // Ruta corregida
+import "./Characters.css";
 
 function Characters() {
-
   return (
     <>
       <Header />
@@ -22,9 +23,9 @@ function Characters() {
           />
         ))}
       </div>
+      <Footer /> {/* Mueve el Footer fuera del contenedor de personajes */}
     </>
-  )
-
+  );
 }
 
-export default Characters
+export default Characters;

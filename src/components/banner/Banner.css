@@ -1,6 +1,16 @@
+/* Estilos base */
+.navbar-banner {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 .navbar-banner-img {
   width: 100%;
-  height: 55vh;
+  height: 45vh; /* Reduced height for mobile */
+  object-fit: cover;
 }
 
 .navbar-banner-title {
@@ -9,6 +19,96 @@
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 3rem;
+  font-size: 1.5rem; /* Smaller font size for mobile */
   text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added shadow for better readability */
+  width: 90%; /* Control text width on small screens */
+}
+
+/* Small phones (320px and up) */
+@media only screen and (min-width: 320px) {
+  .navbar-banner-img {
+    height: 50vh;
+  }
+
+  .navbar-banner-title {
+    font-size: 1.8rem;
+  }
+}
+
+/* Medium phones (375px and up) */
+@media only screen and (min-width: 375px) {
+  .navbar-banner-title {
+    font-size: 2rem;
+  }
+}
+
+/* Large phones (425px and up) */
+@media only screen and (min-width: 425px) {
+  .navbar-banner-img {
+    height: 52vh;
+  }
+
+  .navbar-banner-title {
+    font-size: 2.2rem;
+  }
+}
+
+/* Tablets (768px and up) */
+@media only screen and (min-width: 768px) {
+  .navbar-banner-img {
+    height: 60vh;
+  }
+
+  .navbar-banner-title {
+    font-size: 3rem;
+    width: 80%;
+  }
+}
+
+/* Laptops (992px and up) */
+@media only screen and (min-width: 992px) {
+  .navbar-banner-img {
+    height: 65vh;
+  }
+
+  .navbar-banner-title {
+    font-size: 3.5rem;
+    width: 70%;
+  }
+}
+
+/* Large screens (1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .navbar-banner-img {
+    height: 70vh;
+  }
+
+  .navbar-banner-title {
+    font-size: 4rem;
+    width: 60%;
+  }
+}
+
+/* 4K screens (2560px and up) */
+@media only screen and (min-width: 2560px) {
+  .navbar-banner-img {
+    height: 75vh;
+  }
+
+  .navbar-banner-title {
+    font-size: 5rem;
+    width: 50%;
+  }
+}
+
+/* Landscape mode for phones */
+@media only screen and (max-height: 500px) and (orientation: landscape) {
+  .navbar-banner-img {
+    height: 100vh;
+  }
+
+  .navbar-banner-title {
+    font-size: 2rem;
+  }
 }

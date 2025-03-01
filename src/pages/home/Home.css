@@ -1,0 +1,54 @@
+.home-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.home-image {
+  max-width: 200px;
+  height: auto;
+  object-fit: contain;
+}
+
+.home-description {
+  max-width: 900px;
+  margin: 4rem auto;
+  padding: 3rem;
+  text-align: justify;
+  background: linear-gradient(145deg, #ffffff, #f6f6f6);
+  border-radius: 20px;
+  box-shadow: 
+    0 10px 20px rgba(0, 0, 0, 0.1),
+    0 6px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+}
+
+/* ... resto de tus estilos existentes ... */
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .home-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .home-image {
+    max-width: 150px;
+  }
+
+  .home-description {
+    margin: 2rem auto;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-image {
+    max-width: 120px;
+  }
+}
