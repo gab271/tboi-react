@@ -8,9 +8,9 @@ function Footer() {
         <div className="footer-links">
           <div className="footer-column">
             <h4>Isaac</h4>
-            <a href="/employer">Employer</a>
-            <a href="/healthplan">Healthplan</a>
-            <a href="/individual">Individual</a>
+            <a href="/employer">Fandom</a>
+            <a href="/healthplan">Fanatical</a>
+            <a href="/individual">Multhead</a>
           </div>
           <div className="footer-column">
             <h4>Resources</h4>
@@ -24,18 +24,16 @@ function Footer() {
           </div>
           <div className="footer-column">
             <h4>Company</h4>
-            <a href="/about">Facebook</a>
-            <a href="/press">Twitter</a>
-            <a href="/career">Instagram</a>
-            <a href="/contact">Contact</a>
+            <a href="https://x.com/edmundmcmillen?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor">Twitter</a>
+            <a href="https://www.instagram.com/officaledmundmcmillen/?hl=es">Instagram</a>
+            <a href="https://www.facebook.com/theedmundmcmillen/">Contact</a>
           </div>
           <div className="footer-column">
             <h4>Coming soon on</h4>
             <div className="social-media">
-              <a href="https://steam.com"><img src="path/to/steam/image" alt="Steam" /></a>
-              <a href="https://github.com"><img src="path/to/github/image" alt="GitHub" /></a>
-              <a href="https://twitter.com"><img src="path/to/twitter/image" alt="Twitter" /></a>
-              <a href="https://instagram.com"><img src="path/to/insta/image" alt="Instagram" /></a>
+              <a href="https://store.steampowered.com/app/1426300/The_Binding_of_Isaac_Repentance/"><img src="steam-icon.jpg" alt="Steam" /></a>
+              <a href="https://github.com/gab271/tboi-react/tree/main"><img src="github-icon.jpg" alt="GitHub" /></a>
+              <a href="https://x.com/edmundmcmillen?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor"><img src="x-icon.jpg" alt="Twitter" /></a>
             </div>
           </div>
         </div>

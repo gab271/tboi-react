@@ -58,13 +58,14 @@ header{
   margin: 0 0.5rem;
 }
 
-.container ul li a{
+.container ul li a,
+.container ul li .active {
   color: #212a3c;
   font-size: 1.3rem;
   padding: 0.5rem 0.8rem;
   display: block;
-  border-radius: 10px;
   border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 .container ul li a:hover,
@@ -99,7 +100,7 @@ header{
   .icon{
     display: block;
     position: relative;
-    z-index: 11; /* Asegúrate de que la hamburguesa esté por encima del menú */
+    z-index: 11;
   }
 
   .container .nav-link {
@@ -112,11 +113,11 @@ header{
     top: -800px;
     right: 0;
     z-index: 10;
-    transition: top 0.3s ease; /* Transición suave */
+    transition: top 0.3s ease;
   }
 
   .nav-link.active {
-    top: 60px; /* Ajusta esta altura para que el menú se abra un poco más abajo de la hamburguesa */
-    height: 30vh; /* Nueva altura más pequeña */
+    top: 60px;
+    height: 30vh;
   }
 }

@@ -2,17 +2,71 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: flex-start;
-  gap: 40px; /* Aumenta el espacio entre los elementos */
-  padding: 20px; /* Espacio interno del contenedor */
-  margin-top: 20px; /* Espacio superior para colocar debajo del logo */
+  align-items: stretch;
+  gap: 40px;
+  padding: 20px;
+  margin-top: 20px;
 }
 
 .character {
-  flex: 1 1 400px; /* Ajusta el tamaño de los elementos */
-  max-width: 500px; /* Tamaño máximo de los elementos */
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Sombra para los elementos */
-  padding: 20px; /* Espacio interno de los elementos */
-  border-radius: 5px; /* Bordes redondeados */
-  background-color: #fff; /* Fondo blanco */
+  flex: 1 1 400px;
+  max-width: 500px;
+  min-height: 450px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (min-width: 2560px) {
+  .character {
+    min-height: 550px;
+    flex: 1 1 600px;
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .character {
+    min-height: 500px;
+    flex: 1 1 450px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .character {
+    min-height: 450px;
+    flex: 1 1 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .character {
+    min-height: 400px;
+    flex: 1 1 350px;
+  }
+}
+
+@media (max-width: 480px) {
+  .characters-container {
+    gap: 20px;
+    padding: 10px;
+  }
+  
+  .character {
+    min-height: 350px;
+    flex: 1 1 300px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 320px) {
+  .character {
+    min-height: 300px;
+    flex: 1 1 250px;
+    padding: 10px;
+  }
 }

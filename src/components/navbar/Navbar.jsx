@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaBars } from "react-icons/fa6";
+import { NavLink } from "react-router-dom";
 
 function Navbar({ title }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,13 +19,13 @@ function Navbar({ title }) {
             </div>
             <ul className={isOpen ? "nav-link active" : "nav-link"}>
               <li>
-                <a href="/home" className="active">Home</a>
+                <NavLink to="/" end>Home</NavLink>
               </li>
               <li>
-                <a href="/characters">Characters</a>
+                <NavLink to="/characters">Characters</NavLink>
               </li>
               <li>
-                <a href="/items">Items</a>
+                <NavLink to="/items">Items</NavLink>
               </li>
             </ul>
             <div className="icon" onClick={toggleMenu}>
