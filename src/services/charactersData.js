@@ -20,8 +20,8 @@ const charactersData = [
   {
     name: "Tainted Judas",
     image: "taintedjudas.jpg", 
-    life: "1❤️",
-    description: "Description for Character 4"
+    life: "2❤️",
+    description: "Tainted Judas starts with 2 black hearts, 3 coins, and Dark Arts in his consumable slot."
   }
 ];
 
