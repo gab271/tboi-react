@@ -7,19 +7,19 @@ const charactersData = [
   },
   {
     name: "Magdalene",
-    image: "magdalene.png", 
+    image: "magdalene.png",
     life: "4 ❤️",
     description: "Magdalene starts with four red heart containers and the Yum Heart. She is unlocked by having seven or more heart containers in one playthrough."
   },
   {
     name: "lost",
-    image: "lost.jpg", 
+    image: "lost.jpg",
     life: "0 ❤️",
     description: "The Lost starts with no health and cannot gain health by any means. Therefore, he will die from any damage taken. This character is unlocked by dying in a sacrifice room while holding the missing poster trinket."
   },
   {
     name: "Judas",
-    image: "judas.png", 
+    image: "judas.png",
     life: "1 ❤️",
     description: "Judas is a character unlocked after beating Satan for the first time. Judas starts with one red heart container, and has The Book of Belial upon starting, as well as 3 coins."
   }

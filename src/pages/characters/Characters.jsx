@@ -3,7 +3,7 @@ import Banner from "../../components/banner/Banner";
 import Header from "../../components/header/Header";
 import charactersData from "../../services/charactersData";
 import Character from "../../components/character/Character";
-import Footer from "../../components/footer/Footer"; // Ruta corregida
+import Footer from "../../components/footer/Footer";
 import "./Characters.css";
 
 function Characters() {
@@ -11,15 +11,15 @@ function Characters() {
     <>
       <Header />
       <Banner title={"Characters"} />
-      
+
       <div className="characters-container">
         {charactersData.map((character, index) => (
-          <Character 
+          <Character
             key={index}
             characterName={character.name}
             characterImage={character.image}
             characterLife={character.life}
-            characterDescription={character.description} // Asegúrate de pasar la descripción
+            characterDescription={character.description}
           />
         ))}
       </div>

@@ -35,7 +35,7 @@ function Navbar({ title }) {
         </div>
       </header>
       <div className="header-logo">
-        
+
       </div>
       <section>
         <div className="container">

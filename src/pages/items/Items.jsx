@@ -19,7 +19,7 @@ function Items() {
     <>
       <Header />
       <Banner title={"Items"} />
-      
+
       <div className="items-container">
         <div className="search-section">
           <input

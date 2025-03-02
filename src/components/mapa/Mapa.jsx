@@ -19,9 +19,9 @@ function Mapa() {
 
   return (
     <div className="map-container">
-      <MapContainer 
-        center={position} 
-        zoom={13} 
+      <MapContainer
+        center={position}
+        zoom={13}
         scrollWheelZoom={false}
       >
         <TileLayer
@@ -31,9 +31,9 @@ function Mapa() {
         <Marker position={position} icon={defaultIcon}>
           <Popup className="custom-popup">
             <div className="popup-content">
-              <img 
-                src="EdmunmcMillen.jpg" 
-                alt="Edmund McMillen" 
+              <img
+                src="EdmunmcMillen.jpg"
+                alt="Edmund McMillen"
                 className="popup-image"
               />
               <h3>Edmund McMillen's Hometown 🎮</h3>

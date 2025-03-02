@@ -33,7 +33,7 @@ function Home() {
       </div>
 
       <div className="map-section">
-        <h2>find us here</h2> 
+        <h2>find us here</h2>
         <Mapa />
       </div>
 

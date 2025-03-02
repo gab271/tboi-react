@@ -44,7 +44,7 @@ function Footer() {
           <p>&copy; {new Date().getFullYear()} Edmund. All rights reserved.</p>
           <div className="footer-bottom-links">
             <a href="/terms">Terms & conditions</a>
-            <a href="/privacy">Privacy Policy</a>
+            <a href="/Politicadeprivacidad.pdf" download="Politica_de_Privacidad.pdf">Privacy Policy</a>
             <a href="/security">Security</a>
             <a href="/cookie">Cookie Policy</a>
           </div>

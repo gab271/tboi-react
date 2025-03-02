@@ -21,12 +21,13 @@
   text-align: justify;
   background: linear-gradient(145deg, #ffffff, #f6f6f6);
   border-radius: 20px;
-  box-shadow: 
+  box-shadow:
     0 10px 20px rgba(0, 0, 0, 0.1),
     0 6px 6px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.8);
   transition: all 0.3s ease;
 }
+
 .map-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -40,7 +41,6 @@
   color: #333;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   .home-content {
     flex-direction: column;

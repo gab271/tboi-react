@@ -1,17 +1,17 @@
-*{
+* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
   font-family: 'Pixeboy', sans-serif;
 }
 
-body{
+body {
   min-height: 100vh;
   position: relative;
   background-color: #ffffff;
 }
 
-body::before{
+body::before {
   position: absolute;
   content: "";
   width: 100%;
@@ -20,40 +20,40 @@ body::before{
   z-index: -1;
 }
 
-a{
+a {
   text-decoration: none;
 }
 
-header{
+header {
   background: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   padding: 1rem 0;
 }
 
-.container{
+.container {
   max-width: 1440px;
   width: 100%;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
-.container nav{
+.container nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.container nav .logo{
+.container nav .logo {
   color: #212a3c;
   font-size: 1.2rem;
   cursor: pointer;
 }
 
-.container .nav-link{
+.container .nav-link {
   display: flex;
 }
 
-.container .nav-link li{
+.container .nav-link li {
   list-style: none;
   margin: 0 0.5rem;
 }
@@ -73,31 +73,31 @@ header{
   background-color: #ecf0f1;
 }
 
-.content{
+.content {
   position: absolute;
   top: 45%;
   left: 50%;
   transform: translate(-50%, 0%);
 }
 
-.content h2{
+.content h2 {
   font-size: 6rem;
   color: #fff;
 }
 
-.icon{
+.icon {
   font-size: 1.5rem;
   cursor: pointer;
   display: none;
 }
 
-@media(max-width: 768px){
-  .content h2{
+@media(max-width: 768px) {
+  .content h2 {
     font-size: 4rem;
     text-align: center;
   }
 
-  .icon{
+  .icon {
     display: block;
     position: relative;
     z-index: 11;
