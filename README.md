@@ -73,7 +73,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Your Name - [Gabriel](https://youtube.com/gab1962?si=eW3FZ2s2MLzjwAEr)
 
-Project Link: [https://github.com/yourusername/tboi-react](https://github.com/yourusername/tboi-react)
+Project Link: [https://github.com/gab271/tboi-react](https://github.com/yourusername/tboi-react)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
