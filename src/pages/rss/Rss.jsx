@@ -8,7 +8,7 @@ const News = () => {
   return (
     <>
       <Header />
-      <Banner title="Game News" />
+      <Banner title="Updates" />
       <div className="news-page">
         <RssFeed />
       </div>

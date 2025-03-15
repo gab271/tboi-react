@@ -28,7 +28,10 @@ function Navbar({ title }) {
                 <NavLink to="/items">Items</NavLink>
               </li>
               <li>
-                <NavLink to="/news">News</NavLink>
+                <NavLink to="/achievements">Achievements</NavLink>
+              </li>
+              <li>
+                <NavLink to="/news">Updates</NavLink>
               </li>
             </ul>
             <div className="icon" onClick={toggleMenu}>

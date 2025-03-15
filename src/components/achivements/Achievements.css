@@ -1,0 +1,128 @@
+.achievements-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.search-section {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #666;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.achievement-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.achievement-card:hover {
+  transform: translateY(-5px);
+}
+
+.achievement-image {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.achievement-card h3 {
+  margin: 0.5rem 0;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.achievement-description {
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.difficulty-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.difficulty-badge.easy {
+  background: #4caf50;
+  color: white;
+}
+
+.difficulty-badge.medium {
+  background: #ff9800;
+  color: white;
+}
+
+.difficulty-badge.hard {
+  background: #f44336;
+  color: white;
+}
+
+.difficulty-badge.very.hard {
+  background: #9c27b0;
+  color: white;
+}
+
+.difficulty-badge.expert {
+  background: #000000;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .achievements-container {
+    padding: 0 1rem;
+  }
+
+  .search-input {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .achievements-grid {
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .achievement-card {
+    padding: 1rem;
+  }
+}
