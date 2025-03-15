@@ -27,6 +27,9 @@ function Navbar({ title }) {
               <li>
                 <NavLink to="/items">Items</NavLink>
               </li>
+              <li>
+                <NavLink to="/news">News</NavLink>
+              </li>
             </ul>
             <div className="icon" onClick={toggleMenu}>
               <FaBars />

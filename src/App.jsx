@@ -4,6 +4,7 @@ import Home from './pages/home/Home'
 import Navbar from './components/navbar/Navbar'
 import Characters from './pages/characters/Characters'
 import Items from './pages/items/Items'
+import News from './pages/rss/Rss' // Fixed import path
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/home" element={<Home/>}/>
         <Route path="/characters" element={<Characters/>}/>
         <Route path="/items" element={<Items/>}/>
+        <Route path="/news" element={<News />} />
       </Routes>
     </>
   )
