@@ -4,6 +4,8 @@ import Home from './pages/home/Home'
 import Navbar from './components/navbar/Navbar'
 import Characters from './pages/characters/Characters'
 import Items from './pages/items/Items'
+import News from './pages/rss/Rss'
+import Achievements from './components/achivements/Achievements' // Add this import
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
         <Route path="/home" element={<Home/>}/>
         <Route path="/characters" element={<Characters/>}/>
         <Route path="/items" element={<Items/>}/>
+        <Route path="/news" element={<News />} />
+        <Route path="/achievements" element={<Achievements />} />
       </Routes>
     </>
   )
