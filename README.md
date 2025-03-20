@@ -1,4 +1,4 @@
-# The Binding of Isaac API Project
+# The Binding of Isaac React Project
 
 ![Project Logo](public/images/logo.gif)
 
