@@ -25,6 +25,9 @@ function Navbar({ title }) {
                 <NavLink to="/characters">Characters</NavLink>
               </li>
               <li>
+                <NavLink to="/comments">Comments</NavLink>
+              </li>
+              <li>
                 <NavLink to="/items">Items</NavLink>
               </li>
               <li>
@@ -40,16 +43,6 @@ function Navbar({ title }) {
           </nav>
         </div>
       </header>
-      <div className="header-logo">
-
-      </div>
-      <section>
-        <div className="container">
-          <div className="content">
-            {/* Content goes here */}
-          </div>
-        </div>
-      </section>
     </>
   );
 }
