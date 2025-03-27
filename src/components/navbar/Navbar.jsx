@@ -25,13 +25,13 @@ function Navbar({ title }) {
                 <NavLink to="/characters">Characters</NavLink>
               </li>
               <li>
-                <NavLink to="/comments">Comments</NavLink>
-              </li>
-              <li>
                 <NavLink to="/items">Items</NavLink>
               </li>
               <li>
                 <NavLink to="/achievements">Achievements</NavLink>
+              </li>
+              <li>
+                <NavLink to="/comments">Comments</NavLink>
               </li>
               <li>
                 <NavLink to="/news">Updates</NavLink>

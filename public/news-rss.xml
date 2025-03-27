@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>The Binding of Isaac News</title>
+    <link>https://tboi-c3c55.web.app/</link>
+    <description>Latest news about The Binding of Isaac game</description>
+
+    <item>
+      <title>The Binding of Isaac: Latest Update</title>
+      <link>https://tboi-c3c55.web.app/news#1</link>
+      <description>New items and challenges added!</description>
+      <pubDate>Thu, 15 Mar 2024 12:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>Community Challenge Winners</title>
+      <link>https://tboi-c3c55.web.app/news#2</link>
+      <description>Check out this week's best runs!</description>
+      <pubDate>Thu, 14 Mar 2024 12:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>Upcoming Expansion Teased</title>
+      <link>https://tboi-c3c55.web.app/news#3</link>
+      <description>Developers hint at a new expansion pack.</description>
+      <pubDate>Wed, 13 Mar 2024 12:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>Speedrunning Tips and Tricks</title>
+      <link>https://tboi-c3c55.web.app/news#4</link>
+      <description>Learn how to optimize your runs!</description>
+      <pubDate>Tue, 12 Mar 2024 12:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>Fan Art Spotlight</title>
+      <link>https://tboi-c3c55.web.app/news#5</link>
+      <description>Amazing fan art from the community.</description>
+      <pubDate>Mon, 11 Mar 2024 12:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>Patch Notes: Bug Fixes</title>
+      <link>https://tboi-c3c55.web.app/news#6</link>
+      <description>Minor bug fixes and performance improvements.</description>
+      <pubDate>Sun, 10 Mar 2024 12:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>Top Mods of the Month</title>
+      <link>https://tboi-c3c55.web.app/news#7</link>
+      <description>Discover the most popular mods this month.</description>
+      <pubDate>Sat, 09 Mar 2024 12:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
