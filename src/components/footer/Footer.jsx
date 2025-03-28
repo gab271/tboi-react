@@ -24,7 +24,7 @@ function Footer() {
           </div>
           <div className="footer-column">
             <h4>Company</h4>
-            <a href="https://x.com/edmundmcmillen?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor">Twitter</a>
+            <a href="https://x.com/edmundmcmillen?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor">RSS</a>
             <a href="https://www.instagram.com/officaledmundmcmillen/?hl=es">Instagram</a>
             <a href="https://www.facebook.com/theedmundmcmillen/">Contact</a>
           </div>
@@ -33,7 +33,7 @@ function Footer() {
             <div className="social-media">
               <a href="https://store.steampowered.com/app/1426300/The_Binding_of_Isaac_Repentance/"><img src="steam-icon.jpg" alt="Steam" /></a>
               <a href="https://github.com/gab271/tboi-react/tree/main"><img src="github-icon.jpg" alt="GitHub" /></a>
-              <a href="https://x.com/edmundmcmillen?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor"><img src="x-icon.jpg" alt="Twitter" /></a>
+              <a href="/news-rss.xml"><img src="rss.jpg" alt="RSS Feed" /></a>
             </div>
           </div>
         </div>
