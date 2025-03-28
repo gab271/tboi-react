@@ -20,6 +20,20 @@ This project is a web application that showcases information about The Binding o
 * Responsive design for all devices
 * Steam API integration for game data
 
+## RSS Feed Example
+
+The project includes an RSS feed for game updates. Here's a preview of how it looks:
+
+![RSS Feed Preview](public/rss-feed-preview.png)
+
+The RSS feed provides:
+* Latest game updates
+* Community news
+* Patch notes
+* Feature announcements
+
+You can access the RSS feed at `/news-rss.xml` or view it in the Updates section of the website.
+
 ## Third-Party Components
 
 * [Leaflet](https://leafletjs.com/) - Used for interactive maps
