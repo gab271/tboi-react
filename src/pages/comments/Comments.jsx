@@ -39,12 +39,10 @@ function Comments() {
     
     let updatedComments;
     if (editingComment !== null) {
-      // Editing existing comment
       updatedComments = comments.map((comment, index) => 
         index === editingComment ? newComment : comment
       );
     } else {
-      // Adding new comment
       updatedComments = [...comments, newComment];
     }
     

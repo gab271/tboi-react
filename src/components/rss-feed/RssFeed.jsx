@@ -7,12 +7,10 @@ function RssFeed() {
   const location = useLocation();
 
   useEffect(() => {
-    // Obtener el ID del hash de la URL (por ejemplo, #7 de /news#7)
     const hash = location.hash.replace('#', '');
     if (hash) {
       const element = document.getElementById(hash);
       if (element) {
-        // Añadir un pequeño retraso para asegurar que el DOM está listo
         setTimeout(() => {
           element.scrollIntoView({ behavior: 'smooth' });
         }, 100);

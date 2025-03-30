@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Banner from "../banner/Banner";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
-import achievementsData from "../../services/achievementsData"; // Make sure this matches the file name exactly
+import achievementsData from "../../services/achievementsData"; 
 import "./Achievements.css";
 
 
