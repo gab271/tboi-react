@@ -24,7 +24,7 @@ This project is a web application that showcases information about The Binding o
 
 The project includes an RSS feed for game updates. Here's a preview of how it looks:
 
-![RSS Feed Preview](./public/rssfeed.png)
+![RSS Feed Preview](rssfeed.jpg)
 
 The RSS feed provides:
 * Latest game updates
