@@ -11,12 +11,17 @@ import Register from './pages/auth/Register'
 import FavoritesList from './pages/favorites/FavoritesList'
 import BuildsList from './pages/builds/BuildsList'
 import ProtectedRoute from './components/layout/ProtectedRoute'
+import ForgotPassword from './pages/auth/ForgotPassword'
+import ResetPassword from './pages/auth/ResetPassword'
+import Account from './pages/account/Account'
 
 function App() {
   return (
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
@@ -34,6 +39,12 @@ function App() {
             </ProtectedRoute>
           } />
           
+          <Route path="account" element={
+            <ProtectedRoute>
+              <Account />
+            </ProtectedRoute>
+          } />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
