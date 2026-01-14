@@ -1,55 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Banner from "../../components/banner/Banner";
 import Header from "../../components/header/Header";
 import Character from "../../components/character/Character";
 import Footer from "../../components/footer/Footer";
 import "./Characters.css";
-import { db } from "../../firebase/config";
-import { ref, onValue } from "firebase/database";
+import { charactersData } from "../../features/characters/data/charactersData";
 
 function Characters() {
-  const [characters, setCharacters] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const charactersRef = ref(db, 'data/characters');
-    
-    onValue(charactersRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setCharacters(data);
-      }
-      setLoading(false);
-    });
-  }, []);
-
-  if (loading) {
-    return (
-      <>
-        <Header />
-        <Banner title={"Characters"} />
-        <div className="characters-container">Loading...</div>
-        <Footer />
-      </>
-    );
-  }
+  const characters = charactersData;
 
   return (
     <>
       <Header />
       <Banner title={"Characters"} />
-      <div className="characters-container">
-        
+      <div className="characters-container p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {characters.map((character, index) => (
             <Character
-              key={index}
+              key={character.id || index}
               characterName={character.name}
-              characterImage={character.image}
-              characterLife={character.life}
-              characterDescription={character.description}
+              characterImage={character.sprite_url} 
             />
           ))}
-        
       </div>
       <Footer />
     </>

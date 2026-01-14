@@ -1,4 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -10,20 +11,26 @@ export const queryClient = new QueryClient({
   },
 });
 
-const BASE_URL = 'https://isaac.jamesmcfadden.co.uk/api/v1';
-const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(BASE_URL); 
-// Note: Direct CORS might fail, using corsproxy for demo reliability or handled via mocks.
-// For production, a server-side proxy is better.
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
-export async function fetcher(endpoint) {
-  // Using a fallback for CORS issues common with this specific API
-  try {
-     const res = await fetch(`${BASE_URL}${endpoint}`);
-     if (!res.ok) throw new Error('API Error');
-     return await res.json();
-  } catch (err) {
-      console.warn("Direct fetch failed, trying proxy/mock fallback", err);
-      // Simple fallback or mock logic could go here
-      throw err;
-  }
-}
+const api = axios.create({
+  baseURL: BACKEND_URL,
+  withCredentials: true,
+});
+
+export const fetchBosses = async (page = 0) => {
+  const { data } = await api.get(`/api/isaac/bosses?page=${page}`);
+  return data;
+};
+
+export const fetchItems = async (page = 0) => {
+  const { data } = await api.get(`/api/isaac/items?page=${page}`);
+  return data;
+};
+
+export const searchEntities = async (q) => {
+  const { data } = await api.get(`/api/search?q=${q}`);
+  return data;
+};
+
+export default api;
