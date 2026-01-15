@@ -37,4 +37,9 @@ export const searchEntities = async (q) => {
   return data;
 };
 
+export const fetchRandomItems = async (n = 5) => {
+  const { data } = await api.get(`/api/items/random?n=${n}`);
+  return data;
+};
+
 export default api;
