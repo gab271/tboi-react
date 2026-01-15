@@ -25,7 +25,9 @@ const Login = () => {
       if (error) throw error;
       
       if (data?.user) {
-         navigate('/');
+         // Force a hard reload to ensure AuthContext picks up the session correctly
+         // and to avoid any state synchronization issues
+         window.location.href = '/';
       }
     } catch (error) {
       setError(error.message || 'Error al iniciar sesión');
@@ -86,7 +88,7 @@ const Login = () => {
                     <div className="space-y-2">
                          <div className="flex justify-between items-center ml-1">
                             <label className="text-xs font-bold text-muted uppercase tracking-wider">Contraseña</label>
-                            <Link to="/forgot-password" class="text-xs text-gold hover:underline opacity-80 hover:opacity-100 transition-opacity">
+                            <Link to="/forgot-password" className="text-xs text-gold hover:underline opacity-80 hover:opacity-100 transition-opacity">
                                 ¿Olvidaste tu contraseña?
                             </Link>
                          </div>

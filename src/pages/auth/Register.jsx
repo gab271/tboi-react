@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabaseClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -30,13 +31,29 @@ const Register = () => {
     try {
       setError('');
       setLoading(true);
+
+      // Check if username exists
+      const { count, error: checkError } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('username', username);
+
+      if (checkError) {
+         console.error(checkError);
+         // If generic check error, we continue but warn (optional)
+      } else if (count > 0) {
+         setLoading(false);
+         return setError('Este nombre de usuario ya está ocupado. Elige otro.');
+      }
+
       const { data, error } = await signUp(email, password, { username });
       
       if (error) throw error;
       
       // Navigate to home after successful registration
       if (data?.user) {
-        navigate('/');
+        // Force reload to ensure session is picked up
+        window.location.href = '/';
       }
     } catch (error) {
       setError(error.message || 'Error al crear la cuenta');

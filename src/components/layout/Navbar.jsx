@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { cn } from '../../lib/utils'
 import { Button } from '../ui/Button'
 import { FaSearch, FaBars, FaTimes, FaHeart, FaLayerGroup, FaUserCircle, FaSignOutAlt, FaCog } from 'react-icons/fa'
@@ -13,9 +14,11 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuItem 
 } from '../ui/DropdownMenu'
+import { LanguageSwitcher } from '../ui/LanguageSwitcher'
 import { supabase } from '../../lib/supabaseClient'
 
 export function Navbar() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false) // Mobile menu
   const [showCmd, setShowCmd] = useState(false) // Command palette
   const [scrolled, setScrolled] = useState(false)
@@ -64,10 +67,10 @@ export function Navbar() {
   }
 
   const links = [
-    { name: 'Items', path: '/items' },
-    { name: 'Bosses', path: '/bosses' },
-    { name: 'Characters', path: '/characters' },
-    { name: 'Builds', path: '/builds' },
+    { name: t('nav.items'), path: '/items' },
+    { name: t('nav.bosses'), path: '/bosses' },
+    { name: t('nav.characters'), path: '/characters' },
+    { name: t('nav.builds'), path: '/builds' },
   ]
 
   return (
@@ -89,7 +92,7 @@ export function Navbar() {
             </div>
             <div className="flex flex-col">
               <span className="font-serif font-bold text-lg text-fg leading-none tracking-tight group-hover:text-gold transition-colors">TBOI: Codex</span>
-              <span className="text-[9px] text-muted uppercase tracking-[0.2em] leading-none opacity-70">Repentance</span>
+              <span className="text-[9px] text-muted uppercase tracking-[0.2em] leading-none opacity-70">{t('nav.subtitle')}</span>
             </div>
           </NavLink>
 
@@ -119,11 +122,13 @@ export function Navbar() {
                 className="flex items-center gap-2 text-xs text-muted bg-bg-1/50 border border-white/10 px-3 py-1.5 rounded-full hover:border-gold/30 hover:bg-bg-1 transition-all group"
             >
                  <FaSearch size={10} className="group-hover:text-gold" /> 
-                 <span className="mr-2">Search...</span>
+                 <span className="mr-2">{t('nav.search')}</span>
                  <kbd className="hidden lg:inline-block font-mono text-[9px] bg-black/20 px-1 rounded border border-white/5 text-muted-2 group-hover:text-muted">Ctrl K</kbd>
             </button>
 
             <div className="w-px h-6 bg-white/10 mx-1" />
+
+            <LanguageSwitcher />
 
             <Button variant="ghost" size="icon" className="rounded-full text-muted hover:text-blood" onClick={() => navigate('/favorites')}>
                <FaHeart size={16} />
@@ -154,35 +159,38 @@ export function Navbar() {
                    <DropdownMenuSeparator className="bg-white/10" />
                    <DropdownMenuItem onClick={() => navigate('/account')} className="cursor-pointer hover:bg-white/5 focus:bg-white/5 focus:text-gold data-[highlighted]:bg-white/5 gap-2">
                      <FaCog size={14} className="opacity-70" /> 
-                     <span>Configurar Cuenta</span>
+                     <span>{t('nav.accountable')}</span>
                    </DropdownMenuItem>
                    <DropdownMenuItem onClick={() => navigate('/favorites')} className="cursor-pointer hover:bg-white/5 focus:bg-white/5 focus:text-gold data-[highlighted]:bg-white/5 gap-2">
                      <FaHeart size={14} className="opacity-70" /> 
-                     <span>Favoritos</span>
+                     <span>{t('nav.favorites')}</span>
                    </DropdownMenuItem>
                    <DropdownMenuSeparator className="bg-white/10" />
                    <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-400 focus:text-red-400 hover:bg-red-900/10 focus:bg-red-900/10 gap-2">
                      <FaSignOutAlt size={14} />
-                     <span>Cerrar Sesión</span>
+                     <span>{t('nav.logout')}</span>
                    </DropdownMenuItem>
                  </DropdownMenuContent>
                </DropdownMenu>
             ) : (
                <div className="flex items-center gap-2 ml-2">
                    <Button variant="ghost" size="sm" className="text-muted hover:text-fg font-medium hidden lg:inline-flex" onClick={() => navigate('/login')}>
-                     Log In
+                     {t('nav.login')}
                    </Button>
                    <Button size="sm" className="bg-gold hover:bg-gold/80 text-black font-bold font-serif px-6 shadow-lg shadow-gold/20 hover:shadow-gold/40 transition-all rounded-xl" onClick={() => navigate('/register')}>
-                     Join
+                     {t('nav.join')}
                    </Button>
                </div>
             )}
           </div>
 
           {/* Mobile Menu Toggle */}
-          <Button variant="ghost" size="sm" className="md:hidden text-fg" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <FaTimes /> : <FaBars />}
-          </Button>
+          <div className="flex items-center gap-2 md:hidden">
+              <LanguageSwitcher />
+              <Button variant="ghost" size="sm" className="text-fg" onClick={() => setIsOpen(!isOpen)}>
+                {isOpen ? <FaTimes /> : <FaBars />}
+              </Button>
+          </div>
         </div>
       </nav>
 
@@ -210,8 +218,8 @@ export function Navbar() {
                      </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-3 w-full">
-                       <Button variant="secondary" onClick={() => { navigate('/login'); setIsOpen(false); }}>Log In</Button>
-                       <Button className="bg-gold text-black" onClick={() => { navigate('/register'); setIsOpen(false); }}>Sign Up</Button>
+                       <Button variant="secondary" onClick={() => { navigate('/login'); setIsOpen(false); }}>{t('nav.login')}</Button>
+                       <Button className="bg-gold text-black" onClick={() => { navigate('/register'); setIsOpen(false); }}>{t('nav.join')}</Button>
                     </div>
                   )}
               </div>
@@ -219,7 +227,7 @@ export function Navbar() {
                   onClick={() => { setShowCmd(true); setIsOpen(false); }}
                   className="w-full flex items-center gap-3 p-4 rounded-xl bg-bg-2 border border-border text-left text-muted mb-4"
               >
-                  <FaSearch /> Search anything...
+                  <FaSearch /> {t('nav.search')}
               </button>
               
               {links.map((link) => (
@@ -242,7 +250,7 @@ export function Navbar() {
               
               <div className="flex gap-4">
                  <Button className="flex-1 gap-2" variant="secondary" onClick={() => navigate('/favorites')}>
-                    <FaHeart className="text-blood" /> Favorites
+                    <FaHeart className="text-blood" /> {t('nav.favorites')}
                  </Button>
               </div>
            </div>

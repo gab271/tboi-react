@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "items": "Objetos",
+    "bosses": "Jefes",
+    "characters": "Personajes",
+    "builds": "Builds",
+    "search": "Buscar...",
+    "favorites": "Favoritos",
+    "settings": "Ajustes",
+    "profile": "Perfil",
+    "login": "Entrar",
+    "join": "Unirse",
+    "logout": "Cerrar Sesión",
+    "accountable": "Configurar Cuenta",
+    "subtitle": "Repentance"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar"
+  },
+  "home": {
+    "welcome": "Bienvenido a TBOI Codex",
+    "description": "Tu guía definitiva para The Binding of Isaac"
+  }
+}

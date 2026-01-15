@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from './lib/api'
 import { AuthProvider } from './contexts/AuthContext'
 import App from './App'
+import './i18n'
 import './styles/globals.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
