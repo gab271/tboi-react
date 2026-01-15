@@ -14,6 +14,15 @@ import ProtectedRoute from './components/layout/ProtectedRoute'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
 import Account from './pages/account/Account'
+import AdminRoute from './components/layout/AdminRoute'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminItems from './pages/admin/items/AdminItems'
+import AdminItemEditor from './pages/admin/items/AdminItemEditor'
+import AdminBosses from './pages/admin/bosses/AdminBosses'
+import AdminBossEditor from './pages/admin/bosses/AdminBossEditor'
+import AdminCharacters from './pages/admin/characters/AdminCharacters'
+import AdminCharacterEditor from './pages/admin/characters/AdminCharacterEditor'
+import AdminUsers from './pages/admin/users/AdminUsers'
 
 function App() {
   return (
@@ -44,6 +53,24 @@ function App() {
               <Account />
             </ProtectedRoute>
           } />
+
+          {/* Admin Routes */}
+          <Route path="admin" element={<AdminRoute />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="items" element={<AdminItems />} />
+              <Route path="items/new" element={<AdminItemEditor mode="create" />} />
+              <Route path="items/:id" element={<AdminItemEditor mode="edit" />} />
+              
+              <Route path="users" element={<AdminUsers />} />
+
+              <Route path="bosses" element={<AdminBosses />} />
+              <Route path="bosses/new" element={<AdminBossEditor mode="create" />} />
+              <Route path="bosses/:id" element={<AdminBossEditor mode="edit" />} />
+
+              <Route path="characters" element={<AdminCharacters />} />
+              <Route path="characters/new" element={<AdminCharacterEditor mode="create" />} />
+              <Route path="characters/:id" element={<AdminCharacterEditor mode="edit" />} />
+          </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

@@ -16,6 +16,7 @@ import {
 } from '../ui/DropdownMenu'
 import { LanguageSwitcher } from '../ui/LanguageSwitcher'
 import { supabase } from '../../lib/supabaseClient'
+import { useIsAdmin } from '../../hooks/useAdmin'
 
 export function Navbar() {
   const { t } = useTranslation()
@@ -26,6 +27,7 @@ export function Navbar() {
   
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState(null);
+  const isAdmin = useIsAdmin();
 
   // Scroll effect for glassmorphism
   useEffect(() => {
@@ -157,6 +159,12 @@ export function Navbar() {
                      </div>
                    </DropdownMenuLabel>
                    <DropdownMenuSeparator className="bg-white/10" />
+                   {isAdmin && (
+                      <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer hover:bg-white/5 focus:bg-white/5 focus:text-gold data-[highlighted]:bg-white/5 gap-2">
+                        <FaLayerGroup size={14} className="opacity-70 text-gold" /> 
+                        <span className="text-gold font-bold">Admin Dashboard</span>
+                      </DropdownMenuItem>
+                   )}
                    <DropdownMenuItem onClick={() => navigate('/account')} className="cursor-pointer hover:bg-white/5 focus:bg-white/5 focus:text-gold data-[highlighted]:bg-white/5 gap-2">
                      <FaCog size={14} className="opacity-70" /> 
                      <span>{t('nav.accountable')}</span>
