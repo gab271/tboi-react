@@ -19,13 +19,17 @@ const api = axios.create({
 });
 
 export const fetchBosses = async (page = 0) => {
-  const { data } = await api.get(`/api/isaac/bosses?page=${page}`);
-  return data;
+  // Map 0-indexed page to 1-indexed
+  const { data } = await api.get(`/api/bosses?page=${page + 1}`);
+  // Our new API returns { data: [...], meta: ... }. The component expects an array or { bosses: [] }
+  // We return the array directly to satisfy Array.isArray(data) check in components
+  return data.data || [];
 };
 
 export const fetchItems = async (page = 0) => {
-  const { data } = await api.get(`/api/isaac/items?page=${page}`);
-  return data;
+  // Map 0-indexed page to 1-indexed
+  const { data } = await api.get(`/api/items?page=${page + 1}`);
+  return data.data || [];
 };
 
 export const searchEntities = async (q) => {
