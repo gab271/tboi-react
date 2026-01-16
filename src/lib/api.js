@@ -48,3 +48,5 @@ export const fetchRandomItems = async (n = 5) => {
 };
 
 export default api;
+
+

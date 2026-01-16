@@ -88,30 +88,36 @@ export function Navbar() {
         <div className="container max-w-7xl mx-auto px-4 flex items-center justify-between">
           
           {/* Logo */}
-          <NavLink to="/" className="flex items-center gap-3 group">
-            <div className="relative w-8 h-8 flex items-center justify-center bg-bg-1 border border-white/10 rounded overflow-hidden group-hover:border-gold/50 transition-colors">
-               <span className="text-xl relative z-10 group-hover:scale-110 transition-transform">⚡</span>
+          <NavLink to="/" className="flex items-center gap-3 group relative z-50">
+            <div className="relative w-9 h-9 flex items-center justify-center bg-gradient-to-br from-bg-2 to-bg-1 border border-white/10 rounded-xl shadow-lg shadow-black/20 group-hover:border-gold/50 transition-all duration-300 group-hover:shadow-gold/20 overflow-hidden">
+               <div className="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+               <span className="text-xl relative z-10 group-hover:scale-110 transition-transform drop-shadow-sm">⚡</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-serif font-bold text-lg text-fg leading-none tracking-tight group-hover:text-gold transition-colors">TBOI: Codex</span>
-              <span className="text-[9px] text-muted uppercase tracking-[0.2em] leading-none opacity-70">{t('nav.subtitle')}</span>
+              <span className="font-serif font-black text-xl text-fg leading-none tracking-tight group-hover:text-gold transition-colors filter drop-shadow-sm">TBOI</span>
+              <span className="text-[10px] text-gold/80 font-mono uppercase tracking-[0.2em] leading-none opacity-80 group-hover:opacity-100 transition-opacity">Codex</span>
             </div>
           </NavLink>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1">
+          {/* Desktop Nav - Centered */}
+          <div className="hidden md:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center gap-1 p-1 bg-black/20 backdrop-blur-sm border border-white/5 rounded-full shadow-inner">
              {links.map((link) => (
                 <NavLink
                   key={link.path}
                   to={link.path}
                   className={({ isActive }) =>
                     cn(
-                      "text-sm font-medium px-4 py-2 rounded-full transition-all hover:bg-white/5",
-                      isActive ? "text-gold bg-white/5 font-bold" : "text-muted hover:text-fg"
+                      "relative px-5 py-2 rounded-full text-sm font-medium transition-all duration-300",
+                      isActive 
+                        ? "text-gold bg-bg-2 shadow-sm border border-white/5" 
+                        : "text-muted hover:text-white hover:bg-white/5"
                     )
                   }
                 >
                   {link.name}
+                  {/* Active Indicator Dot */}
+                  {/* ({ isActive }) => isActive && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-full" /> */} 
+                  {/* Simple version without motion context for now */}
                 </NavLink>
               ))}
           </div>
