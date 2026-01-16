@@ -32,6 +32,11 @@ export const fetchItems = async (page = 0) => {
   return data.data || [];
 };
 
+export const fetchItem = async (id) => {
+  const { data } = await api.get(`/api/items/${id}`);
+  return data;
+};
+
 export const searchEntities = async (q) => {
   const { data } = await api.get(`/api/search?q=${q}`);
   return data;

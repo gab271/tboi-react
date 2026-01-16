@@ -4,7 +4,11 @@ import { cn } from '../../../lib/utils';
 import FavoriteButton from '../../../components/ui/FavoriteButton';
 import { FaFingerprint, FaBookOpen } from 'react-icons/fa';
 
+import { useNavigate } from 'react-router-dom';
+
 export function ItemGridCard({ item, index }) {
+  const navigate = useNavigate();
+
   // Determine border color based on type
   const typeColors = {
     active: 'border-green-500/20 hover:border-green-500/50',
@@ -18,14 +22,23 @@ export function ItemGridCard({ item, index }) {
   const safeType = item.item_type || 'default';
   const borderColor = typeColors[safeType.toLowerCase()] || typeColors.default;
 
+  const handleClick = () => {
+      // Navigate to detail page using slug or id
+      const identifier = item.slug || item.id;
+      if(identifier) {
+        navigate(`/items/${identifier}`);
+      }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
       whileHover={{ y: -5, scale: 1.02 }}
+      onClick={handleClick}
       className={cn(
-        "group relative bg-bg-1 rounded-xl border p-4 flex flex-col items-center gap-3 transition-all duration-300 shadow-lg hover:shadow-xl overflow-hidden",
+        "group relative bg-bg-1 rounded-xl border p-4 flex flex-col items-center gap-3 transition-all duration-300 shadow-lg hover:shadow-xl overflow-hidden cursor-pointer",
         borderColor
       )}
     >
