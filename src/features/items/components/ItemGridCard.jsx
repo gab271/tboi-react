@@ -6,7 +6,7 @@ import { FaFingerprint, FaBookOpen } from 'react-icons/fa';
 
 import { useNavigate } from 'react-router-dom';
 
-export function ItemGridCard({ item, index }) {
+export function ItemGridCard({ item, index, onClick }) {
   const navigate = useNavigate();
 
   // Determine border color based on type
@@ -23,6 +23,10 @@ export function ItemGridCard({ item, index }) {
   const borderColor = typeColors[safeType.toLowerCase()] || typeColors.default;
 
   const handleClick = () => {
+      if (onClick) {
+          onClick(item);
+          return;
+      }
       // Navigate to detail page using slug or id
       const identifier = item.slug || item.id;
       if(identifier) {

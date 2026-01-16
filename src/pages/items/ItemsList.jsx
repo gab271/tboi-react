@@ -1,36 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchItems } from '../../lib/api';
 import { Input } from '../../components/ui/Input';
 import { FaSearch, FaChevronLeft, FaChevronRight, FaFilter, FaTimes } from 'react-icons/fa';
 import { ItemGridCard } from '../../features/items/components/ItemGridCard';
 import { ItemsSidebar } from '../../features/items/components/ItemsSidebar';
+import { ItemModal } from '../../features/items/components/ItemModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../components/ui/Button';
+
+// Simple hook for debounce to avoid too many API calls
+function useDebouncedValue(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  return debouncedValue;
+}
 
 export function ItemsList() {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState({ type: 'all' });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const debouncedSearch = useDebouncedValue(search, 500);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedSearch, activeFilters]);
 
   // Data Fetching
   const { data, isLoading, isError } = useQuery({
-      queryKey: ['items', page],
-      queryFn: () => fetchItems(page),
+      queryKey: ['items', page, debouncedSearch, activeFilters.type],
+      queryFn: () => fetchItems({ 
+        page, 
+        search: debouncedSearch, 
+        type: activeFilters.type 
+      }),
       placeholderData: (prev) => prev,
       staleTime: 5000 
   });
   
-  const items = data ? (Array.isArray(data) ? data : (data.items || [])) : [];
+  // Extract data correctly handling { data: [...], meta: ... } format
+  const responseData = data || {};
+  const itemList = Array.isArray(responseData) ? responseData : (responseData.data || []);
+  const meta = responseData.meta || {};
 
-  // Client-side filtering (Search + Type) for current page
-  const filteredItems = items.filter(item => {
-    const matchesSearch = (item.name || '').toLowerCase().includes(search.toLowerCase());
-    const matchesType = activeFilters.type === 'all' || (item.item_type || item.type || '').toLowerCase() === activeFilters.type;
-    return matchesSearch && matchesType;
-  });
-
+  const totalPages = meta.total ? Math.ceil(meta.total / meta.pageSize) : 0;
+  // If api returns flat array (fallback), we likely can't paginate correctly without meta.
+  
   return (
     <div className="min-h-screen bg-bg-0 text-fg">
       
@@ -103,12 +129,12 @@ export function ItemsList() {
         <main className="flex-1 min-h-[500px]">
              
              {/* Toolbar */}
-             <div className="sticky top-[75px] z-30 bg-bg-0/95 backdrop-blur-md p-4 -mx-4 md:mx-0 md:rounded-xl border-y md:border border-white/5 mb-6 shadow-sm">
+             <div className="sticky top-[85px] z-30 bg-bg-0/95 backdrop-blur-md p-4 -mx-4 md:mx-0 md:rounded-xl border-y md:border border-white/5 mb-6 shadow-sm">
                 <div className="flex flex-col md:flex-row gap-4 justify-between">
                     <div className="w-full md:w-96">
                        <Input 
                           icon={FaSearch}
-                          placeholder="Search items..." 
+                          placeholder="Search all items..." 
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                           className="bg-bg-1 border-white/10"
@@ -116,7 +142,9 @@ export function ItemsList() {
                     </div>
                     
                     <div className="flex items-center justify-between md:justify-end gap-4">
-                        <span className="text-sm text-muted hidden md:inline">Showing {filteredItems.length} results</span>
+                        <span className="text-sm text-muted hidden md:inline">
+                           {isLoading ? 'Searching...' : `Found ${meta.total || itemList.length} results`}
+                        </span>
                         
                         {/* Mobile Filter Toggle */}
                         <Button 
@@ -147,15 +175,20 @@ export function ItemsList() {
                     className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"
                  >
                     <AnimatePresence mode='popLayout'>
-                        {filteredItems.map((item, idx) => (
-                            <ItemGridCard key={item.id} item={item} index={idx % 12} />
+                        {itemList.map((item, idx) => (
+                            <ItemGridCard 
+                                key={item.id} 
+                                item={item} 
+                                index={idx % 24} 
+                                onClick={setSelectedItem} // Open Modal
+                            />
                         ))}
                     </AnimatePresence>
                  </motion.div>
              )}
 
              {/* Empty State */}
-             {!isLoading && filteredItems.length === 0 && (
+             {!isLoading && itemList.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-20 opacity-50">
                     <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
                         <FaSearch className="text-2xl" />
@@ -165,30 +198,40 @@ export function ItemsList() {
              )}
 
              {/* Pagination */}
-             <div className="mt-12 flex justify-center items-center gap-6">
-                <button 
-                  onClick={() => setPage(p => Math.max(0, p - 1))}
-                  disabled={page === 0}
-                  className="p-3 rounded-full hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-                >
-                    <FaChevronLeft />
-                </button>
-                
-                <span className="font-mono text-sm tracking-widest text-muted">
-                     PAGE <span className="text-white font-bold">{page + 1}</span>
-                </span>
-                
-                <button 
-                  onClick={() => setPage(p => p + 1)}
-                  disabled={items.length < 24 && filteredItems.length < 24} 
-                  className="p-3 rounded-full hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-                >
-                    <FaChevronRight />
-                </button>
-             </div>
+             {totalPages > 1 && (
+                 <div className="mt-12 flex justify-center items-center gap-6">
+                    <button 
+                      onClick={() => setPage(p => Math.max(0, p - 1))}
+                      disabled={page === 0}
+                      className="p-3 rounded-full hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                    >
+                        <FaChevronLeft />
+                    </button>
+                    
+                    <span className="font-mono text-sm tracking-widest text-muted">
+                        PAGE <span className="text-white font-bold">{page + 1}</span> / {totalPages}
+                    </span>
+                    
+                    <button 
+                      onClick={() => setPage(p => p + 1)}
+                      disabled={page >= totalPages - 1} 
+                      className="p-3 rounded-full hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                    >
+                        <FaChevronRight />
+                    </button>
+                 </div>
+             )}
 
         </main>
       </div>
+      
+      {/* Detail Modal */}
+      <AnimatePresence>
+         {selectedItem && (
+             <ItemModal item={selectedItem} onClose={() => setSelectedItem(null)} />
+         )}
+      </AnimatePresence>
+
     </div>
   );
 }
