@@ -26,15 +26,16 @@ export const fetchBosses = async (page = 0) => {
   return data.data || [];
 };
 
-export const fetchItems = async ({ page = 0, search = '', type = 'all' }) => {
+export const fetchItems = async ({ page = 0, search = '', type = 'all', ids = [] }) => {
   // Map 0-indexed page to 1-indexed
   const params = new URLSearchParams({
     page: page + 1,
-    pageSize: 24
+    pageSize: ids.length > 0 ? 100 : 24 // If IDs provided, fetch more/all (up to limit)
   });
   
   if (search) params.append('search', search);
   if (type && type !== 'all') params.append('type', type);
+  if (ids && ids.length > 0) params.append('ids', ids.join(','));
 
   const { data } = await api.get(`/api/items?${params.toString()}`);
   return data;
