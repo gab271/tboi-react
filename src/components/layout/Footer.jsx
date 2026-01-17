@@ -10,10 +10,10 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative w-full bg-bg-0 border-t border-gold/10 mt-24 pt-16 pb-8 overflow-hidden">
+    <footer className="relative w-full border-t border-[#EFE4B0]/20 mt-12 pt-16 pb-8 overflow-hidden">
         {/* Glow Effects */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-[128px] pointer-events-none -translate-y-1/2" />
-        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-[100px] pointer-events-none translate-y-1/2" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/10 rounded-full blur-[128px] pointer-events-none -translate-y-1/2" />
+        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none translate-y-1/2" />
 
         <div className="container mx-auto px-6 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
@@ -21,15 +21,15 @@ export function Footer() {
                 {/* Brand Column */}
                 <div className="md:col-span-4 space-y-6">
                     <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-gold/20 to-transparent border border-gold/20 text-gold shadow-[0_0_15px_rgba(234,179,8,0.2)]">
+                        <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-gold/20 to-transparent border border-gold/40 text-gold shadow-[0_0_15px_rgba(234,179,8,0.2)]">
                            <span className="text-2xl">⚡</span>
                         </div>
                         <div className="flex flex-col">
-                            <span className="font-serif font-bold text-xl text-fg tracking-wide">TBOI: Codex</span>
-                            <span className="text-[10px] uppercase tracking-[0.2em] text-gold/80 font-medium">Ultimate Wiki</span>
+                            <span className="font-serif font-bold text-xl text-[#EFE4B0] tracking-wide">TBOI: Codex</span>
+                            <span className="text-[10px] uppercase tracking-[0.2em] text-gold/90 font-medium">Ultimate Wiki</span>
                         </div>
                     </div>
-                    <p className="text-muted text-sm leading-relaxed max-w-xs">
+                    <p className="text-[#EFE4B0]/80 font-medium text-sm leading-relaxed max-w-xs">
                         The definitive community-driven knowledge base for The Binding of Isaac: Repentance. 
                         Discover items, defeat bosses, and master every run.
                     </p>
@@ -61,24 +61,24 @@ export function Footer() {
                 {/* Newsletter */}
                 <div className="md:col-span-3 space-y-4">
                     <h4 className="text-gold font-serif font-bold tracking-widest text-sm uppercase mb-6">Stay Updated</h4>
-                    <p className="text-xs text-muted mb-4">Join our newsletter for the latest game updates and community highlights.</p>
+                    <p className="text-xs text-[#EFE4B0]/70 font-medium mb-4">Join our newsletter for the latest game updates and community highlights.</p>
                     <div className="flex flex-col gap-2">
                          <div className="flex gap-2">
-                            <Input placeholder="Enter your email" className="bg-bg-1 border-white/10 h-10 text-sm" />
+                            <Input placeholder="Enter your email" className="bg-black/40 border-[#EFE4B0]/20 h-10 text-sm text-[#EFE4B0] placeholder:text-[#EFE4B0]/40" />
                             <Button size="icon" className="bg-gold hover:bg-gold/80 text-black h-10 w-10 shrink-0">
                                 <FaEnvelope />
                             </Button>
                          </div>
-                         <span className="text-[10px] text-muted-2">No spam, just Isaac. Unsubscribe anytime.</span>
+                         <span className="text-[10px] text-[#EFE4B0]/50 font-medium">No spam, just Isaac. Unsubscribe anytime.</span>
                     </div>
                 </div>
             </div>
 
             {/* Divider */}
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-[#EFE4B0]/20 to-transparent mb-8" />
 
             {/* Bottom Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#EFE4B0]/60 font-medium">
                 <div className="flex items-center gap-1">
                      <span>&copy; {new Date().getFullYear()} Basement Bible. Made with</span>
                      <FaHeart className="text-red-500 mx-1 animate-pulse" />
@@ -104,7 +104,7 @@ function SocialButton({ icon: Icon, href, label }) {
     return (
         <a 
             href={href} 
-            className="h-9 w-9 flex items-center justify-center rounded-lg bg-bg-1 border border-white/5 text-muted hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-300"
+            className="h-9 w-9 flex items-center justify-center rounded-lg bg-black/40 border border-[#EFE4B0]/10 text-[#EFE4B0] hover:text-gold hover:border-gold/50 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(234,179,8,0.3)] transition-all duration-300"
             aria-label={label}
         >
             <Icon size={16} />
@@ -116,7 +116,7 @@ function FooterLink({ to, children }) {
     return (
         <Link 
             to={to} 
-            className="block text-sm text-muted hover:text-gold hover:translate-x-1 transition-all duration-300 w-fit"
+            className="block text-sm font-medium text-[#EFE4B0]/80 hover:text-gold hover:translate-x-1 transition-all duration-300 w-fit"
         >
             {children}
         </Link>

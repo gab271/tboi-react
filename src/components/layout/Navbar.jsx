@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../../lib/utils'
 import { Button } from '../ui/Button'
-import { FaSearch, FaUserCircle, FaSignOutAlt } from 'react-icons/fa'
+import { FaSearch, FaUserCircle, FaSignOutAlt, FaHeart } from 'react-icons/fa'
 import { CommandPalette } from './CommandPalette'
 import { useAuth } from '../../contexts/AuthContext'
 import { 
@@ -79,27 +79,53 @@ export function Navbar() {
                  key={link.path} 
                  to={link.path}
                  className={({ isActive }) => cn(
-                    "relative px-2 hover:scale-110 transition-transform rotate-1",
-                    isActive ? "font-bold text-accent-blood" : "text-text-ink"
+                    "relative px-2 transition-transform font-bold group",
+                    isActive ? "text-accent-blood scale-110 -rotate-2" : "text-text-ink hover:text-accent-blood hover:scale-105"
                  )}
               >
                  {({ isActive }) => (
                     <>
                        {link.name}
-                       {isActive && (
-                          <div className="absolute -inset-1 border-2 border-accent-blood rounded-[50%] -rotate-2 opacity-70 pointer-events-none"></div>
-                       )}
+                       {/* Shaky Hand-drawn Underline on Hover/Active */}
+                       <svg className={cn(
+                           "absolute -bottom-2 left-0 w-full h-2 text-current transition-opacity",
+                           isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                       )} viewBox="0 0 100 10" preserveAspectRatio="none">
+                           <path d="M0,5 Q25,8 50,5 T100,6" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                       </svg>
                     </>
                  )}
               </NavLink>
            ))}
         </div>
 
-        {/* Actions (Search, User) */}
-        <div className="flex items-center gap-3">
-           <Button variant="ghost" size="icon" onClick={() => setShowCmd(true)} title="Search">
+        {/* Actions (Search, Favorites, User) */}
+        <div className="flex items-center gap-4">
+           
+           {/* Search Bar - 'Markers' Style */}
+           <button 
+                onClick={() => setShowCmd(true)} 
+                className="hidden md:flex items-center gap-2 border-b-2 border-text-ink/80 px-2 py-1 text-text-ink/60 hover:text-text-ink hover:border-accent-blood transition-colors group"
+                title="Search"
+           >
+               <FaSearch className="w-4 h-4" />
+               <span className="font-handwriting font-bold text-lg leading-none">Search...</span>
+           </button>
+           <Button variant="ghost" size="icon" onClick={() => setShowCmd(true)} className="md:hidden">
               <FaSearch className="h-5 w-5" />
            </Button>
+
+            {/* Favorites Link (Restored) */}
+            <NavLink 
+                to="/favorites" 
+                className={({ isActive }) => cn(
+                    "relative text-text-ink hover:text-accent-blood transition-colors p-2",
+                    isActive && "text-accent-blood"
+                )}
+                title="My Favorites"
+            >
+                <FaHeart className="w-5 h-5" />
+            </NavLink>
 
            <LanguageSwitcher />
 
@@ -116,6 +142,7 @@ export function Navbar() {
                    )}
                  </button>
                </DropdownMenuTrigger>
+
                <DropdownMenuContent align="end" className="w-56 bg-bg-paper border-2 border-text-ink shadow-[4px_4px_0px_#000]">
                  <div className="px-2 py-1.5 text-sm font-bold border-b border-text-ink/20">
                     {profile?.username || 'User'}

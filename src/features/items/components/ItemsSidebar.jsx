@@ -37,7 +37,7 @@ export function ItemsSidebar({ activeFilters, setActiveFilters }) {
         <div className="relative p-2">
             
             {/* Hand-drawn Header */}
-            <h3 className="text-xl font-handwriting font-bold text-text-ink mb-6 flex items-center gap-2 border-b-2 border-text-ink/20 pb-2 border-dashed">
+            <h3 className="text-xl font-handwriting font-bold text-[#1a1a1a] mb-6 flex items-center gap-2 border-b-2 border-text-ink/20 pb-2 border-dashed">
                 <FaLayerGroup className="text-sm opacity-50" /> 
                 <span>Item Type</span>
             </h3>
@@ -51,7 +51,7 @@ export function ItemsSidebar({ activeFilters, setActiveFilters }) {
                             onClick={() => setActiveFilters(prev => ({ ...prev, type }))}
                             className={`
                                 relative text-left px-4 py-1.5 transition-all flex items-center justify-between group
-                                ${isActive ? 'text-text-ink font-bold translate-x-2' : 'text-text-dim hover:text-text-ink hover:translate-x-1'}
+                                ${isActive ? 'text-[#1a1a1a] font-bold translate-x-2' : 'text-[#1a1a1a]/70 hover:text-[#1a1a1a] hover:translate-x-1'}
                             `}
                         >
                             <span className="capitalize relative z-10">{type}</span>
@@ -61,7 +61,7 @@ export function ItemsSidebar({ activeFilters, setActiveFilters }) {
                             
                             {/* Hover Arrow (if not active) */}
                             {!isActive && (
-                                <span className="opacity-0 group-hover:opacity-50 text-xs transition-opacity absolute right-2">
+                                <span className="opacity-0 group-hover:opacity-50 text-xs transition-opacity absolute right-2 text-[#1a1a1a]">
                                     &larr;
                                 </span>
                             )}

@@ -71,15 +71,17 @@ export function ItemGridCard({ item, index, onClick }) {
               loading="lazy" 
             />
          ) : (
-             <div className="text-white/20 text-3xl">
-                <FaBookOpen />
+            /* Mystery Item Silhouette */
+            <div className="text-white/20 flex flex-col items-center gap-1 opacity-50">
+                <span className="text-6xl font-heading scale-y-125">?</span>
+                <span className="text-[10px] font-pixel tracking-widest uppercase">Undiscovered</span>
             </div>
          )}
       </div>
 
       {/* Text Area (Handwritten Note on the Polaroid bottom) */}
       <div className="w-full px-1 text-center absolute bottom-3 left-0 right-0">
-        <h3 className="font-handwriting font-bold text-xl leading-tight text-text-ink truncate px-2 group-hover:text-accent-blood transition-colors">
+        <h3 className="font-handwriting font-bold text-xl leading-tight text-text-ink px-2 group-hover:text-accent-blood transition-colors line-clamp-2">
             {item.name}
         </h3>
       </div>

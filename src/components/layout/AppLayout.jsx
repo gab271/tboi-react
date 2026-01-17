@@ -11,23 +11,42 @@ export function AppLayout() {
       {/* Texture Overlay handled in global CSS on body, but we ensure wrapper is correct */}
       
       {/* The Paper Container */}
-      <div className="relative w-full max-w-7xl bg-bg-paper text-text-ink paper-shadow -rotate-1 mx-auto flex flex-col p-4 sm:p-8 transition-transform duration-500 ease-in-out min-h-[calc(100vh-5rem)]">
-         {/* Paper texture overlay (grain) optional, but nice for depth if not on body */}
-         <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] mix-blend-multiply"></div>
+      <div 
+        className="relative w-full max-w-7xl bg-bg-paper text-text-ink -rotate-1 mx-auto flex flex-col p-4 sm:p-8 transition-transform duration-500 ease-in-out"
+        style={{
+            minHeight: 'calc(100vh - 3rem)',
+            // Advanced Torn Paper Clip-Path (Simulating jagged rips)
+            clipPath: 'polygon(0% 10px, 2% 0%, 5% 5px, 10% 0%, 15% 4px, 20% 0%, 25% 6px, 30% 0%, 35% 8px, 40% 0%, 45% 5px, 50% 0%, 55% 7px, 60% 0%, 65% 4px, 70% 0%, 75% 6px, 80% 0%, 85% 5px, 90% 0%, 95% 4px, 100% 0%, 100% 100%, 98% 99%, 95% 96%, 90% 100%, 85% 97%, 80% 100%, 75% 96%, 70% 100%, 65% 97%, 60% 100%, 55% 96%, 50% 100%, 45% 97%, 40% 100%, 35% 96%, 30% 100%, 25% 97%, 20% 100%, 15% 96%, 10% 100%, 5% 97%, 0% 100%)',
+            boxShadow: 'inset 0 0 100px rgba(0,0,0,0.1)' // Inner shadow for depth
+        }}
+      >
+         {/* Torn Edge SVG Mask (Functional for visual edge if detailed mask is preferred) */}
          
+         {/* Paper texture overlay (grain) - 5% opacity for physical feel */}
+         <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] mix-blend-multiply z-20"></div>
+         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/noise.png')] mix-blend-overlay z-20"></div>
+
+         {/* Inner Shadow for "Crumpled" 3D feel */}
+         <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.05)] pointer-events-none z-10 rounded-sm"></div>
+
          {/* Tape or imperfection visual element could go here */}
          
          <div className="relative z-10 flex flex-col flex-1 h-full">
             <Navbar />
             
-            <main className="flex-1 mt-4 mb-8">
+            <main className="flex-1 mt-4 mb-0"> { /* Removed excess margin-bottom */ }
               <Outlet />
             </main>
 
-            <div className="pt-6 border-t-2 border-text-ink/20 border-dashed">
+            {/* Seamless transition to footer */}
+            <div className="pt-0 border-t-2 border-text-ink/10 border-dashed mt-0">
                <Footer />
             </div>
          </div>
+
+         {/* Extra Decor: ragged edges via pseudo elements or similar in a real robust implementation. 
+             Here we rely on the container rotation and inner shadow for the effect. 
+         */}
       </div>
     </div>
   );
