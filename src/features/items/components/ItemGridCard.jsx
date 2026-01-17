@@ -50,7 +50,10 @@ export function ItemGridCard({ item, index, onClick }) {
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
       {/* Favorite Button (Floating) */}
-      <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+      <div 
+        className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0"
+        onClick={(e) => e.stopPropagation()}
+      >
          <FavoriteButton entityType="item" entityId={item.id} />
       </div>
 

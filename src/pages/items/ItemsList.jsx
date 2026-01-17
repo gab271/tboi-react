@@ -61,7 +61,7 @@ export function ItemsList() {
     <div className="min-h-screen bg-bg-0 text-fg">
       
       {/* 1. Header Section */}
-      <section className="relative pt-24 pb-10 md:pt-28 md:pb-12 px-6 border-b border-white/5 overflow-hidden">
+      <section className="relative pt-8 pb-10 md:pt-12 md:pb-12 px-6 border-b border-white/5 overflow-hidden">
          <div className="absolute inset-0 bg-bg-1/50 z-0" />
          <div className="absolute -top-20 -right-20 w-96 h-96 bg-blood/10 rounded-full blur-[100px]" />
          
