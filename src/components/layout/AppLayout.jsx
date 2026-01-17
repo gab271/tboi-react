@@ -34,7 +34,7 @@ export function AppLayout() {
          <div className="relative z-10 flex flex-col flex-1 h-full">
             <Navbar />
             
-            <main className="flex-1 mt-4 mb-0"> { /* Removed excess margin-bottom */ }
+            <main className="flex-1 mt-4 mb-12"> 
               <Outlet />
             </main>
 
