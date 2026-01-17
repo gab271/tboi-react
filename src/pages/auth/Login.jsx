@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useState, useRef } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -10,29 +10,37 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  
+  const lastSubmitTime = useRef(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Anti-spam / Debounce
+    const now = Date.now();
+    if (now - lastSubmitTime.current < 2000) return;
+    lastSubmitTime.current = now;
+
+    if (isSubmitting) return;
+
     try {
       setError('');
-      setLoading(true);
+      setIsSubmitting(true);
       
       const { data, error } = await signIn(email, password);
       
       if (error) throw error;
       
       if (data?.user) {
-         // Force a hard reload to ensure AuthContext picks up the session correctly
-         // and to avoid any state synchronization issues
-         window.location.href = '/';
+         navigate('/');
       }
     } catch (error) {
       setError(error.message || 'Error al iniciar sesión');
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -120,9 +128,9 @@ const Login = () => {
                         className="w-full bg-text-ink hover:bg-black text-[#fdfbf7] font-bold py-6 mt-6 uppercase tracking-widest text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1" 
                         type="submit" 
                         style={{ fontFamily: 'Upheaval, sans-serif' }}
-                        disabled={loading}
+                        disabled={isSubmitting}
                     >
-                        {loading ? 'Cargando...' : 'Entrar al Sótano'}
+                        {isSubmitting ? 'Cargando...' : 'Entrar al Sótano'}
                     </Button>
                 </form>
 

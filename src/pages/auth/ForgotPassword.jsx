@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useState, useRef } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -10,23 +10,33 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { resetPasswordForEmail } = useAuth();
   const navigate = useNavigate();
 
+  const lastSubmitTime = useRef(0);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Anti-spam
+    const now = Date.now();
+    if (now - lastSubmitTime.current < 2000) return;
+    lastSubmitTime.current = now;
+
+    if (isSubmitting) return;
+
     try {
       setMessage('');
       setError('');
-      setLoading(true);
+      setIsSubmitting(true);
       const { error } = await resetPasswordForEmail(email);
       if (error) throw error;
       setMessage('Check your inbox for password reset instructions');
     } catch (error) {
       setError('Failed to reset password: ' + error.message);
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -93,9 +103,9 @@ const ForgotPassword = () => {
                             className="w-full bg-text-ink hover:bg-black text-[#fdfbf7] font-bold py-6 mt-4 uppercase tracking-widest text-lg shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-black" 
                             type="submit" 
                             style={{ fontFamily: 'Upheaval, sans-serif' }}
-                            disabled={loading}
+                            disabled={isSubmitting}
                         >
-                            {loading ? 'Enviando...' : 'Enviar Link'}
+                            {isSubmitting ? 'Enviando...' : 'Enviar Link'}
                         </Button>
                     </form>
 

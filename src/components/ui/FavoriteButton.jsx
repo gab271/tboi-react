@@ -1,5 +1,5 @@
 import { useFavorites } from '../../features/favorites/useFavorites';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 const FavoriteButton = ({ entityType, entityId }) => {
   const { user } = useAuth();

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useState, useRef } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '../../lib/supabaseClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
@@ -13,13 +13,22 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
+  
+  const lastSubmitTime = useRef(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Antispam protection
+    const now = Date.now();
+    if (now - lastSubmitTime.current < 2000) return;
+    lastSubmitTime.current = now;
+
+    if (isSubmitting) return;
+
     if (password !== confirmPassword) {
       return setError('Las contraseñas no coinciden');
     }
@@ -30,7 +39,7 @@ const Register = () => {
 
     try {
       setError('');
-      setLoading(true);
+      setIsSubmitting(true);
 
       // Check if username exists
       const { count, error: checkError } = await supabase
@@ -40,9 +49,8 @@ const Register = () => {
 
       if (checkError) {
          console.error(checkError);
-         // If generic check error, we continue but warn (optional)
       } else if (count > 0) {
-         setLoading(false);
+         setIsSubmitting(false);
          return setError('Este nombre de usuario ya está ocupado. Elige otro.');
       }
 
@@ -50,15 +58,13 @@ const Register = () => {
       
       if (error) throw error;
       
-      // Navigate to home after successful registration
       if (data?.user) {
-        // Force reload to ensure session is picked up
-        window.location.href = '/';
+        navigate('/');
       }
     } catch (error) {
       setError(error.message || 'Error al crear la cuenta');
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -171,9 +177,9 @@ const Register = () => {
                         className="w-full bg-text-ink hover:bg-black text-[#fdfbf7] font-bold py-6 mt-6 uppercase tracking-widest text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1" 
                         type="submit" 
                         style={{ fontFamily: 'Upheaval, sans-serif' }}
-                        disabled={loading}
+                        disabled={isSubmitting}
                     >
-                        {loading ? 'Creando cuenta...' : 'Comenzar Partida'}
+                        {isSubmitting ? 'Invocando...' : 'Crear Cuenta'}
                     </Button>
                 </form>
 

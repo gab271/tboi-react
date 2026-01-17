@@ -1,30 +1,41 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useState, useRef } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { updatePassword } = useAuth();
   const navigate = useNavigate();
+  
+  const lastSubmitTime = useRef(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Anti-spam
+    const now = Date.now();
+    if (now - lastSubmitTime.current < 2000) return;
+    lastSubmitTime.current = now;
+
+    if (isSubmitting) return;
+
     if (password !== confirmPassword) {
       return setError('Passwords do not match');
     }
+
     try {
       setError('');
-      setLoading(true);
+      setIsSubmitting(true);
       const { error } = await updatePassword(password);
       if (error) throw error;
       navigate('/');
     } catch (error) {
       setError('Failed to update password: ' + error.message);
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -56,10 +67,10 @@ const ResetPassword = () => {
           </div>
           <button
             type="submit"
-            disabled={loading}
+            disabled={isSubmitting}
             className="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded font-bold disabled:opacity-50"
           >
-            {loading ? 'Updating...' : 'Update Password'}
+            {isSubmitting ? 'Updating...' : 'Update Password'}
           </button>
         </form>
       </div>

@@ -5,7 +5,7 @@ import { cn } from '../../lib/utils'
 import { Button } from '../ui/Button'
 import { FaSearch, FaUserCircle, FaSignOutAlt, FaHeart } from 'react-icons/fa'
 import { CommandPalette } from './CommandPalette'
-import { useAuth } from '../../contexts/AuthContext'
+import { useAuth } from '../../hooks/useAuth';
 import { 
   DropdownMenu, 
   DropdownMenuTrigger, 

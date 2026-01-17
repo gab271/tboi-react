@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { Button } from '../../components/ui/Button';
 
 export default function AvatarUploader({ url, size, onUpload }) {
