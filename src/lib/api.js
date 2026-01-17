@@ -18,12 +18,18 @@ const api = axios.create({
   withCredentials: true,
 });
 
-export const fetchBosses = async (page = 0) => {
+export const fetchBosses = async ({ page = 0, search = '', location = 'all' } = {}) => {
   // Map 0-indexed page to 1-indexed
-  const { data } = await api.get(`/api/bosses?page=${page + 1}`);
-  // Our new API returns { data: [...], meta: ... }. The component expects an array or { bosses: [] }
-  // We return the array directly to satisfy Array.isArray(data) check in components
-  return data.data || [];
+  const params = new URLSearchParams({
+      page: page + 1,
+      pageSize: 24
+  });
+
+  if (search) params.append('search', search);
+  if (location && location !== 'all') params.append('location', location);
+
+  const { data } = await api.get(`/api/bosses?${params.toString()}`);
+  return data;
 };
 
 export const fetchItems = async ({ page = 0, search = '', type = 'all', ids = [] }) => {
