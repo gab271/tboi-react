@@ -1,12 +1,33 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaHeart, FaGamepad, FaCoins, FaBomb, FaKey } from 'react-icons/fa';
 import { Button } from '../../../components/ui/Button';
 
+// Symbols for marks to display (read-only in modal)
+const COMPLETION_MARKS = [
+  { id: 'heart', name: "Mom's Heart", symbol: "❤️" },
+  { id: 'isaac', name: "Isaac", symbol: "✝" },
+  { id: 'boss_rush', name: "Boss Rush", symbol: "★" },
+  { id: 'satan', name: "Satan", symbol: "⛧" },
+  { id: 'blue_baby', name: "??? (Blue Baby)", symbol: "P" },
+  { id: 'lamb', name: "The Lamb", symbol: "N" },
+  { id: 'mega_satan', name: "Mega Satan", symbol: "∞" },
+  { id: 'greed', name: "Greed Mode", symbol: "¢" }, 
+  { id: 'hush', name: "Hush", symbol: "H" },
+  { id: 'delirium', name: "Delirium", symbol: "D" },
+  { id: 'mother', name: "Mother", symbol: "M" },
+  { id: 'beast', name: "The beast", symbol: "B" }
+];
+
 export function CharacterModal({ character, isOpen, onClose }) {
   if (!isOpen || !character) return null;
 
-  return (
+  // Retrieve progress from localStorage just for display
+  const savedProgress = localStorage.getItem(`tboi_tracker_${character.id}`);
+  const progress = savedProgress ? JSON.parse(savedProgress) : {};
+
+  return createPortal(
     <AnimatePresence>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         {/* Backdrop */}
@@ -23,7 +44,7 @@ export function CharacterModal({ character, isOpen, onClose }) {
             initial={{ opacity: 0, scale: 0.95, y: 20, rotate: -1 }}
             animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20, rotate: -1 }}
-            className="relative w-full max-w-3xl bg-bg-paper text-text-ink paper-shadow rounded-sm max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-4xl bg-bg-paper text-text-ink paper-shadow rounded-sm max-h-[90vh] overflow-y-auto"
         >
             {/* Close Button Doodle */}
            <button 
@@ -47,6 +68,36 @@ export function CharacterModal({ character, isOpen, onClose }) {
                         </div>
                         <div className="text-center mt-3 font-handwriting text-text-ink text-xl font-bold">
                             {character.name}
+                        </div>
+                    </div>
+
+                    {/* Completion Marks Grid (New Addition) */}
+                    <div className="mt-8 w-full max-w-[280px]">
+                        <h4 className="font-handwriting text-center text-lg mb-2 font-bold underline decoration-wavy decoration-red-500/30">Completion Marks</h4>
+                        <div className="grid grid-cols-4 gap-2 p-2 bg-white/50 border border-black/10 rounded-sm">
+                            {COMPLETION_MARKS.map(mark => {
+                                const isCompleted = !!progress[mark.id];
+                                return (
+                                    <div 
+                                        key={mark.id} 
+                                        className={`
+                                            aspect-square flex items-center justify-center text-lg font-bold border rounded-sm transition-all
+                                            ${isCompleted 
+                                                ? 'border-red-800 text-red-700 bg-red-100/20 shadow-sm' 
+                                                : 'border-black/10 text-black/20 bg-black/5 grayscale opacity-50'
+                                            }
+                                        `}
+                                        title={mark.name}
+                                    >
+                                        {/* Use sprite if available or symbol */}
+                                        {isCompleted ? (
+                                             <span className="drop-shadow-sm">{mark.symbol}</span>
+                                        ) : (
+                                            <span className="text-xs">{mark.symbol}</span>
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
@@ -101,6 +152,7 @@ export function CharacterModal({ character, isOpen, onClose }) {
             </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

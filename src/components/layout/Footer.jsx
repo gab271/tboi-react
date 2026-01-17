@@ -36,8 +36,8 @@ export function Footer() {
                 {/* Brand Column */}
                 <div className="md:col-span-4 space-y-6">
                     <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-gold/20 to-transparent border border-gold/40 text-gold shadow-[0_0_15px_rgba(234,179,8,0.2)]">
-                           <span className="text-2xl drop-shadow-md">⚡</span>
+                        <div className="h-12 w-12 flex items-center justify-center rounded-lg bg-gradient-to-br from-gold/5 to-transparent border border-gold/10 text-gold shadow-[0_0_15px_rgba(234,179,8,0.1)] overflow-hidden">
+                           <img src="/isaac.png" alt="Isaac" className="w-full h-full object-contain opacity-80" />
                         </div>
                         <div className="flex flex-col">
                             <span className="font-pixel text-3xl text-[#EFE4B0] tracking-wider drop-shadow-sm">TBOI: Codex</span>

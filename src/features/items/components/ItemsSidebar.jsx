@@ -37,7 +37,7 @@ export function ItemsSidebar({ activeFilters, setActiveFilters }) {
         <div className="relative p-2">
             
             {/* Hand-drawn Header */}
-            <h3 className="text-xl font-handwriting font-bold text-[#1a1a1a] mb-6 flex items-center gap-2 border-b-2 border-text-ink/20 pb-2 border-dashed">
+            <h3 className="text-xl font-handwriting font-bold text-[#EFE4B0] mb-6 flex items-center gap-2 border-b-2 border-[#EFE4B0]/20 pb-2 border-dashed">
                 <FaLayerGroup className="text-sm opacity-50" /> 
                 <span>Item Type</span>
             </h3>
@@ -51,7 +51,7 @@ export function ItemsSidebar({ activeFilters, setActiveFilters }) {
                             onClick={() => setActiveFilters(prev => ({ ...prev, type }))}
                             className={`
                                 relative text-left px-4 py-1.5 transition-all flex items-center justify-between group
-                                ${isActive ? 'text-[#1a1a1a] font-bold translate-x-2' : 'text-[#1a1a1a]/70 hover:text-[#1a1a1a] hover:translate-x-1'}
+                                ${isActive ? 'text-[#EFE4B0] font-bold translate-x-2' : 'text-[#EFE4B0]/70 hover:text-[#EFE4B0] hover:translate-x-1'}
                             `}
                         >
                             <span className="capitalize relative z-10">{type}</span>
@@ -80,13 +80,13 @@ export function ItemsSidebar({ activeFilters, setActiveFilters }) {
 
         {/* Placeholder: More Filters (Pools, Tags) */}
         <div className="relative p-2 opacity-60">
-             <h3 className="text-xl font-handwriting font-bold text-text-ink mb-6 flex items-center gap-2 border-b-2 border-text-ink/20 pb-2 border-dashed">
+             <h3 className="text-xl font-handwriting font-bold text-[#EFE4B0] mb-6 flex items-center gap-2 border-b-2 border-[#EFE4B0]/20 pb-2 border-dashed">
                 <FaFilter className="text-sm opacity-50" /> 
                 <span>Pools</span>
             </h3>
             <div className="flex flex-wrap gap-2 font-handwriting">
                 {['Treasure', 'Shop', 'Devil', 'Angel'].map(pool => (
-                    <span key={pool} className="text-base border border-text-ink/30 px-3 py-1 rounded-sm text-text-dim rotate-1 hover:rotate-0 transition-transform cursor-not-allowed">
+                    <span key={pool} className="text-base border border-[#EFE4B0]/30 px-3 py-1 rounded-sm text-[#EFE4B0]/70 rotate-1 hover:rotate-0 transition-transform cursor-not-allowed">
                         {pool}
                     </span>
                 ))}
