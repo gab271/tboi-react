@@ -1,80 +1,414 @@
 export const charactersData = [
+  // --- PERSONAJES NORMALES ---
   {
-    "id": "RQEtH",
-    "name": "???",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/RQEtH",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/RQEtH.png"
+    id: "isaac",
+    name: "Isaac",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Isaac_App.png",
+    unlock_method: "Desbloqueado desde el inicio.",
+    description: "El personaje base. Puede desbloquear el D6 para reroll items.",
+    starting_stats: { coins: 0, bombs: 1, keys: 0 },
+    starting_items: ["The D6"],
+    health_type: "3 Corazones Rojos",
+    difficulty: 1
   },
   {
-    "id": "KNv0f",
-    "name": "Azazel",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/KNv0f",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/KNv0f.png"
+    id: "magdalene",
+    name: "Magdalene",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Magdalene_App.png",
+    unlock_method: "Ten 7 o más contenedores de Corazón Rojo a la vez en una partida.",
+    description: "Tanque con mucha salud y regeneración con Yum Heart.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Yum Heart"],
+    health_type: "4 Corazones Rojos",
+    difficulty: 1
   },
   {
-    "id": "9KvNB",
-    "name": "Cain",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/9KvNB",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/9KvNB.png"
+    id: "cain",
+    name: "Cain",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Cain_App.png",
+    unlock_method: "Ten 55 o más monedas a la vez en una partida.",
+    description: "Más suerte, velocidad y daño, pero menos salud. Empieza con una llave.",
+    starting_stats: { coins: 0, bombs: 0, keys: 1 },
+    starting_items: ["Lucky Foot"],
+    health_type: "2 Corazones Rojos",
+    difficulty: 1
   },
   {
-    "id": "knhRS",
-    "name": "Eden",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/knhRS",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/knhRS.png"
+    id: "judas",
+    name: "Judas",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Judas_App.png",
+    unlock_method: "Derrota a Satanás por primera vez.",
+    description: "Cañón de cristal. Mucho daño inicial con Book of Belial pero muy poca vida.",
+    starting_stats: { coins: 3, bombs: 0, keys: 0 },
+    starting_items: ["Book of Belial"],
+    health_type: "1 Corazón Rojo",
+    difficulty: 2
   },
   {
-    "id": "OO0AR",
-    "name": "Eve",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/OO0AR",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/OO0AR.png"
+    id: "blue_baby",
+    name: "???",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Blue_Baby_App.png",
+    unlock_method: "Derrota a Mom's Heart 10 veces.",
+    description: "No puede tener corazones rojos, solo de alma. Empieza con The Poop.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["The Poop"],
+    health_type: "3 Corazones de Alma",
+    difficulty: 2
   },
   {
-    "id": "kyGxc",
-    "name": "Isaac",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/kyGxc",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/kyGxc.png"
+    id: "eve",
+    name: "Eve",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Eve_App.png",
+    unlock_method: "Completa dos pisos seguidos sin recoger corazones.",
+    description: "Se vuelve poderosa cuando tiene poca vida (Whore of Babylon).",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Whore of Babylon", "Dead Bird"],
+    health_type: "2 Corazones Rojos",
+    difficulty: 2
   },
   {
-    "id": "h1oAT",
-    "name": "Judas",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/h1oAT",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/h1oAT.png"
+    id: "samson",
+    name: "Samson",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Samson_App.png",
+    unlock_method: "Completa dos pisos seguidos sin recibir daño.",
+    description: "Gana daño cada vez que recibe un golpe (Bloody Lust).",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Bloody Lust"],
+    health_type: "3 Corazones Rojos",
+    difficulty: 1
   },
   {
-    "id": "fPLTc",
-    "name": "Keeper",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/fPLTc",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/fPLTc.png"
+    id: "azazel",
+    name: "Azazel",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Azazel_App.png",
+    unlock_method: "Haz 3 tratos con el Diablo en una sola partida.",
+    description: "Dispara un Brimstone de corto alcance y puede volar.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["The Fool (Carta)"],
+    health_type: "3 Corazones Negros",
+    difficulty: 1
   },
   {
-    "id": "i1Rug",
-    "name": "Lazarus",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/i1Rug",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/i1Rug.png"
+    id: "lazarus",
+    name: "Lazarus",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Lazarus_App.png",
+    unlock_method: "Ten 4 o más corazones de alma/negros a la vez.",
+    description: "Revive una vez por partida con más estadísticas y anemia.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Gimpy (Desbloqueable)"],
+    health_type: "3 Corazones Rojos",
+    difficulty: 1
   },
   {
-    "id": "W5V56",
-    "name": "Lilith",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/W5V56",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/W5V56.png"
+    id: "eden",
+    name: "Eden",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Eden_App.png",
+    unlock_method: "Completa el capítulo Womb por primera vez.",
+    description: "Estadísticas, items y vida completamente aleatorios. Requiere fichas de Eden para jugar.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 }, // Random
+    starting_items: [], // Random
+    health_type: "Aleatorio",
+    difficulty: 2
   },
   {
-    "id": "tkYZl",
-    "name": "Magdalene",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/tkYZl",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/tkYZl.png"
+    id: "the_lost",
+    name: "The Lost",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/The_Lost_App.png",
+    unlock_method: "Muere en una Sala de Sacrificio llevando el trinket Missing Poster.",
+    description: "Muere de un golpe (dos con Holy Mantle). Vuelo espectral y lágrimas.",
+    starting_stats: { coins: 1, bombs: 0, keys: 0 },
+    starting_items: ["Eternal D6", "Holy Mantle"],
+    health_type: "Sin Vida",
+    difficulty: 3
   },
   {
-    "id": "WIDTF",
-    "name": "Samson",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/WIDTF",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/WIDTF.png"
+    id: "lilith",
+    name: "Lilith",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Lilith_App.png",
+    unlock_method: "Derrota a Ultra Greed con Azazel.",
+    description: "No dispara lágrimas, usa su familiar Incubus. Box of Friends duplica familiares.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Box of Friends", "Cambion Conception"],
+    health_type: "1 Rojo, 2 Negros",
+    difficulty: 2
   },
   {
-    "id": "XXEjW",
-    "name": "The Lost",
-    "url": "https://isaac.jamesmcfadden.co.uk/api/v1/character/XXEjW",
-    "sprite_url": "https://isaac.jamesmcfadden.co.uk/img/sprites/characters/XXEjW.png"
+    id: "keeper",
+    name: "Keeper",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Keeper_App.png",
+    unlock_method: "Dona 1000 monedas a la Máquina de Donación Greed.",
+    description: "Usa monedas como vida. Triple disparo.",
+    starting_stats: { coins: 0, bombs: 1, keys: 0 },
+    starting_items: ["Wooden Nickel", "Store Key"],
+    health_type: "2 Monedas",
+    difficulty: 3
+  },
+  {
+    id: "apollyon",
+    name: "Apollyon",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Apollyon_App.png",
+    unlock_method: "Derrota a Mega Satanás por primera vez.",
+    description: "Usa Void para absorber items y ganar estadísticas o sus efectos.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Void"],
+    health_type: "2 Corazones Rojos",
+    difficulty: 2
+  },
+  {
+    id: "the_forgotten",
+    name: "The Forgotten",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/The_Forgotten_App.png",
+    unlock_method: "Completa el puzzle de la Pala rota (Shovel Pieces) y úsala en la tumba de Dark Room.",
+    description: "Dos personajes en uno: esqueleto (cuerpo a cuerpo) y alma. Huesos como vida.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Mom's Shovel (Parcial)"],
+    health_type: "2 Corazones de Hueso",
+    difficulty: 3
+  },
+  {
+    id: "bethany",
+    name: "Bethany",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Bethany_App.png",
+    unlock_method: "Derrota a Mom's Heart o It Lives con Lazarus en modo Difícil sin morir.",
+    description: "Usa corazones de alma como cargas para su item activo Book of Virtues.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Book of Virtues"],
+    health_type: "3 Corazones Rojos, 4 Cargas de Alma",
+    difficulty: 2
+  },
+  {
+    id: "jacob_esau",
+    name: "Jacob & Esau",
+    isTainted: false,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Jacob_and_Esau_App.png",
+    unlock_method: "Derrota a Mother por primera vez.",
+    description: "Controlas a dos personajes simultáneamente. Doble hitbox, doble poder.",
+    starting_stats: { coins: 0, bombs: 1, keys: 0 },
+    starting_items: [],
+    health_type: "3 Rojos (Jacob), 1 Rojo 1 Alma (Esau)",
+    difficulty: 3
+  },
+
+  // --- PERSONAJES TAINTED ---
+  {
+    id: "tainted_isaac",
+    name: "Tainted Isaac",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Isaac_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Isaac.",
+    description: "Inventario limitado a 8 items, pero los items alternan entre dos opciones.",
+    starting_stats: { coins: 0, bombs: 1, keys: 0 },
+    starting_items: [],
+    health_type: "3 Corazones Rojos",
+    difficulty: 2
+  },
+  {
+    id: "tainted_magdalene",
+    name: "Tainted Magdalene",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Magdalene_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Magdalene.",
+    description: "Ataques melee potentes pero pierde salud constantemente. Los enemigos sueltan corazones.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Yum Heart"],
+    health_type: "4 Corazones Rojos (2 llenos)",
+    difficulty: 1
+  },
+  {
+    id: "tainted_cain",
+    name: "Tainted Cain",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Cain_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Cain.",
+    description: "No puede coger items, los desmantela en consumibles para craftear sus propios items con Bag of Crafting.",
+    starting_stats: { coins: 0, bombs: 0, keys: 1 },
+    starting_items: ["Bag of Crafting"],
+    health_type: "2 Corazones Rojos",
+    difficulty: 2
+  },
+  {
+    id: "tainted_judas",
+    name: "Tainted Judas",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Judas_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Judas.",
+    description: "No puede tener vida roja. Usa Dark Arts para hacerse inmune y atacar dash.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Dark Arts"],
+    health_type: "2 Corazones Negros",
+    difficulty: 2
+  },
+  {
+    id: "tainted_blue_baby",
+    name: "Tainted ???",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Blue_Baby_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como ???",
+    description: "Usa caca como munición y bombas. Mecánica de olores y gases.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Hold"],
+    health_type: "3 Corazones de Alma",
+    difficulty: 2
+  },
+  {
+    id: "tainted_eve",
+    name: "Tainted Eve",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Eve_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Eve.",
+    description: "Drena su propia vida para crear coágulos de sangre familiares.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Sumptorium"],
+    health_type: "2 Corazones Rojos",
+    difficulty: 2
+  },
+  {
+    id: "tainted_samson",
+    name: "Tainted Samson",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Samson_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Samson.",
+    description: "Entra en modo Berserk temporalmente, usando un hueso melee.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Berserk!"],
+    health_type: "3 Corazones Rojos",
+    difficulty: 1
+  },
+  {
+    id: "tainted_azazel",
+    name: "Tainted Azazel",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Azazel_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Azazel.",
+    description: "Brimstone infinito pero muy fino. Puede estornudar para empujar/dañar.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: [],
+    health_type: "3 Corazones Negros",
+    difficulty: 1
+  },
+  {
+    id: "tainted_lazarus",
+    name: "Tainted Lazarus",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Lazarus_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Lazarus.",
+    description: "Alterna entre dos formas (Viva y Muerta) cada sala, cada una con sus propios items.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Flip"],
+    health_type: "3 Rojos (Vivo) / 3 Alma (Muerto)",
+    difficulty: 3
+  },
+  {
+    id: "tainted_eden",
+    name: "Tainted Eden",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Eden_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Eden.",
+    description: "Todos sus items y estadísticas se 'rerollean' cada vez que recibe daño.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 }, // Random
+    starting_items: [], // Random
+    health_type: "3 Corazones (Aleatorios)",
+    difficulty: 3
+  },
+  {
+    id: "tainted_lost",
+    name: "Tainted Lost",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Lost_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como The Lost.",
+    description: "Sin Holy Mantle, muere de un golpe. Mejores items ofensivos garantizados. Tiene cartas Holy Card.",
+    starting_stats: { coins: 1, bombs: 0, keys: 0 },
+    starting_items: ["Holy Card"],
+    health_type: "Sin Vida",
+    difficulty: 3
+  },
+  {
+    id: "tainted_lilith",
+    name: "Tainted Lilith",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Lilith_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Lilith.",
+    description: "Lanza a su feto demoníaco como un látigo para atacar.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["C Section (Pasivo Oculto)"],
+    health_type: "1 Rojo, 2 Negros",
+    difficulty: 1
+  },
+  {
+    id: "tainted_keeper",
+    name: "Tainted Keeper",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Keeper_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Keeper.",
+    description: "Usa monedas como salud. Los enemigos sueltan monedas al morir. Debe comprar items.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: [],
+    health_type: "2 Monedas de Vida",
+    difficulty: 2
+  },
+  {
+    id: "tainted_apollyon",
+    name: "Tainted Apollyon",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Apollyon_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Apollyon.",
+    description: "Abyss absorbe items y los convierte en moscas de ataque rojas.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Abyss"],
+    health_type: "2 Corazones Rojos",
+    difficulty: 2
+  },
+  {
+    id: "tainted_forgotten",
+    name: "Tainted Forgotten",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Forgotten_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como The Forgotten.",
+    description: "El alma controla el movimiento, pero el cuerpo (esqueleto) es invulnerable y se lanza.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: [],
+    health_type: "3 Corazones de Alma (Alma)",
+    difficulty: 2
+  },
+  {
+    id: "tainted_bethany",
+    name: "Tainted Bethany",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Bethany_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Bethany.",
+    description: "Usa corazones rojos como cargas de items. Lemegeton genera items pasivos temporales.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Lemegeton"],
+    health_type: "3 Corazones Rojos, 6 Sangre",
+    difficulty: 2
+  },
+  {
+    id: "tainted_jacob",
+    name: "Tainted Jacob",
+    isTainted: true,
+    image: "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Tainted_Jacob_App.png",
+    unlock_method: "Usa la Red Key en el armario de Home jugando como Jacob & Esau.",
+    description: "Perseguido por Dark Esau. Si Esau te toca, te conviertes en The Lost.",
+    starting_stats: { coins: 0, bombs: 0, keys: 0 },
+    starting_items: ["Anima Sola"],
+    health_type: "3 Corazones Rojos",
+    difficulty: 3
   }
 ];
+
