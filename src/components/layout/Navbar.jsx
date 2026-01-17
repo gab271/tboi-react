@@ -3,15 +3,13 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../../lib/utils'
 import { Button } from '../ui/Button'
-import { FaSearch, FaBars, FaTimes, FaHeart, FaLayerGroup, FaUserCircle, FaSignOutAlt, FaCog } from 'react-icons/fa'
+import { FaSearch, FaUserCircle, FaSignOutAlt } from 'react-icons/fa'
 import { CommandPalette } from './CommandPalette'
 import { useAuth } from '../../contexts/AuthContext'
 import { 
   DropdownMenu, 
   DropdownMenuTrigger, 
   DropdownMenuContent, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
   DropdownMenuItem 
 } from '../ui/DropdownMenu'
 import { LanguageSwitcher } from '../ui/LanguageSwitcher'
@@ -20,37 +18,20 @@ import { useIsAdmin } from '../../hooks/useAdmin'
 
 export function Navbar() {
   const { t } = useTranslation()
-  const [isOpen, setIsOpen] = useState(false) // Mobile menu
-  const [showCmd, setShowCmd] = useState(false) // Command palette
-  const [scrolled, setScrolled] = useState(false)
+  const [showCmd, setShowCmd] = useState(false)
   const navigate = useNavigate()
   
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState(null);
   const isAdmin = useIsAdmin();
 
-  // Scroll effect for glassmorphism
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // Fetch minimal profile info for navbar avatar
   useEffect(() => {
     let ignore = false;
     async function getProfile() {
       if (!user) return;
-      
-      const { data, error } = await supabase
-        .from('profiles')
-        .select(`username, avatar_url`)
-        .eq('id', user.id)
-        .single();
-      
+      const { data } = await supabase.from('profiles').select('username, avatar_url').eq('id', user.id).single();
       if (!ignore && data) {
          if (data.avatar_url) {
-            // Get public URL for avatar
             const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(data.avatar_url);
             setProfile({ ...data, avatarUrl: publicUrl });
          } else {
@@ -58,7 +39,6 @@ export function Navbar() {
          }
       }
     }
-    
     getProfile();
     return () => { ignore = true; };
   }, [user]);
@@ -79,197 +59,88 @@ export function Navbar() {
     <>
       <CommandPalette open={showCmd} onOpenChange={setShowCmd} />
 
-      <nav className={cn(
-        "fixed top-0 z-40 w-full transition-all duration-300 border-b",
-        scrolled 
-          ? "bg-bg-0/80 backdrop-blur-md border-border/50 py-2 shadow-lg" 
-          : "bg-transparent border-transparent py-4 bg-gradient-to-b from-bg-0/80 to-transparent"
-      )}>
-        <div className="container max-w-7xl mx-auto px-4 flex items-center justify-between">
-          
-          {/* Logo */}
-          <NavLink to="/" className="flex items-center gap-3 group relative z-50">
-            <div className="relative w-9 h-9 flex items-center justify-center bg-gradient-to-br from-bg-2 to-bg-1 border border-white/10 rounded-xl shadow-lg shadow-black/20 group-hover:border-gold/50 transition-all duration-300 group-hover:shadow-gold/20 overflow-hidden">
-               <div className="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-               <span className="text-xl relative z-10 group-hover:scale-110 transition-transform drop-shadow-sm">⚡</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-serif font-black text-xl text-fg leading-none tracking-tight group-hover:text-gold transition-colors filter drop-shadow-sm">TBOI</span>
-              <span className="text-[10px] text-gold/80 font-mono uppercase tracking-[0.2em] leading-none opacity-80 group-hover:opacity-100 transition-opacity">Codex</span>
-            </div>
-          </NavLink>
+      <nav className="w-full mb-6 border-b-[3px] border-text-ink pb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        
+        {/* Logo / Title Area */}
+        <NavLink to="/" className="group">
+            <h1 className="text-4xl md:text-5xl font-heading text-text-heading wiggle inline-block relative">
+               TBOI <span className="text-accent-blood">Codex</span>
+               {/* Sketchy Underline */}
+               <svg className="absolute -bottom-2 left-0 w-full h-3 text-text-ink" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0,5 Q50,10 100,5" stroke="currentColor" strokeWidth="2" fill="none" />
+               </svg>
+            </h1>
+        </NavLink>
 
-          {/* Desktop Nav - Centered */}
-          <div className="hidden md:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center gap-1 p-1 bg-black/20 backdrop-blur-sm border border-white/5 rounded-full shadow-inner">
-             {links.map((link) => (
-                <NavLink
-                  key={link.path}
-                  to={link.path}
-                  className={({ isActive }) =>
-                    cn(
-                      "relative px-5 py-2 rounded-full text-sm font-medium transition-all duration-300",
-                      isActive 
-                        ? "text-gold bg-bg-2 shadow-sm border border-white/5" 
-                        : "text-muted hover:text-white hover:bg-white/5"
-                    )
-                  }
-                >
-                  {link.name}
-                  {/* Active Indicator Dot */}
-                  {/* ({ isActive }) => isActive && <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/10 rounded-full" /> */} 
-                  {/* Simple version without motion context for now */}
-                </NavLink>
-              ))}
-          </div>
-
-          {/* Actions */}
-          <div className="hidden md:flex items-center gap-3">
-             {/* Command Trigger */}
-            <button 
-                onClick={() => setShowCmd(true)}
-                className="flex items-center gap-2 text-xs text-muted bg-bg-1/50 border border-white/10 px-3 py-1.5 rounded-full hover:border-gold/30 hover:bg-bg-1 transition-all group"
-            >
-                 <FaSearch size={10} className="group-hover:text-gold" /> 
-                 <span className="mr-2">{t('nav.search')}</span>
-                 <kbd className="hidden lg:inline-block font-mono text-[9px] bg-black/20 px-1 rounded border border-white/5 text-muted-2 group-hover:text-muted">Ctrl K</kbd>
-            </button>
-
-            <div className="w-px h-6 bg-white/10 mx-1" />
-
-            <LanguageSwitcher />
-
-            <Button variant="ghost" size="icon" className="rounded-full text-muted hover:text-blood" onClick={() => navigate('/favorites')}>
-               <FaHeart size={16} />
-            </Button>
-
-            {user ? (
-               <DropdownMenu>
-                 <DropdownMenuTrigger asChild>
-                   <Button variant="ghost" className="relative h-8 w-8 rounded-full border border-white/10 overflow-hidden ml-2 p-0 ring-offset-bg-0 focus:ring-2 focus:ring-gold focus:ring-offset-2">
-                      {profile?.avatarUrl ? (
-                         <img src={profile.avatarUrl} alt={profile.username || 'User'} className="h-full w-full object-cover" />
-                      ) : (
-                         <div className="h-full w-full bg-accent text-accent-foreground flex items-center justify-center font-serif text-sm border-2 border-gold/20">
-                            {profile?.username?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
-                         </div>
-                      )}
-                   </Button>
-                 </DropdownMenuTrigger>
-                 <DropdownMenuContent align="end" className="w-56 bg-bg-1/95 backdrop-blur border border-border/50 text-fg shadow-2xl animate-in zoom-in-95">
-                   <DropdownMenuLabel className="font-normal">
-                     <div className="flex flex-col space-y-1">
-                       <p className="text-sm font-medium leading-none text-gold font-serif">{profile?.username || 'Usuario'}</p>
-                       <p className="text-xs leading-none text-muted-foreground opacity-60">
-                         {user.email}
-                       </p>
-                     </div>
-                   </DropdownMenuLabel>
-                   <DropdownMenuSeparator className="bg-white/10" />
-                   {isAdmin && (
-                      <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer hover:bg-white/5 focus:bg-white/5 focus:text-gold data-[highlighted]:bg-white/5 gap-2">
-                        <FaLayerGroup size={14} className="opacity-70 text-gold" /> 
-                        <span className="text-gold font-bold">Admin Dashboard</span>
-                      </DropdownMenuItem>
-                   )}
-                   <DropdownMenuItem onClick={() => navigate('/account')} className="cursor-pointer hover:bg-white/5 focus:bg-white/5 focus:text-gold data-[highlighted]:bg-white/5 gap-2">
-                     <FaCog size={14} className="opacity-70" /> 
-                     <span>{t('nav.accountable')}</span>
-                   </DropdownMenuItem>
-                   <DropdownMenuItem onClick={() => navigate('/favorites')} className="cursor-pointer hover:bg-white/5 focus:bg-white/5 focus:text-gold data-[highlighted]:bg-white/5 gap-2">
-                     <FaHeart size={14} className="opacity-70" /> 
-                     <span>{t('nav.favorites')}</span>
-                   </DropdownMenuItem>
-                   <DropdownMenuSeparator className="bg-white/10" />
-                   <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-400 focus:text-red-400 hover:bg-red-900/10 focus:bg-red-900/10 gap-2">
-                     <FaSignOutAlt size={14} />
-                     <span>{t('nav.logout')}</span>
-                   </DropdownMenuItem>
-                 </DropdownMenuContent>
-               </DropdownMenu>
-            ) : (
-               <div className="flex items-center gap-2 ml-2">
-                   <Button variant="ghost" size="sm" className="text-muted hover:text-fg font-medium hidden lg:inline-flex" onClick={() => navigate('/login')}>
-                     {t('nav.login')}
-                   </Button>
-                   <Button size="sm" className="bg-gold hover:bg-gold/80 text-black font-bold font-serif px-6 shadow-lg shadow-gold/20 hover:shadow-gold/40 transition-all rounded-xl" onClick={() => navigate('/register')}>
-                     {t('nav.join')}
-                   </Button>
-               </div>
-            )}
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="flex items-center gap-2 md:hidden">
-              <LanguageSwitcher />
-              <Button variant="ghost" size="sm" className="text-fg" onClick={() => setIsOpen(!isOpen)}>
-                {isOpen ? <FaTimes /> : <FaBars />}
-              </Button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Drawer Overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 z-30 bg-bg-0/95 backdrop-blur-xl pt-24 px-6 animate-fade-in md:hidden">
-           <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between mb-2">
-                  {user ? (
-                     <div className="flex items-center gap-3 p-3 rounded-lg bg-bg-1 border border-border w-full" onClick={() => { navigate('/account'); setIsOpen(false); }}>
-                        <div className="h-10 w-10 rounded-full border border-gold/30 overflow-hidden bg-bg-2">
-                            {profile?.avatarUrl ? (
-                                <img src={profile.avatarUrl} alt="Me" className="h-full w-full object-cover" />
-                            ) : (
-                                <span className="h-full w-full flex items-center justify-center text-lg font-serif text-gold">
-                                    {profile?.username?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
-                                </span>
-                            )}
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-gold font-serif font-bold">{profile?.username || 'Usuario'}</span>
-                            <span className="text-xs text-muted">{user.email}</span>
-                        </div>
-                        <FaCog className="ml-auto text-muted" />
-                     </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-3 w-full">
-                       <Button variant="secondary" onClick={() => { navigate('/login'); setIsOpen(false); }}>{t('nav.login')}</Button>
-                       <Button className="bg-gold text-black" onClick={() => { navigate('/register'); setIsOpen(false); }}>{t('nav.join')}</Button>
-                    </div>
-                  )}
-              </div>
-              <button 
-                  onClick={() => { setShowCmd(true); setIsOpen(false); }}
-                  className="w-full flex items-center gap-3 p-4 rounded-xl bg-bg-2 border border-border text-left text-muted mb-4"
+        {/* Doodle Links */}
+        <div className="flex items-center gap-6 font-handwriting text-2xl">
+           {links.map(link => (
+              <NavLink 
+                 key={link.path} 
+                 to={link.path}
+                 className={({ isActive }) => cn(
+                    "relative px-2 hover:scale-110 transition-transform rotate-1",
+                    isActive ? "font-bold text-accent-blood" : "text-text-ink"
+                 )}
               >
-                  <FaSearch /> {t('nav.search')}
-              </button>
-              
-              {links.map((link) => (
-                <NavLink
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={({ isActive }) =>
-                    cn(
-                      "text-2xl font-serif font-bold py-2 border-l-2 pl-4 transition-all",
-                      isActive ? "border-gold text-gold" : "border-transparent text-muted hover:text-fg hover:border-white/20"
-                    )
-                  }
-                >
-                  {link.name}
-                </NavLink>
-              ))}
-              
-              <div className="h-px bg-white/10 my-4" />
-              
-              <div className="flex gap-4">
-                 <Button className="flex-1 gap-2" variant="secondary" onClick={() => navigate('/favorites')}>
-                    <FaHeart className="text-blood" /> {t('nav.favorites')}
-                 </Button>
-              </div>
-           </div>
+                 {({ isActive }) => (
+                    <>
+                       {link.name}
+                       {isActive && (
+                          <div className="absolute -inset-1 border-2 border-accent-blood rounded-[50%] -rotate-2 opacity-70 pointer-events-none"></div>
+                       )}
+                    </>
+                 )}
+              </NavLink>
+           ))}
         </div>
-      )}
+
+        {/* Actions (Search, User) */}
+        <div className="flex items-center gap-3">
+           <Button variant="ghost" size="icon" onClick={() => setShowCmd(true)} title="Search">
+              <FaSearch className="h-5 w-5" />
+           </Button>
+
+           <LanguageSwitcher />
+
+           {user ? (
+             <DropdownMenu>
+               <DropdownMenuTrigger asChild>
+                 <button className="flex items-center gap-2 hover:underline decoration-wavy outline-none group">
+                   {profile?.avatarUrl ? (
+                     <img src={profile.avatarUrl} alt="User" className="w-10 h-10 rounded border-2 border-text-ink group-hover:rotate-6 transition-transform" />
+                   ) : (
+                     <div className="w-10 h-10 bg-text-ink text-bg-paper flex items-center justify-center border-2 border-transparent group-hover:rotate-6 transition-transform">
+                        <span className="font-heading text-xs">{profile?.username?.[0]?.toUpperCase() || 'U'}</span>
+                     </div>
+                   )}
+                 </button>
+               </DropdownMenuTrigger>
+               <DropdownMenuContent align="end" className="w-56 bg-bg-paper border-2 border-text-ink shadow-[4px_4px_0px_#000]">
+                 <div className="px-2 py-1.5 text-sm font-bold border-b border-text-ink/20">
+                    {profile?.username || 'User'}
+                 </div>
+                 {isAdmin && (
+                   <DropdownMenuItem onClick={() => navigate('/admin')}>
+                     Admin Dashboard
+                   </DropdownMenuItem>
+                 )}
+                 <DropdownMenuItem onClick={() => navigate('/account')}>
+                   Profile
+                 </DropdownMenuItem>
+                 <DropdownMenuItem onClick={handleLogout} className="text-accent-blood focus:text-accent-blood">
+                   Sign Out <FaSignOutAlt className="ml-auto" />
+                 </DropdownMenuItem>
+               </DropdownMenuContent>
+             </DropdownMenu>
+           ) : (
+             <Button variant="secondary" size="sm" onClick={() => navigate('/login')} className="font-handwriting font-bold text-lg">
+               Log In
+             </Button>
+           )}
+        </div>
+
+      </nav>
     </>
   )
 }

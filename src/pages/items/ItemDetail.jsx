@@ -3,13 +3,13 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchItem } from '../../lib/api';
 import { Button } from '../../components/ui/Button';
-import { Card } from '../../components/ui/Card';
+// We don't use Card component here as it's styled for Dark Theme default. We want Paper text.
 import { Chip } from '../../components/ui/Chip';
 import { FaArrowLeft, FaHeart, FaShare, FaBookOpen } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 export function ItemDetail() {
-  const { id } = useParams(); // This is the slug or ID
+  const { id } = useParams(); 
   const navigate = useNavigate();
 
   const { data: item, isLoading, isError } = useQuery({
@@ -21,7 +21,7 @@ export function ItemDetail() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-16 h-16 border-4 border-blood border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-16 h-16 border-4 border-accent-blood border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -29,8 +29,8 @@ export function ItemDetail() {
   if (isError || !item) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <h2 className="text-3xl font-serif font-bold text-fg mb-4">Item Lost in the Basement</h2>
-        <p className="text-muted mb-8">We couldn't find the artifact you were looking for.</p>
+        <h2 className="text-3xl font-heading font-bold text-text-heading mb-4">Item Lost in the Basement</h2>
+        <p className="text-text-dim mb-8">We couldn't find the artifact you were looking for.</p>
         <Button onClick={() => navigate('/items')}>Return to Collection</Button>
       </div>
     );
@@ -46,104 +46,78 @@ export function ItemDetail() {
     >
       
       {/* --- BREADCRUMBS --- */}
-      <div className="flex items-center gap-2 text-xs md:text-sm text-muted mb-8 font-mono">
-        <Link to="/" className="hover:text-fg hover:underline">Home</Link>
+      <div className="flex items-center gap-2 text-xs md:text-sm text-text-dim mb-8 font-handwriting text-lg">
+        <Link to="/" className="hover:text-text-ink hover:underline">Home</Link>
         <span>/</span>
-        <Link to="/items" className="hover:text-fg hover:underline">Items</Link>
+        <Link to="/items" className="hover:text-text-ink hover:underline">Items</Link>
         <span>/</span>
-        <span className="text-gold truncate max-w-[200px]">{item.name}</span>
+        <span className="text-text-ink font-bold">{item.name}</span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-        
-        {/* --- LEFT COL (Image & Quick Stats) --- */}
-        <div className="lg:col-span-1 space-y-6">
-            {/* Hero Image Card */}
-            <Card className="aspect-square flex items-center justify-center bg-bg-1/50 border-gold/20 shadow-2xl shadow-black/50 relative overflow-hidden group">
-               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gold/5 to-transparent opacity-50" />
-               
-               {imageUrl ? (
-                  <motion.img 
-                    initial={{ scale: 0.8, rotate: -10 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    src={imageUrl} 
-                    alt={item.name} 
-                    className="w-1/2 h-1/2 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] z-10" 
-                  />
-               ) : (
-                  <FaBookOpen className="text-6xl text-white/10" />
-               )}
-            </Card>
-
-            {/* Quick Info */}
-            <Card className="bg-bg-1 border-white/5 space-y-4">
-               <div className="flex justify-between items-center py-2 border-b border-white/5">
-                  <span className="text-muted text-sm uppercase tracking-wider">Type</span>
-                  <span className="font-serif text-gold capitalize">{item.item_type || 'Unknown'}</span>
-               </div>
-               <div className="flex justify-between items-center py-2 border-b border-white/5">
-                  <span className="text-muted text-sm uppercase tracking-wider">Quality</span>
-                  <div className="flex gap-1">
-                     {[...Array(4)].map((_, i) => (
-                        <div key={i} className={`w-2 h-2 rounded-full ${i < (item.quality || 0) ? 'bg-gold' : 'bg-white/10'}`} />
-                     ))}
-                  </div>
-               </div>
-               <div className="flex justify-between items-center py-2">
-                  <span className="text-muted text-sm uppercase tracking-wider">ID</span>
-                  <span className="font-mono text-white/50">#{item.external_id}</span>
-               </div>
-            </Card>
-        </div>
-
-        {/* --- RIGHT COL (Content) --- */}
-        <div className="lg:col-span-2">
-           
-           {/* Header */}
-           <div className="mb-8">
-             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-                <h1 className="text-4xl md:text-6xl font-serif font-black text-fg tracking-tight">{item.name}</h1>
-                <div className="flex gap-2">
-                   <Button variant="outline" size="icon" className="rounded-full border-white/10"><FaShare /></Button>
-                   <FavoriteButton entityType="item" entityId={item.id} className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-muted hover:text-blood hover:bg-blood/10 transition-colors" />
-                </div>
-             </div>
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+        {/* --- LEFT COLUMN: IMAGE --- */}
+        <div className="md:col-span-5 lg:col-span-4 flex flex-col gap-6">
+          <motion.div 
+            initial={{ scale: 0.9, rotate: -2 }}
+            animate={{ scale: 1, rotate: 0 }}
+            className="aspect-square bg-[#1c1917] rounded-xl border-2 border-text-ink shadow-xl flex items-center justify-center p-8 relative overflow-hidden group"
+          >
+             {/* Background glow behind item */}
+             <div className={`absolute inset-0 opacity-20 bg-gradient-to-br from-white/10 to-transparent`} />
              
-             {item.pickup_quote && (
-                <div className="inline-block px-4 py-2 bg-white/5 rounded-lg border-l-2 border-blood">
-                    <p className="text-xl text-muted italic font-serif">"{item.pickup_quote}"</p>
-                </div>
-             )}
-           </div>
-
-           {/* Description / Effect */}
-           <div className="space-y-8">
-              <section>
-                <div className="flex items-center gap-4 mb-4">
-                    <h2 className="text-lg font-bold text-fg uppercase tracking-wider">Effect & Mechanics</h2>
-                    <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
-                </div>
-                
-                <Card className="bg-bg-1/50 border-white/5 p-6 md:p-8 leading-relaxed text-lg text-fg/90 whitespace-pre-wrap">
-                   {item.description ? item.description : "No detailed description available."}
-                </Card>
-              </section>
-
-              {/* Tags/Pools Placeholder (If we had them) */}
-              {item.tags && item.tags.length > 0 && (
-                  <section>
-                    <h3 className="text-sm font-bold text-muted uppercase mb-3">Tags</h3>
-                    <div className="flex flex-wrap gap-2">
-                        {item.tags.map(tag => (
-                            <Chip key={tag} className="bg-bg-2 border-white/10">{tag}</Chip>
-                        ))}
-                    </div>
-                  </section>
-              )}
-           </div>
-
+             <img 
+               src={imageUrl} 
+               alt={item.name} 
+               className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] z-10 transition-transform duration-500 hover:scale-110"
+             />
+          </motion.div>
         </div>
 
+        {/* --- RIGHT COLUMN: INFO --- */}
+        <div className="md:col-span-7 lg:col-span-8 space-y-8">
+            <div>
+               <div className="flex flex-col gap-2 mb-4">
+                  <div className="flex items-center gap-2">
+                     <span className="px-3 py-1 bg-text-ink text-bg-paper text-xs font-bold uppercase tracking-widest rounded-sm font-heading">
+                        {item.item_type || 'Passive'}
+                     </span>
+                     {item.item_pool && (
+                        <span className="px-3 py-1 border border-text-ink text-text-ink text-xs font-bold uppercase tracking-widest rounded-sm font-heading">
+                           {typeof item.item_pool === 'string' ? item.item_pool : 'Treasure Room'}
+                        </span>
+                     )}
+                  </div>
+                  <h1 className="text-5xl md:text-6xl font-heading text-text-heading leading-tight uppercase tracking-tight">
+                    {item.name}
+                  </h1>
+               </div>
+               
+               <p className="text-2xl md:text-3xl font-handwriting text-text-dim italic leading-relaxed border-l-4 border-accent-gold pl-6 py-2">
+                  "{item.quote || item.description_short || '...'}"
+               </p>
+            </div>
+
+            <div className="prose prose-lg prose-p:text-text-ink prose-headings:font-heading prose-headings:text-text-heading prose-p:font-handwriting prose-p:text-2xl max-w-none">
+                <h3 className="text-2xl uppercase border-b border-text-ink/20 pb-2 mb-4">Effect</h3>
+                <p>
+                  {item.description || "No detailed description available."}
+                </p>
+                
+                {item.synergies && (
+                    <div className="mt-8 bg-white/40 p-6 rounded-lg border border-text-ink/10 -rotate-1">
+                        <h3 className="text-xl uppercase text-accent-blood mb-2 font-bold not-italic">Synergies</h3>
+                        <p>{item.synergies}</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-4 pt-8 border-t border-text-ink/10 border-dashed">
+                <Button variant="ghost" onClick={() => navigate(-1)} className="font-handwriting text-xl">
+                   <FaArrowLeft className="mr-2" /> Back
+                </Button>
+            </div>
+        </div>
       </div>
     </motion.div>
   );

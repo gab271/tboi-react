@@ -1,24 +1,24 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 import { cva } from 'class-variance-authority';
+import { motion } from 'framer-motion';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md font-serif text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 active:scale-95",
+  "relative inline-flex items-center justify-center font-pixel text-lg uppercase tracking-wider transition-all focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 active:scale-95 group overflow-visible",
   {
     variants: {
       variant: {
-        primary: "bg-blood text-white shadow hover:bg-blood/90 border border-blood",
-        secondary: "bg-bg-1 text-fg shadow-sm hover:bg-bg-2 border border-border hover:border-gold/30 hover:text-gold",
-        ghost: "hover:bg-bg-2 hover:text-fg text-muted",
-        link: "text-gold underline-offset-4 hover:underline",
-        outline: "border border-border bg-transparent shadow-sm hover:bg-bg-1 hover:text-fg",
-        gold: "bg-gold text-bg-0 hover:bg-gold/90 font-bold",
+        primary: "text-text-heading hover:text-accent-blood",
+        secondary: "bg-bg-paper-dark text-text-heading hover:bg-bg-paper border border-text-ink",
+        ghost: "hover:bg-bg-paper-dark/20 text-text-dim hover:text-text-ink",
+        outline: "border-2 border-text-ink text-text-heading hover:border-accent-blood hover:text-accent-blood",
+        gold: "bg-accent-gold text-white border-black shadow-[4px_4px_0px_#000]",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8 text-base",
-        icon: "h-9 w-9",
+        default: "h-12 px-6 py-2",
+        sm: "h-9 px-4 text-xs",
+        lg: "h-16 px-10 text-xl",
+        icon: "h-10 w-10 p-0",
       },
     },
     defaultVariants: {
@@ -28,13 +28,48 @@ const buttonVariants = cva(
   }
 );
 
-const Button = React.forwardRef(({ className, variant, size, ...props }, ref) => {
+// SVG for the sketchy circle
+const SketchyCircle = () => (
+    <svg 
+        className="absolute inset-0 w-full h-full pointer-events-none text-accent-blood opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        viewBox="0 0 100 40" 
+        preserveAspectRatio="none"
+        style={{ transform: 'scale(1.2) rotate(-2deg)' }}
+    >
+        <path 
+            d="M5,20 Q25,5 50,10 T95,20 Q80,35 50,30 T5,20" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeDasharray="200"
+            strokeDashoffset="0"
+        >
+             <animate 
+                attributeName="stroke-dashoffset" 
+                from="200" 
+                to="0" 
+                dur="0.4s" 
+                begin="mouseenter" 
+                fill="freeze" 
+             />
+        </path>
+    </svg>
+);
+
+const Button = React.forwardRef(({ className, variant, size, children, ...props }, ref) => {
   return (
     <button
       className={cn(buttonVariants({ variant, size, className }))}
       ref={ref}
       {...props}
-    />
+    >
+      {/* Absolute positioned sketch overlay for Primary/Outline variants */}
+      {(variant === 'primary' || variant === 'outline' || variant === 'ghost') && <SketchyCircle />}
+      
+      <span className="relative z-10 flex items-center gap-2">
+        {children}
+      </span>
+    </button>
   );
 });
 Button.displayName = "Button";

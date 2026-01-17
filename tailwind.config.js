@@ -15,77 +15,50 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['"Press Start 2P"', 'cursive'], // Emulating Upheaval
+        heading: ['"Press Start 2P"', 'cursive'], 
+        handwriting: ['"Indie Flower"', '"Patrick Hand"', 'cursive'],
         pixel: ['"VT323"', 'monospace'],
-        sans: ['"VT323"', 'monospace'], // Default to pixel font
+        sans: ['"Indie Flower"', 'cursive'], 
       },
       colors: {
-        border: "var(--border)",
-        input: "var(--bg-2)",
-        ring: "var(--ring)",
-        background: "var(--bg-0)",
-        foreground: "var(--fg)",
+        'bg-floor': 'var(--bg-floor)',
+        'bg-paper': 'var(--bg-paper)',
+        'bg-paper-dark': 'var(--bg-paper-dark)',
+        'text-ink': 'var(--text-ink)',
+        'text-heading': 'var(--text-heading)',
+        'text-dim': 'var(--text-dim)',
+        'accent-blood': 'var(--accent-blood)',
+        'accent-gold': 'var(--accent-gold)',
+        'accent-blue': 'var(--accent-blue)',
         
-        // Semantic Token Mapping
+        // Semantic Token Mapping for compatibility
+        border: "var(--border-ink)",
+        input: "var(--bg-paper-dark)",
+        ring: "var(--accent-gold)",
+        background: "var(--bg-paper)",
+        foreground: "var(--text-ink)",
+        
         bg: {
-          0: 'var(--bg-0)',
-          1: 'var(--bg-1)',
-          2: 'var(--bg-2)',
+          0: 'var(--bg-floor)',
+          1: 'var(--bg-paper)',
+          2: 'var(--bg-paper-dark)',
         },
-        fg: 'var(--fg)',
+        fg: 'var(--text-ink)',
         muted: {
-          DEFAULT: 'var(--muted)',
-          2: 'var(--muted-2)',
-          foreground: 'var(--muted-2)',
+          DEFAULT: 'var(--text-dim)',
+          2: 'var(--text-dim)',
+          foreground: 'var(--text-dim)',
         },
         popover: {
-          DEFAULT: 'var(--popover)',
-          foreground: 'var(--fg)',
+          DEFAULT: 'var(--bg-paper)',
+          foreground: 'var(--text-ink)',
         },
         card: {
-          DEFAULT: 'var(--bg-1)',
-          foreground: 'var(--fg)',
+          DEFAULT: 'var(--bg-paper)',
+          foreground: 'var(--text-ink)',
         },
-        
-        // Accents
-        blood: 'var(--blood)',
-        gold: 'var(--gold)',
-        moss: 'var(--moss)',
-        tear: 'var(--tear)',
-      },
-      borderRadius: {
-        lg: "var(--radius-lg)",
-        md: "var(--radius-md)",
-        sm: "var(--radius-sm)",
-      },
-      fontFamily: {
-        serif: ["'Cinzel'", "'Georgia'", "serif"],
-        sans: ["'Inter'", "sans-serif"],
-        mono: ["'JetBrains Mono'", "monospace"],
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fadeIn 0.5s ease-out",
-        "slide-in": "slideIn 0.3s ease-out",
-      },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        slideIn: {
-          "0%": { transform: "translateY(10px)", opacity: "0" },
-          "100%": { transform: "translateY(0)", opacity: "1" },
-        },
+        blood: 'var(--accent-blood)',
+        gold: 'var(--accent-gold)',
       },
     },
   },

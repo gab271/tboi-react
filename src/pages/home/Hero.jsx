@@ -7,88 +7,87 @@ import { useNavigate } from 'react-router-dom';
 export function Hero() {
   const navigate = useNavigate();
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
-  const y2 = useTransform(scrollY, [0, 500], [0, -150]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
-    <div className="relative h-screen min-h-[800px] w-full overflow-hidden flex items-center justify-center">
-      {/* Background Atmosphere */}
-      <div className="absolute inset-0 bg-bg-0 z-0">
-         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--bg-1)_0%,_transparent_70%)] opacity-40" />
-         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blood/5 rounded-full blur-[100px]" />
-      </div>
-
-      {/* Floating Elements (Parallax) */}
-      <motion.div style={{ y: y2 }} className="absolute top-20 right-[10%] w-32 h-32 md:w-48 md:h-48 rounded-full border border-white/5 opacity-20 pointer-events-none z-10" />
-      <motion.div style={{ y: y1 }} className="absolute bottom-40 left-[10%] w-24 h-24 md:w-32 md:h-32 rounded-full bg-surface/10 blur-xl z-0" />
-
-      <div className="relative z-10 container mx-auto px-6 text-center flex flex-col items-center">
-        
-        {/* Animated Badge */}
-        <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "out" }}
-            className="mb-8"
-        >
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-muted-foreground backdrop-blur-sm">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                Updated to Repentance v1.7.9b
-            </span>
-        </motion.div>
-
-        {/* Massive Typography */}
-        <motion.h1 
-           initial={{ opacity: 0, scale: 0.9 }}
-           animate={{ opacity: 1, scale: 1 }}
-           transition={{ duration: 0.8, ease: "circOut" }}
-           className="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/40 mb-6 tracking-tighter drop-shadow-2xl"
-           style={{ fontFamily: "'Inter', sans-serif" }} // Assuming standard sans, but font-serif is used in current home
-        >
-          BASEMENT<br/>BIBLE
-        </motion.h1>
-
-        <motion.p 
-           initial={{ opacity: 0 }}
-           animate={{ opacity: 1 }}
-           transition={{ delay: 0.3, duration: 0.8 }}
-           className="max-w-xl text-lg md:text-xl text-muted-foreground leading-relaxed mb-10"
-        >
-          The ultimate knowledge base for <strong>The Binding of Isaac</strong>. 
-          Analyze item synergies, defeat bosses, and track your progress through the depths.
-        </motion.p>
-
-        {/* Interactive Buttons */}
-        <motion.div 
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ delay: 0.5, duration: 0.5 }}
-           className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
-        >
-          <Button 
-            className="h-14 px-8 text-lg rounded-full bg-white text-black hover:bg-gray-200 transition-all font-semibold"
-            onClick={() => navigate('/items')}
-          >
-            <FaSearch className="mr-2 text-sm" /> Search Items
-          </Button>
-          <Button 
-            variant="outline" 
-            className="h-14 px-8 text-lg rounded-full border-white/20 hover:bg-white/5 transition-all text-white backdrop-blur-md"
-            onClick={() => navigate('/account')}
-          >
-             My Progress <FaArrowRight className="ml-2 text-sm group-hover:translate-x-1 transition-transform" />
-          </Button>
-        </motion.div>
-      </div>
+    <div className="relative min-h-[800px] w-full flex items-center justify-center py-20 overflow-visible">
       
-      {/* Scroll Hint */}
+      {/* Container: The "Map" on the Floor */}
       <motion.div 
-        style={{ opacity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/20 text-sm animate-bounce flex flex-col items-center gap-2"
+         initial={{ scale: 0.95, opacity: 0 }}
+         animate={{ scale: 1, opacity: 1 }}
+         transition={{ duration: 1 }}
+         className="relative w-full max-w-6xl mx-auto bg-[#E3DAC9] p-8 md:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rotate-1 paper-texture border-4 border-[#C0B283]/20"
+         style={{
+             backgroundImage: `url("https://www.transparenttextures.com/patterns/aged-paper.png"), radial-gradient(circle, #E3DAC9 0%, #d4c5a3 100%)`
+         }}
       >
-        <div className="w-[1px] h-12 bg-white/20" />
-        SCROLL
+          {/* Torn Edge Effect (Top/Bottom) - Simulated with CSS clip-path or simple borders */}
+          <div className="absolute -top-2 left-0 w-full h-4 bg-[#E3DAC9] clip-path-jagged-top" />
+          <div className="absolute -bottom-2 left-0 w-full h-4 bg-[#E3DAC9] clip-path-jagged-bottom" />
+
+          {/* Content */}
+          <div className="relative z-10 flex flex-col items-center text-center">
+                
+                {/* Hand-drawn Map Elements Decoration */}
+                <div className="absolute top-10 left-10 opacity-20 hidden md:block rotate-12">
+                     <svg width="100" height="100" viewBox="0 0 100 100" className="text-text-ink stroke-current fill-none stroke-2">
+                         <path d="M10,10 Q50,5 90,10 T90,90 Q50,95 10,90 T10,10" />
+                         <path d="M30,30 L70,70 M30,70 L70,30" className="text-accent-blood" />
+                     </svg>
+                </div>
+
+                <div className="absolute bottom-10 right-10 opacity-20 hidden md:block -rotate-12">
+                     <svg width="80" height="80" viewBox="0 0 100 100" className="text-text-ink stroke-current fill-none stroke-2">
+                         <circle cx="50" cy="50" r="40" />
+                         <path d="M50,10 L50,90 M10,50 L90,50" />
+                     </svg>
+                </div>
+
+                <motion.div 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="mb-6"
+                >
+                    <span className="inline-block px-4 py-1.5 rounded bg-text-ink/5 border border-text-ink/20 text-text-dim font-handwriting text-lg rotate-2">
+                        Updated for Repentance
+                    </span>
+                </motion.div>
+
+                <h1 className="text-6xl md:text-8xl font-heading text-text-heading mb-6 tracking-tight drop-shadow-sm uppercase">
+                    Basement<br/>
+                    <span className="text-accent-blood relative inline-block">
+                        Codex
+                        <svg className="absolute -bottom-2 left-0 w-full h-4 text-text-ink opacity-80" viewBox="0 0 100 10" preserveAspectRatio="none"> 
+                            <path d="M0,5 Q50,15 100,5" stroke="currentColor" strokeWidth="3" fill="none" />
+                        </svg>
+                    </span>
+                </h1>
+
+                <p className="max-w-2xl text-xl md:text-2xl font-handwriting text-text-ink mb-12 leading-relaxed">
+                   "A crude map drawn in crayon... it details every item, monster, and secret found in the depths below."
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-6">
+                    <Button 
+                        variant="outline" 
+                        size="lg" 
+                        onClick={() => navigate('/items')}
+                        className="font-pixel text-2xl border-4 hover:border-accent-blood hover:text-accent-blood"
+                    >
+                        Read Codex
+                    </Button>
+                    <Button 
+                        variant="ghost" 
+                        size="lg" 
+                        onClick={() => navigate('/bosses')}
+                        className="font-pixel text-2xl text-text-dim hover:text-text-ink underline decoration-wavy"
+                    >
+                         View Bosses
+                    </Button>
+                </div>
+          </div>
       </motion.div>
     </div>
   );

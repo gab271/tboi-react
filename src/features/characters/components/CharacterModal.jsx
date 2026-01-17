@@ -1,8 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaUnlock, FaHeart, FaGamepad, FaCoins, FaBomb, FaKey } from 'react-icons/fa';
+import { FaTimes, FaHeart, FaGamepad, FaCoins, FaBomb, FaKey } from 'react-icons/fa';
 import { Button } from '../../../components/ui/Button';
-import { Chip } from '../../../components/ui/Chip';
 
 export function CharacterModal({ character, isOpen, onClose }) {
   if (!isOpen || !character) return null;
@@ -19,103 +18,86 @@ export function CharacterModal({ character, isOpen, onClose }) {
           className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         />
 
-        {/* Modal Card */}
+        {/* Modal Paper */}
         <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-2xl bg-bg-1 border border-border rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+            initial={{ opacity: 0, scale: 0.95, y: 20, rotate: -1 }}
+            animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20, rotate: -1 }}
+            className="relative w-full max-w-3xl bg-bg-paper text-text-ink paper-shadow rounded-sm max-h-[90vh] overflow-y-auto"
         >
-            {/* Header / Banner */}
-            <div className="relative h-32 bg-bg-2 flex items-center justify-center border-b border-border overflow-hidden">
-                 <div className="absolute inset-0 bg-contain bg-center opacity-5" style={{ backgroundImage: `url(${character.image})` }} />
-                 <div className="z-10 flex flex-col items-center">
-                    <img 
-                        src={character.image} 
-                        alt={character.name} 
-                        className="w-24 h-24 object-contain filter drop-shadow-lg"
-                    />
-                 </div>
-                 <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={onClose}
-                    className="absolute top-4 right-4 hover:bg-black/20"
-                >
-                    <FaTimes />
-                </Button>
-            </div>
+            {/* Close Button Doodle */}
+           <button 
+                className="absolute top-4 right-5 z-20 font-handwriting font-bold text-2xl hover:text-accent-blood transition-colors"
+                onClick={onClose}
+            >
+                X
+            </button>
 
-            <div className="p-8 space-y-8">
-                {/* Title & Stats */}
-                <div className="text-center space-y-4">
-                    <h2 className={`text-4xl font-serif font-bold ${character.isTainted ? 'text-purple-400' : 'text-fg'}`}>
-                        {character.name}
-                    </h2>
-                    
-                    <div className="flex flex-wrap justify-center gap-2">
-                        <Chip className="bg-bg-0 border-border text-muted-foreground font-semibold">
-                            <FaHeart className="text-blood mr-1" /> {character.health_type}
-                        </Chip>
-                        <Chip className="bg-bg-0 border-border text-muted-foreground font-semibold">
-                            <FaGamepad className="text-gold mr-1" /> Dif: {character.difficulty}/3
-                        </Chip>
+            <div className="p-8 md:p-12 flex flex-col md:flex-row gap-8">
+                
+                {/* Left: Polaroid-style Portrait */}
+                <div className="w-full md:w-1/3 flex-shrink-0 flex flex-col items-center">
+                    <div className="bg-[#fdfbf7] p-3 pb-8 shadow-md -rotate-2 w-full max-w-[250px] border border-gray-200">
+                        <div className={`w-full aspect-square flex items-center justify-center overflow-hidden border border-gray-100 ${character.isTainted ? 'bg-[#2a2a2a]' : 'bg-[#1a1a1a]'}`}>
+                            <img 
+                                src={character.image} 
+                                alt={character.name} 
+                                className={`w-3/4 h-3/4 object-contain drop-shadow-lg ${character.isTainted ? 'sepia hue-rotate-15' : ''}`}
+                            />
+                        </div>
+                        <div className="text-center mt-3 font-handwriting text-text-ink text-xl font-bold">
+                            {character.name}
+                        </div>
                     </div>
                 </div>
 
-                {/* Starting Stats (Consumables) */}
-                <div className="bg-bg-2/50 p-4 rounded-xl border border-border flex justify-around">
-                     <div className="flex flex-col items-center gap-1">
-                        <FaCoins className="text-yellow-500 text-xl" />
-                        <span className="font-mono text-lg">{character.starting_stats.coins}</span>
-                        <span className="text-xs text-muted uppercase">Coins</span>
-                     </div>
-                     <div className="flex flex-col items-center gap-1">
-                        <FaBomb className="text-gray-400 text-xl" />
-                        <span className="font-mono text-lg">{character.starting_stats.bombs}</span>
-                        <span className="text-xs text-muted uppercase">Bombs</span>
-                     </div>
-                     <div className="flex flex-col items-center gap-1">
-                        <FaKey className="text-gray-300 text-xl" />
-                        <span className="font-mono text-lg">{character.starting_stats.keys}</span>
-                        <span className="text-xs text-muted uppercase">Keys</span>
-                     </div>
-                </div>
-
-                {/* Description */}
-                <div>
-                   <h3 className="text-sm font-bold text-muted uppercase tracking-wider mb-2">Mecánicas / Descripción</h3>
-                   <p className="text-lg text-fg/90 leading-relaxed font-serif italic border-l-4 border-gold/20 pl-4 py-1">
-                      "{character.description}"
-                   </p>
-                </div>
-
-                 {/* Unlock Method */}
-                 <div className="bg-bg-0 p-4 rounded-xl border border-dashed border-border flex gap-4 items-start">
-                    <div className="p-3 bg-bg-2 rounded-full border border-border">
-                        <FaUnlock className="text-gold/80" />
-                    </div>
+                {/* Right: Handwritten Stats */}
+                <div className="flex-1 space-y-6">
                     <div>
-                        <h3 className="text-sm font-bold text-fg uppercase tracking-wider mb-1">Cómo Desbloquear</h3>
-                        <p className="text-muted-foreground text-sm">
-                            {character.unlock_method}
+                        <h2 className={`text-5xl font-heading mb-2 ${character.isTainted ? 'text-purple-900' : 'text-text-heading'}`}>
+                            {character.name}
+                        </h2>
+                        <p className="font-handwriting text-2xl text-text-dim italic">
+                            {character.isTainted ? '"The Twisted One"' : '"The Child"'}
                         </p>
                     </div>
-                 </div>
 
-                {/* Starting Items */}
-                {character.starting_items && character.starting_items.length > 0 && (
-                    <div>
-                       <h3 className="text-sm font-bold text-muted uppercase tracking-wider mb-3">Items Iniciales</h3>
-                       <div className="flex flex-wrap gap-2">
-                          {character.starting_items.map((item, i) => (
-                              <Chip key={i} className="bg-surface border-border py-1 px-3">
-                                  {item}
-                              </Chip>
-                          ))}
-                       </div>
+                    <div className="border-t-2 border-dashed border-text-ink/20 pt-4 space-y-3 font-handwriting text-xl">
+                        <div className="flex items-center justify-between">
+                            <span className="font-bold flex items-center gap-2"><FaHeart className="text-accent-blood text-sm" /> Type:</span>
+                            <span>{character.health_type || 'Standard'}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="font-bold flex items-center gap-2"><FaGamepad className="text-accent-gold text-sm" /> Difficulty:</span>
+                            <span>{character.difficulty}/3</span>
+                        </div>
                     </div>
-                )}
+
+                    {/* Starting Items sketched box */}
+                    <div className="bg-white/40 p-4 border-2 border-text-ink/10 rounded-lg -rotate-1 mt-4">
+                        <h3 className="font-heading text-sm mb-3 underline decoration-wavy decoration-accent-blood">Starting Stats:</h3>
+                        <div className="flex justify-around font-mono text-lg">
+                             <div className="flex flex-col items-center">
+                                <FaCoins className="text-yellow-600 mb-1" />
+                                <span>{character.starting_stats?.coins || 0}</span>
+                             </div>
+                             <div className="flex flex-col items-center">
+                                <FaBomb className="text-gray-600 mb-1" />
+                                <span>{character.starting_stats?.bombs || 0}</span>
+                             </div>
+                             <div className="flex flex-col items-center">
+                                <FaKey className="text-gray-400 mb-1" />
+                                <span>{character.starting_stats?.keys || 0}</span>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div className="pt-4 text-sm font-serif text-text-dim leading-relaxed">
+                        <p>
+                           {character.description || "No specific notes found for this character."}
+                        </p>
+                    </div>
+                </div>
             </div>
         </motion.div>
       </div>
