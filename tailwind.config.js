@@ -14,6 +14,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        heading: ['"Press Start 2P"', 'cursive'], // Emulating Upheaval
+        pixel: ['"VT323"', 'monospace'],
+        sans: ['"VT323"', 'monospace'], // Default to pixel font
+      },
       colors: {
         border: "var(--border)",
         input: "var(--bg-2)",
