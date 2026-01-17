@@ -31,68 +31,80 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg-0 p-4 relative overflow-hidden">
-        {/* Ambient Background */}
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-bg-1 via-bg-0 to-black z-0" />
-        <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-bg-floor relative overflow-hidden">
+        {/* Environment */}
+        <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')] mix-blend-multiply z-0"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)] pointer-events-none z-0" />
 
         <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in-95 duration-500">
             <div className="mb-6">
-                <Button variant="ghost" onClick={() => navigate('/login')} className="pl-0 gap-2 text-muted hover:text-fg">
-                    <FaArrowLeft /> Back to Login
+                <Button variant="ghost" onClick={() => navigate('/login')} className="pl-0 gap-2 text-text-ink/60 hover:text-accent-blood font-handwriting text-lg">
+                    <FaArrowLeft /> Volver al login
                 </Button>
             </div>
             
-            <Card className="border-gold/20 bg-bg-1/80 backdrop-blur-xl shadow-2xl">
-                <CardHeader className="text-center pb-2">
-                    <CardTitle className="text-3xl font-serif font-bold text-gold drop-shadow-sm">
-                        Reset Password
-                    </CardTitle>
-                    <p className="text-muted text-sm mt-2">
-                        Enter your email to receive recovery instructions
+             {/* Paper Card */}
+            <div 
+                className="bg-[#fdfbf7] text-text-ink p-8 md:p-10 shadow-2xl relative transform -rotate-1 transition-transform hover:rotate-0 duration-500 ease-out"
+                style={{
+                    clipPath: 'polygon(3% 0%, 97% 2%, 100% 98%, 0% 100%)',
+                    boxShadow: '0 20px 50px -12px rgba(0, 0, 0, 0.5)'
+                }}
+            >
+                 {/* Tape Sticking it */}
+                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-[#e0d8b0] opacity-80 rotate-1 shadow-sm transform z-20"></div>
+
+                <div className="text-center mb-6">
+                    <h1 className="text-3xl font-display font-bold text-text-ink tracking-wide uppercase" style={{ fontFamily: 'Upheaval, sans-serif' }}>Recuperar</h1>
+                    <p className="text-text-ink/60 mt-2 font-handwriting text-lg">
+                        Ingresa tu email para recibir instrucciones
                     </p>
-                </CardHeader>
-                <CardContent>
+                </div>
+
+                <div className="space-y-6">
                      {error && (
-                        <div className="mb-4 p-3 bg-red-900/30 border border-red-500/30 rounded text-red-200 text-sm flex flex-col items-center animate-in slide-in-from-top-2">
+                        <div className="mb-4 p-3 bg-accent-blood/10 border-2 border-accent-blood/50 rounded text-accent-blood text-sm flex flex-col items-center animate-in slide-in-from-top-2 font-handwriting">
                             {error}
                         </div>
                      )}
                      {message && (
-                        <div className="mb-4 p-3 bg-green-900/30 border border-green-500/30 rounded text-green-200 text-sm flex flex-col items-center animate-in slide-in-from-top-2">
+                        <div className="mb-4 p-3 bg-green-900/10 border-2 border-green-700/50 rounded text-green-900 text-sm flex flex-col items-center animate-in slide-in-from-top-2 font-handwriting">
                             {message}
                         </div>
                      )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-muted uppercase tracking-wider ml-1">Email Address</label>
-                            <Input
-                                type="email"
-                                placeholder="isaac@basement.com"
-                                icon={FaEnvelope}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="bg-bg-0 border-white/10"
-                                required
-                            />
+                             <label className="text-sm font-bold text-text-ink uppercase tracking-wider ml-1" style={{ fontFamily: 'Upheaval, sans-serif' }}>Email</label>
+                            <div className="relative">
+                                <Input
+                                    type="email"
+                                    placeholder="isaac@basement.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="bg-transparent border-0 border-b-2 border-text-ink/20 focus:border-accent-blood rounded-none px-0 pl-8 h-12 font-handwriting text-xl placeholder:text-text-ink/30 focus:ring-0 shadow-none transition-colors"
+                                    required
+                                />
+                                <FaEnvelope className="absolute left-0 top-1/2 -translate-y-1/2 text-text-ink/40" />
+                            </div>
                         </div>
 
                         <Button 
-                            className="w-full bg-gold hover:bg-gold/80 text-black font-bold py-6 mt-4 shadow-lg shadow-gold/10" 
+                            className="w-full bg-text-ink hover:bg-black text-[#fdfbf7] font-bold py-6 mt-4 uppercase tracking-widest text-lg shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-black" 
                             type="submit" 
+                            style={{ fontFamily: 'Upheaval, sans-serif' }}
                             disabled={loading}
                         >
-                            {loading ? 'Sending Instructions...' : 'Send Reset Link'}
+                            {loading ? 'Enviando...' : 'Enviar Link'}
                         </Button>
                     </form>
-                </CardContent>
-            </Card>
 
-            <div className="mt-8 text-center">
-                 <p className="text-muted text-xs">
-                    Remember your password? <Link to="/login" className="text-gold hover:underline">Log in here</Link>
-                </p>
+                     <div className="mt-8 text-center pt-4 border-t-2 border-dashed border-text-ink/10">
+                        <p className="text-text-ink/60 font-handwriting text-lg">
+                            ¿Te acordaste? <Link to="/login" className="text-accent-blood font-bold hover:underline decoration-2 underline-offset-2">Entra aquí</Link>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

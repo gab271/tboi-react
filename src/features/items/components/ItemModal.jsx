@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaShare, FaBookOpen } from 'react-icons/fa';
 import { Button } from '../../../components/ui/Button';
@@ -17,7 +18,7 @@ export function ItemModal({ item, onClose }) {
   
   const imageUrl = item.image || item.sprite_url;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
       <div 
          className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
@@ -114,6 +115,7 @@ export function ItemModal({ item, onClose }) {
          </div>
 
       </motion.div>
-    </div>
+    </div>,
+    document.body
   );
 }
