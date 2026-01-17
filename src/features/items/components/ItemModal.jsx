@@ -1,121 +1,140 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaShare, FaBookOpen } from 'react-icons/fa';
+import { FaTimes, FaBookOpen, FaStar, FaQuoteLeft } from 'react-icons/fa';
 import { Button } from '../../../components/ui/Button';
-import { Card } from '../../../components/ui/Card';
-import { Chip } from '../../../components/ui/Chip';
 import FavoriteButton from '../../../components/ui/FavoriteButton';
 
 export function ItemModal({ item, onClose }) {
   if (!item) return null;
   
-  // Reuse logic from ItemDetail or pass raw item.
-  // Since we have the item object from the list, we might have most data.
-  // But description might be truncated or we might want more.
-  // However, for the "ItemGridCard", we usually get what's in the DB.
-  // The seed DB has 'description' and 'pickup_quote'.
-  
   const imageUrl = item.image || item.sprite_url;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
-      <div 
-         className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
-         onClick={onClose} 
-      />
-      
-      <motion.div 
-         initial={{ opacity: 0, scale: 0.9, y: 20 }}
-         animate={{ opacity: 1, scale: 1, y: 0 }}
-         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-         className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-bg-0 border border-white/10 rounded-2xl shadow-2xl flex flex-col md:flex-row"
-      >
-         <Button 
-            className="absolute top-4 right-4 z-10 rounded-full bg-black/50 hover:bg-black/80 text-white" 
-            size="icon" 
-            variant="ghost" 
-            onClick={onClose}
-         >
-            <FaTimes />
-         </Button>
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        {/* Backdrop */}
+        <motion.div 
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           exit={{ opacity: 0 }}
+           className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
+           onClick={onClose} 
+        />
+        
+        {/* Modal - Paper Look */}
+        <motion.div 
+           initial={{ opacity: 0, scale: 0.9, rotate: 1 }}
+           animate={{ opacity: 1, scale: 1, rotate: 0 }}
+           exit={{ opacity: 0, scale: 0.9, rotate: 1 }}
+           className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-bg-paper text-text-ink paper-shadow flex flex-col md:flex-row p-8 md:p-12 -rotate-1 rounded-sm"
+        >
+           {/* Close "X" doodle */}
+           <button 
+              className="absolute top-4 right-5 z-20 font-handwriting font-bold text-3xl hover:text-accent-blood transition-colors"
+              onClick={onClose}
+           >
+              X
+           </button>
 
-         {/* Left: Image & Quick Stats */}
-         <div className="w-full md:w-1/3 bg-bg-1 p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-white/5">
-            <div className="w-48 h-48 relative mb-8 group">
-               <div className="absolute inset-0 bg-gold/5 blur-3xl rounded-full opacity-50 group-hover:opacity-80 transition-opacity" />
-               {imageUrl ? (
-                 <img src={imageUrl} alt={item.name} className="w-full h-full object-contain drop-shadow-2xl relative z-10" />
-               ) : (
-                 <FaBookOpen className="w-24 h-24 text-white/10" />
-               )}
-            </div>
+           <div className="flex flex-col md:flex-row gap-10 w-full">
+               {/* Left: Polaroid Image */}
+               <div className="w-full md:w-1/3 flex-shrink-0 flex flex-col items-center">
+                  <div className="bg-[#fdfbf7] p-3 pb-8 shadow-md rotate-2 transition-transform hover:-rotate-1 duration-500 w-full max-w-[280px] border border-black/10">
+                     {/* Inner Black Frame */}
+                     <div className="w-full aspect-square bg-[#0a0a0a] flex items-center justify-center overflow-hidden border-4 border-white shadow-inner relative group">
+                        {/* Background dust/noise in image */}
+                        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+                        
+                        {imageUrl ? (
+                           <img 
+                                src={imageUrl} 
+                                alt={item.name} 
+                                className="w-3/5 h-3/5 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] relative z-10 group-hover:scale-110 transition-transform duration-500" 
+                           />
+                        ) : (
+                           <FaBookOpen className="w-16 h-16 text-white/20" />
+                        )}
+                     </div>
+                     <div className="text-center mt-3 font-handwriting text-text-ink text-xl font-bold truncate px-2">
+                        {item.name}
+                     </div>
+                  </div>
 
-            <div className="w-full space-y-4">
-                <div className="flex justify-between items-center py-2 border-b border-white/5">
-                   <span className="text-muted text-xs uppercase tracking-wider">Type</span>
-                   <Chip className="bg-bg-2 border-gold/20 text-gold capitalize">{item.item_type}</Chip>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-white/5">
-                   <span className="text-muted text-xs uppercase tracking-wider">Quality</span>
-                   <div className="flex gap-1">
-                      {[...Array(4)].map((_, i) => (
-                         <div key={i} className={`w-2 h-2 rounded-full ${i < (item.quality || 0) ? 'bg-gold' : 'bg-white/10'}`} />
-                      ))}
-                   </div>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                   <span className="text-muted text-xs uppercase tracking-wider">ID</span>
-                   <span className="font-mono text-white/50">#{item.external_id}</span>
-                </div>
-            </div>
-         </div>
+                  {/* ID Stamp */}
+                  <div className="mt-6 font-mono text-xs opacity-40 -rotate-2 border-2 border-dashed border-black/20 p-2 inline-block">
+                      CONFISCATED ID #{item.external_id || item.id}
+                  </div>
+               </div>
 
-         {/* Right: Content */}
-         <div className="flex-1 p-8">
-            <div className="mb-6">
-                <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-3xl md:text-4xl font-serif font-black text-fg">{item.name}</h2>
-                    <div className="flex gap-2 mr-8 md:mr-0">
-                        <FavoriteButton entityType="item" entityId={item.id} />
-                    </div>
-                </div>
-                {item.pickup_quote && (
-                    <p className="text-xl text-muted italic font-serif border-l-2 border-blood pl-4 py-1">
-                        "{item.pickup_quote}"
-                    </p>
-                )}
-            </div>
+               {/* Right: Handwritten Details */}
+               <div className="flex-1 space-y-6 relative">
+                  <div>
+                      <div className="flex justify-between items-start">
+                          <h2 className="text-4xl md:text-5xl font-heading text-text-heading mb-2 uppercase tracking-tight flex-1 leading-none">
+                             {item.name}
+                          </h2>
+                          <div className="opacity-0 md:opacity-100 transition-opacity">
+                             <FavoriteButton entityType="item" entityId={item.id} />
+                          </div>
+                      </div>
 
-            <div className="space-y-6">
-                <div>
-                   <h3 className="text-sm font-bold text-fg uppercase tracking-wider mb-3 flex items-center gap-2">
-                      Effect <div className="h-px flex-1 bg-white/10"></div>
-                   </h3>
-                   <div className="text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                      {item.description || "No detailed description available."}
-                   </div>
-                </div>
+                      {/* Pickup Quote */}
+                      {item.pickup_quote && (
+                          <div className="text-2xl font-handwriting text-accent-blood/80 italic mb-4 -rotate-1">
+                              "{item.pickup_quote}"
+                          </div>
+                      )}
+                  </div>
 
-                {item.tags && item.tags.length > 0 && (
-                   <div>
-                        <h3 className="text-sm font-bold text-fg uppercase tracking-wider mb-3">Tags</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {item.tags.map(tag => (
-                                <Chip key={tag} className="bg-bg-1 border-white/5 text-xs">{tag}</Chip>
-                            ))}
-                        </div>
-                   </div>
-                )}
-                
-                <div className="pt-8 mt-auto flex justify-end">
-                    <Button variant="outline" onClick={onClose}>Close Codex</Button>
-                </div>
-            </div>
-         </div>
+                  {/* Description Section */}
+                  <div className="font-handwriting text-xl leading-relaxed text-text-ink/90 space-y-4">
+                      {/* Stats / Metadata */}
+                      <div className="flex flex-wrap gap-4 text-sm font-sans uppercase tracking-widest opacity-60 mb-6 border-b border-black/10 pb-2">
+                          {item.item_type && (
+                              <span className="flex items-center gap-1">
+                                  Type: <span className="font-bold text-black">{item.item_type}</span>
+                              </span>
+                          )}
+                          {item.quality !== undefined && (
+                              <span className="flex items-center gap-1">
+                                  Quality: 
+                                  <div className="flex">
+                                    {[...Array(4)].map((_, i) => (
+                                       <FaStar key={i} className={`text-xs ml-0.5 ${i < item.quality ? 'text-black' : 'text-black/10'}`} />
+                                    ))}
+                                  </div>
+                              </span>
+                          )}
+                      </div>
 
-      </motion.div>
-    </div>,
+                      {/* Main Effect */}
+                      <div className="relative pl-6">
+                           <FaQuoteLeft className="absolute left-0 top-1 text-black/10 text-2xl" />
+                           <p>
+                              {item.description || "Effect unknown..."}
+                           </p>
+                      </div>
+
+                      {/* Tags as scribbles */}
+                      {item.tags && item.tags.length > 0 && (
+                          <div className="pt-6 mt-6 border-t-2 border-dashed border-black/10">
+                              <span className="font-bold text-sm block mb-2 opacity-50 uppercase">Categories:</span>
+                              <div className="flex flex-wrap gap-3">
+                                  {item.tags.map(tag => (
+                                      <span key={tag} className="text-base px-3 py-1 border border-black/30 rounded-full -rotate-2 hover:rotate-0 hover:bg-black/5 transition-all cursor-default relative">
+                                          #{tag}
+                                      </span>
+                                  ))}
+                              </div>
+                          </div>
+                      )}
+                  </div>
+               </div>
+           </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>,
     document.body
   );
 }

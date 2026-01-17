@@ -36,7 +36,7 @@ export function ItemGridCard({ item, index, onClick }) {
       }}
       onClick={handleClick}
       className={cn(
-        "group relative flex flex-col items-center bg-[#FDFBF7] p-2 pb-12 cursor-pointer", // pb-12 gives the "Polaroid" bottom lip
+        "group relative flex flex-col items-center bg-[#FDFBF7] p-3 pb-6 cursor-pointer", // Standard card padding
         "shadow-[0_2px_8px_-1px_rgba(0,0,0,0.2)]", // Subtle initial shadow
         "hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.3)]", // Lifted shadow
         "transition-shadow duration-300 ease-out",
@@ -46,8 +46,8 @@ export function ItemGridCard({ item, index, onClick }) {
           transform: `rotate(${rotation}deg)` 
       }}
     >
-      {/* Tape Effect (Top Center) - Visual only */}
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#E5E5E5]/60 backdrop-blur-[1px] -rotate-45 opacity-60 pointer-events-none shadow-sm"></div>
+      {/* Visual Stain/Aging (Matching Boss Card) */}
+      <div className="absolute top-10 right-2 w-16 h-16 bg-yellow-900/5 blur-2xl rounded-full pointer-events-none" />
 
       {/* Favorite Button (Hidden until hover) */}
       <div 
@@ -58,7 +58,7 @@ export function ItemGridCard({ item, index, onClick }) {
       </div>
 
       {/* Image Container (The "Photo" part of the Polaroid) */}
-      <div className="w-full aspect-square bg-[#0a0a0a] shadow-inner flex items-center justify-center overflow-hidden mb-2 relative group-hover:brightness-110 transition-all border-4 border-white/90">
+      <div className="w-full aspect-square bg-[#0a0a0a] shadow-inner flex items-center justify-center overflow-hidden mb-3 relative group-hover:brightness-110 transition-all border-4 border-white/90">
          
          {/* Placeholder Pattern (Spritesheet ready) */}
          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]"></div>
@@ -79,11 +79,18 @@ export function ItemGridCard({ item, index, onClick }) {
          )}
       </div>
 
-      {/* Text Area (Handwritten Note on the Polaroid bottom) */}
-      <div className="w-full px-1 text-center absolute bottom-3 left-0 right-0">
-        <h3 className="font-handwriting font-bold text-xl leading-tight text-text-ink px-2 group-hover:text-accent-blood transition-colors line-clamp-2">
+      {/* Text Area (Formatted in flow like Boss/Character cards) */}
+      <div className="text-center w-full z-10 px-1">
+        <h3 className="font-handwriting font-bold text-xl leading-tight text-text-ink group-hover:text-accent-blood transition-colors line-clamp-2">
             {item.name}
         </h3>
+        
+        {/* Optional: Add item type if available to match metadata style */}
+        {item.type && (
+            <div className="mt-1 text-xs font-serif text-text-dim opacity-70 capitalize border-t border-black/5 pt-1 mx-4">
+                {item.type.replace('_', ' ')}
+            </div>
+        )}
       </div>
     </motion.div>
   );
