@@ -20,52 +20,53 @@ export function Home() {
       {/* 3. Main Navigation Grid (Bento Style) */}
       <FeaturesGrid />
 
-      {/* 4. Footer CTA / Ambient Ender */}
-      <section className="relative py-40 flex items-center justify-center overflow-hidden">
-         {/* Background Elements */}
-         <div className="absolute inset-0 bg-bg-0 z-0">
-             <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-black via-bg-0 to-transparent" />
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blood/10 rounded-full blur-[120px]" />
-         </div>
+      {/* 4. Footer CTA / Ambient Ender: The Missing Poster */}
+      <section className="relative py-32 flex items-center justify-center overflow-hidden">
+         {/* Background Floor */}
+         <div className="absolute inset-0 bg-bg-floor pointer-events-none"></div>
 
-         <div className="relative z-10 container px-6 text-center">
-            <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+         <motion.div 
+            initial={{ rotate: 1, y: 50, opacity: 0 }}
+            whileInView={{ rotate: -2, y: 0, opacity: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, type: "spring" }}
+            className="relative z-10 w-full max-w-lg bg-[#F4EBE4] p-8 pb-12 shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col items-center text-center paper-texture"
+         >
+            {/* Pin at top */}
+            <div className="w-4 h-4 rounded-full bg-red-800 shadow-sm mb-6 border border-black/20 mx-auto"></div>
+
+            <h2 className="text-6xl font-heading text-black mb-2 tracking-tighter uppercase relative">
+                Missing
+                <div className="absolute -bottom-2 left-0 w-full h-1 bg-black skew-x-12"></div>
+            </h2>
+            
+            <div className="w-full aspect-[4/3] bg-black/10 my-6 flex items-center justify-center border-4 border-black/5 overflow-hidden">
+                <div className="w-32 h-32 rounded-full bg-black flex items-center justify-center">
+                    <span className="text-4xl">?</span>
+                </div>
+            </div>
+
+            <p className="text-2xl font-heading font-black text-black mb-2 uppercase">
+                Have you seen this way out?
+            </p>
+            
+            <p className="font-handwriting text-xl text-black/70 mb-8 leading-tight">
+                Last seen in the Basement depths. Approach with extreme caution.
+            </p>
+
+            <Button 
+                onClick={() => navigate('/auth/login')}
+                className="w-full h-16 font-pixel text-2xl bg-black text-white hover:bg-accent-blood hover:scale-105 transition-all skew-x-0 hover:-skew-x-2 shadow-lg flex items-center justify-center gap-3"
             >
-                <div className="inline-block mb-4">
-                     <span className="px-4 py-1.5 rounded-full border border-blood/30 bg-blood/10 text-blood text-xs font-mono uppercase tracking-[0.2em] backdrop-blur-sm">
-                        Authentication Required
-                     </span>
-                </div>
-
-                <h2 className="text-5xl md:text-8xl font-black mb-8 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40 drop-shadow-2xl font-serif">
-                    ESCAPE THE <span className="text-blood inline-block transform hover:scale-105 transition-transform duration-500 cursor-default">BASEMENT</span>
-                </h2>
-                
-                <p className="text-xl md:text-2xl text-muted-foreground/80 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
-                    Join thousands of players in the ultimate Codex.
-                    <br />
-                    <span className="text-gold/90 font-medium">Save builds</span>, <span className="text-gold/90 font-medium">track items</span>, and <span className="text-gold/90 font-medium">master your runs</span>.
-                </p>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                     <Button 
-                        onClick={() => navigate('/auth/login')}
-                        className="h-14 px-10 text-lg bg-bg-0 border border-white/20 text-white hover:bg-white hover:text-black hover:scale-105 transition-all duration-300 font-bold tracking-widest rounded-full shadow-[0_0_40px_rgba(0,0,0,0.5)] group relative overflow-hidden"
-                     >
-                        <span className="relative z-10">START YOUR RUN</span>
-                        <div className="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-out z-0" />
-                     </Button>
-                </div>
-                
-                <p className="mt-12 text-xs text-muted-foreground/40 uppercase tracking-[0.3em] font-mono">
-                    Official TBOI Companion
-                </p>
-            </motion.div>
-         </div>
+                ESCAPE NOW
+            </Button>
+            
+            <div className="mt-8 flex gap-1 justify-center opacity-60">
+                 {[1,2,3,4,5].map(i => (
+                     <div key={i} className="w-8 h-12 border-x border-dashed border-black/20" />
+                 ))}
+            </div>
+         </motion.div>
       </section>
 
     </div>

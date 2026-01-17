@@ -48,22 +48,26 @@ export function Hero() {
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="mb-6"
+                    className="mb-8"
                 >
                     <span className="inline-block px-4 py-1.5 rounded bg-text-ink/5 border border-text-ink/20 text-text-dim font-handwriting text-lg rotate-2">
                         Updated for Repentance
                     </span>
                 </motion.div>
 
-                <h1 className="text-6xl md:text-8xl font-heading text-text-heading mb-6 tracking-tight drop-shadow-sm uppercase">
-                    Basement<br/>
-                    <span className="text-accent-blood relative inline-block">
-                        Codex
-                        <svg className="absolute -bottom-2 left-0 w-full h-4 text-text-ink opacity-80" viewBox="0 0 100 10" preserveAspectRatio="none"> 
-                            <path d="M0,5 Q50,15 100,5" stroke="currentColor" strokeWidth="3" fill="none" />
-                        </svg>
-                    </span>
-                </h1>
+                {/* Grunge/Torn Header Block */}
+                <div className="relative mb-8 inline-block transform -rotate-2">
+                    <div className="absolute inset-0 bg-[#0c0a09] scale-110 translate-y-1 mask-grunge opacity-90"></div> 
+                    <div className="relative bg-[#151110] text-[#f5f5f4] px-8 py-4 mask-torn-edge shadow-lg">
+                        <h1 className="text-5xl md:text-7xl font-heading tracking-widest uppercase relative z-10 text-shadow-sm">
+                            Basement
+                            <br />
+                            <span className="text-accent-blood">Bible</span>
+                        </h1>
+                        {/* Grunge Texture Overlay on Text Block */}
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stucco.png')] opacity-30 mix-blend-overlay pointer-events-none"></div>
+                    </div>
+                </div>
 
                 <p className="max-w-2xl text-xl md:text-2xl font-handwriting text-text-ink mb-12 leading-relaxed">
                    "A crude map drawn in crayon... it details every item, monster, and secret found in the depths below."

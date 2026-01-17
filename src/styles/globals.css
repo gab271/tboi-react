@@ -43,3 +43,36 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-3px); }
 }
+
+.mask-torn-edge {
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 100%, 
+    95% 98%, 90% 100%, 85% 98%, 80% 100%, 75% 98%, 70% 100%, 65% 98%, 60% 100%, 
+    55% 98%, 50% 100%, 45% 98%, 40% 100%, 35% 98%, 30% 100%, 25% 98%, 20% 100%, 
+    15% 98%, 10% 100%, 5% 98%, 0% 100%
+  );
+}
+
+.clip-path-jagged-top {
+    clip-path: polygon(
+        0% 100%, 0% 0%, 
+        5% 20%, 10% 0%, 15% 20%, 20% 0%, 25% 20%, 30% 0%, 35% 20%, 40% 0%, 
+        45% 20%, 50% 0%, 55% 20%, 60% 0%, 65% 20%, 70% 0%, 75% 20%, 80% 0%, 
+        85% 20%, 90% 0%, 95% 20%, 100% 0%, 100% 100%
+    );
+}
+
+.clip-path-jagged-bottom {
+    clip-path: polygon(
+        0% 0%, 0% 100%, 
+        5% 80%, 10% 100%, 15% 80%, 20% 100%, 25% 80%, 30% 100%, 35% 80%, 40% 100%, 
+        45% 80%, 50% 100%, 55% 80%, 60% 100%, 65% 80%, 70% 100%, 75% 80%, 80% 100%, 
+        85% 80%, 90% 100%, 95% 80%, 100% 100%, 100% 0%
+    );
+}
+
+.mask-grunge {
+    /* Simulates a rough texture mask */
+    mask-image: linear-gradient(black, transparent), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    mask-mode: alpha;
+}
