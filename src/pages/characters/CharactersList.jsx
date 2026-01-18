@@ -14,7 +14,7 @@ export function CharactersList() {
 
   return (
     <div className={cn(
-        "relative w-full min-h-[calc(100vh-100px)] overflow-hidden transition-colors duration-1000",
+        "relative w-full min-h-screen overflow-hidden transition-colors duration-1000 pb-0 mb-0",
         showTainted ? "bg-[#1a0505]" : "bg-[#151110]" // Dark Red vs Dark Floor
     )}>
       
@@ -37,7 +37,7 @@ export function CharactersList() {
       <div className="relative z-10 flex flex-col h-full">
           
           {/* Header Switch */}
-          <header className="flex flex-col items-center justify-center pt-8 pb-4 gap-4">
+          <header className="relative z-50 flex flex-col items-center justify-center pt-8 pb-4 gap-4">
               <h1 className={cn(
                   "font-heading text-4xl md:text-6xl tracking-widest uppercase transition-all duration-500 drop-shadow-md text-center",
                   showTainted ? "text-red-600 scale-105" : "text-[#d4c5a9]"

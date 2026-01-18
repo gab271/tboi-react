@@ -56,7 +56,7 @@ export function Footer() {
                 </div>
 
                 {/* Database Links */}
-                <div className="md:col-span-2 md:col-start-6 space-y-4">
+                <div className="md:col-span-2 md:col-start-6 space-y-6">
                     <h4 className="text-gold font-pixel text-2xl tracking-widest uppercase mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)]">Database</h4>
                     <FooterLink to="/items">Items</FooterLink>
                     <FooterLink to="/bosses">Bosses</FooterLink>
@@ -65,7 +65,7 @@ export function Footer() {
                 </div>
 
                 {/* Community/Legal Links */}
-                 <div className="md:col-span-2 space-y-4">
+                 <div className="md:col-span-2 space-y-6">
                     <h4 className="text-gold font-pixel text-2xl tracking-widest uppercase mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)]">Community</h4>
                     <FooterLink to="/about">About Us</FooterLink>
                     <FooterLink to="/contribute">Contribute</FooterLink>
@@ -131,7 +131,7 @@ function FooterLink({ to, children }) {
     return (
         <Link 
             to={to} 
-            className="block text-sm font-medium text-stone-300 hover:text-stone-100 hover:pl-2 transition-all duration-200 w-fit drop-shadow-sm"
+            className="block text-base font-medium text-stone-200 hover:text-white hover:pl-2 transition-all duration-200 w-fit drop-shadow-sm"
         >
             {children}
         </Link>

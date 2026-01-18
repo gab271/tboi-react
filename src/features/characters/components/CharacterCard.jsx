@@ -1,24 +1,25 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../../lib/utils';
 import { CompletionMarks } from './CompletionMarks';
 
-export const CharacterCard = ({ character, isActive, isTainted }) => {
+export const CharacterCard = ({ character, isActive, isTainted, onSelect }) => {
     return (
         <div className={cn(
             "relative flex flex-col items-center justify-center",
             "transition-all duration-500",
-            isActive ? "scale-100 z-20 opacity-100" : "scale-75 z-0 opacity-40 blur-[1px] grayscale-[50%]"
+            isActive ? "scale-125 z-50 opacity-100" : "scale-75 z-0 opacity-40 blur-[1px] grayscale-[50%]"
         )}>
             
             {/* The "Who Am I?" Paper Sheet */}
             <motion.div 
                 layoutId={`char-card-${character.id}`}
                 className={cn(
-                    "relative w-[280px] h-[400px] md:w-[320px] md:h-[450px]",
-                    "bg-[#fdfbf7] shadow-[0_10px_40px_rgba(0,0,0,0.3)]",
-                    "flex flex-col items-center pt-12 pb-8",
-                    isTainted ? "bg-stone-300 border-t-4 border-red-900/50" : "bg-[#fdfbf7]"
+                    "relative w-72 h-96",
+                    "bg-[#f4e4bc] shadow-lg",
+                    "flex flex-col items-center pt-10 pb-6",
+                    isTainted ? "bg-stone-400 border-t-4 border-red-900/50" : "bg-[#f4e4bc]",
+                    isActive && "drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
                 )}
                 style={{
                     clipPath: `polygon(
@@ -72,6 +73,37 @@ export const CharacterCard = ({ character, isActive, isTainted }) => {
                     <div className="absolute -top-2 left-1/2 w-3 h-3 bg-red-800 rounded-full border border-black z-40 shadow-sm"></div>
                     <CompletionMarks isTainted={isTainted} />
                 </div>
+
+                {/* View Details Button (Only Visible when Active) */}
+                <AnimatePresence>
+                    {isActive && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="absolute bottom-6 z-40"
+                        >
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onSelect && onSelect();
+                                }}
+                                className={cn(
+                                    "px-6 py-2 bg-black text-white font-heading text-sm uppercase tracking-wider",
+                                    "border-2 border-white/90 shadow-[2px_2px_0_rgba(0,0,0,0.5)]",
+                                    "transform hover:scale-105 hover:bg-red-900 transition-all duration-200",
+                                    "clip-path-jagged" // Optional if you have a class, otherwise relying on border
+                                )}
+                                style={{
+                                    // Custom irregular border effect simulation if clip-path class doesn't exist
+                                    borderRadius: "2px 255px 3px 25px / 255px 5px 225px 5px" 
+                                }}
+                            >
+                                View Details
+                            </button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
             </motion.div>
         </div>
