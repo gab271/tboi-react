@@ -1,15 +1,17 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { Navbar } from './Navbar';
+import { NavHeader } from '../home/NavHeader';
 import { Footer } from './Footer';
+import { DustParticles } from '../LoginLayout/DustParticles';
 
 export function AppLayout() {
   const location = useLocation();
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center py-10 px-4 bg-bg-floor relative overflow-hidden">
-      {/* Texture Overlay handled in global CSS on body, but we ensure wrapper is correct */}
-      
+      {/* 1. Global Dust Particles */}
+      <DustParticles count={50} />
+
       {/* The Paper Container */}
       <div 
         className="relative w-full max-w-7xl bg-bg-paper text-text-ink -rotate-1 mx-auto flex flex-col p-4 sm:p-8 transition-transform duration-500 ease-in-out"
@@ -23,16 +25,13 @@ export function AppLayout() {
          {/* Torn Edge SVG Mask (Functional for visual edge if detailed mask is preferred) */}
          
          {/* Paper texture overlay (grain) - 5% opacity for physical feel */}
-         <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] mix-blend-multiply z-20"></div>
-         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/noise.png')] mix-blend-overlay z-20"></div>
+         <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-noise mix-blend-multiply z-20"></div>
 
          {/* Inner Shadow for "Crumpled" 3D feel */}
          <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.05)] pointer-events-none z-10 rounded-sm"></div>
 
-         {/* Tape or imperfection visual element could go here */}
-         
          <div className="relative z-10 flex flex-col flex-1 h-full">
-            <Navbar />
+            <NavHeader />
             
             <main className="flex-1 mt-4 mb-12"> 
               <Outlet />
@@ -43,10 +42,6 @@ export function AppLayout() {
                <Footer />
             </div>
          </div>
-
-         {/* Extra Decor: ragged edges via pseudo elements or similar in a real robust implementation. 
-             Here we rely on the container rotation and inner shadow for the effect. 
-         */}
       </div>
     </div>
   );
