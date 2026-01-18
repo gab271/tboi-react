@@ -71,7 +71,7 @@ export function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.2 }}
             >
                 {/* Polaroid Frame */}
-                <div className="relative bg-white p-4 pb-20 shadow-[0_20px_50px_rgba(0,0,0,0.4)] rotate-3 hover:rotate-0 transition-transform duration-500 max-w-md w-full border-2 border-gray-300">
+                <div className="relative bg-white p-4 pb-28 shadow-[0_20px_50px_rgba(0,0,0,0.4)] rotate-3 hover:rotate-0 transition-transform duration-500 max-w-md w-full border-2 border-gray-300">
                     <div className="bg-[#0a0a0a] w-full aspect-square overflow-hidden border-2 border-[#1a1a1a] relative group cursor-pointer" onClick={() => navigate('/items')}>
                         {/* Static / Noise Overlay */}
                         <div className="absolute inset-0 bg-noise opacity-30 pointer-events-none z-10"></div>
