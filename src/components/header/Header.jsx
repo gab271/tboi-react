@@ -158,7 +158,7 @@ function Header() {
         </div>
       </header>
 
-      <CommandPalette open={showCmd} setOpen={setShowCmd} />
+      <CommandPalette open={showCmd} onOpenChange={setShowCmd} />
     </>
   )
 }
