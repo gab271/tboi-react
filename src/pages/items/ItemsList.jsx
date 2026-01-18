@@ -4,6 +4,7 @@ import { fetchItems } from '../../lib/api';
 import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
 import { FilterSidebar } from './FilterSidebar'; // The new Sidebar
 import { ItemGrid } from './ItemGrid'; // The new Grid
+import { Pagination } from '../../components/ui/Pagination';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../components/ui/Button';
 
@@ -62,7 +63,7 @@ export function ItemsList() {
             <h1 className="text-5xl md:text-7xl font-heading tracking-tighter text-black drop-shadow-sm leading-none">
                 THE COLLECTION
             </h1>
-            <span className="font-handwriting text-2xl text-accent-blood font-bold rotate-[-2deg] mb-2">
+            <span className="font-handwriting text-2xl text-accent-blood font-bold rotate-[-2deg] opacity-90 mb-2">
                 (Wiki Draft)
             </span>
          </div>
@@ -152,28 +153,15 @@ export function ItemsList() {
 
              <ItemGrid items={itemList} isLoading={isLoading} />
              
-             {/* Pagination */}
-             <div className="mt-8 flex justify-center gap-4">
-                 <Button 
-                    variant="outline" 
-                    disabled={page === 0} 
-                    onClick={() => setPage(p => Math.max(0, p - 1))}
-                    className="font-pixel border-2 border-black disabled:opacity-30 hover:bg-black hover:text-white transition-colors"
-                 >
-                     PREV
-                 </Button>
-                 <div className="font-pixel text-2xl flex items-center px-4 bg-white border-2 border-black shadow-[2px_2px_0_#000]">
-                    {page + 1}
-                 </div>
-                 <Button 
-                    variant="outline" 
-                    disabled={!meta.hasMore && itemList.length < (meta.pageSize || 20)} 
-                    onClick={() => setPage(p => p + 1)}
-                    className="font-pixel border-2 border-black disabled:opacity-30 hover:bg-black hover:text-white transition-colors"
-                 >
-                     NEXT
-                 </Button>
-             </div>
+             {/* Pagination (New Component) */}
+             {totalPages > 1 && (
+                 <Pagination 
+                    currentPage={page} 
+                    totalPages={totalPages} 
+                    onPageChange={setPage}
+                    className="mt-8"
+                 />
+             )}
         </main>
       </div>
     </div>
