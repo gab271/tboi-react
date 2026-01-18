@@ -1,101 +1,82 @@
 import React, { useState } from 'react';
-import { Input } from '../../components/ui/Input';
-import { FaSearch, FaUser, FaGhost } from 'react-icons/fa';
 import { cn } from '../../lib/utils';
 import { charactersData } from '../../features/characters/data/charactersData';
 import { CharacterModal } from '../../features/characters/components/CharacterModal';
-import { CharacterGridCard } from '../../features/characters/components/CharacterGridCard'; 
+import { CharacterWheel } from '../../features/characters/components/CharacterWheel';
+import { FaGhost, FaUser } from 'react-icons/fa';
 
 export function CharactersList() {
-  const [search, setSearch] = useState('');
   const [showTainted, setShowTainted] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
 
-  const filteredCharacters = charactersData.filter(char => 
-    char.name.toLowerCase().includes(search.toLowerCase()) && 
-    char.isTainted === showTainted
-  );
+  // Filter based on Tainted Toggle
+  const displayCharacters = charactersData.filter(char => char.isTainted === showTainted);
 
   return (
-    <div className="flex flex-col gap-8 animate-fade-in relative w-full h-full">
+    <div className={cn(
+        "relative w-full min-h-[calc(100vh-100px)] overflow-hidden transition-colors duration-1000",
+        showTainted ? "bg-[#1a0505]" : "bg-[#151110]" // Dark Red vs Dark Floor
+    )}>
+      
+      {/* Background Overlay Effects */ }
+      <div className={cn(
+          "absolute inset-0 pointer-events-none transition-opacity duration-1000",
+          showTainted ? "opacity-100" : "opacity-0"
+      )}>
+            {/* Tainted Atmosphere */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/20 via-black/60 to-black"></div>
+            <div className="absolute top-0 w-full h-full bg-noise opacity-10 mix-blend-overlay"></div>
+      </div>
+
       <CharacterModal 
         character={selectedCharacter} 
         isOpen={!!selectedCharacter} 
         onClose={() => setSelectedCharacter(null)} 
       />
       
-      {/* Header Doodle */}
-      <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b-2 border-text-ink border-dashed pb-4 mb-4">
-        <div className="space-y-2">
-          <h1 className="text-4xl md:text-5xl font-heading text-text-heading flex items-center gap-4 tracking-tight">
-             <span className={cn("transition-colors duration-500 text-3xl", showTainted ? "text-accent-blood" : "text-text-ink")}>
-               {showTainted ? <FaGhost /> : <FaUser />}
-             </span>
-             {showTainted ? 'Tainted' : 'Characters'}
-          </h1>
-          <p className="text-text-dim font-handwriting text-xl">
-            {showTainted 
-              ? "Twisted versions..." 
-              : "Standard cast."}
-            <span className="ml-2 opacity-60 text-sm font-sans">({filteredCharacters.length})</span>
-          </p>
-        </div>
+      <div className="relative z-10 flex flex-col h-full">
+          
+          {/* Header Switch */}
+          <header className="flex flex-col items-center justify-center pt-8 pb-4 gap-4">
+              <h1 className={cn(
+                  "font-heading text-4xl md:text-6xl tracking-widest uppercase transition-all duration-500 drop-shadow-md text-center",
+                  showTainted ? "text-red-600 scale-105" : "text-[#d4c5a9]"
+              )}>
+                  WHO AM I?
+              </h1>
+              
+              {/* Custom Toggle Switch */}
+              <div className="flex items-center gap-6 p-1 bg-black/40 rounded-full border border-white/10 backdrop-blur-sm">
+                  <button
+                    onClick={() => setShowTainted(false)}
+                    className={cn(
+                        "flex items-center gap-2 px-6 py-2 rounded-full font-heading text-sm transition-all duration-300",
+                        !showTainted ? "bg-[#d4c5a9] text-black shadow-lg scale-105" : "text-gray-500 hover:text-gray-300"
+                    )}
+                  >
+                     <FaUser /> NORMAL
+                  </button>
+                  <button
+                    onClick={() => setShowTainted(true)}
+                    className={cn(
+                        "flex items-center gap-2 px-6 py-2 rounded-full font-heading text-sm transition-all duration-300",
+                        showTainted ? "bg-red-900 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)] scale-105" : "text-gray-500 hover:text-gray-300"
+                    )}
+                  >
+                     <FaGhost /> TAINTED
+                  </button>
+              </div>
+          </header>
 
-        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto items-stretch sm:items-center">
-           {/* Tainted Toggle - Hand-drawn buttons */}
-           <div className="flex bg-transparent gap-2">
-              <button
-                onClick={() => setShowTainted(false)}
-                className={cn(
-                    "px-4 py-2 font-handwriting text-xl font-bold border-2 transition-all duration-300",
-                    !showTainted 
-                        ? "border-text-ink bg-text-ink text-bg-paper -rotate-2 scale-105" 
-                        : "border-text-ink/30 text-text-dim hover:text-text-ink hover:border-text-ink"
-                )}
-              >
-                 Normal
-              </button>
-              <button
-                onClick={() => setShowTainted(true)}
-                className={cn(
-                    "px-4 py-2 font-handwriting text-xl font-bold border-2 transition-all duration-300",
-                    showTainted 
-                        ? "border-accent-blood bg-accent-blood text-white rotate-2 scale-105" 
-                        : "border-text-ink/30 text-text-dim hover:text-accent-blood hover:border-accent-blood"
-                )}
-              >
-                 Tainted
-              </button>
-           </div>
-
-           <div className="relative w-full sm:w-64">
-             <Input 
-               icon={FaSearch} 
-               placeholder="Search..." 
-               value={search}
-               onChange={(e) => setSearch(e.target.value)}
-               onClear={() => setSearch('')}
-             />
-           </div>
-        </div>
+          {/* The Wheel */}
+          <main className="flex-1 flex items-center justify-center -mt-10">
+               <CharacterWheel 
+                  characters={displayCharacters} 
+                  isTainted={showTainted}
+                  onSelect={setSelectedCharacter}
+               />
+          </main>
       </div>
-
-      {/* Grid */}
-      {filteredCharacters.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-8 pb-12">
-          {filteredCharacters.map((char) => (
-            <CharacterGridCard 
-                key={char.id} 
-                character={char} 
-                onClick={setSelectedCharacter} 
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20 text-text-dim opacity-50">
-           <p className="text-3xl font-handwriting">No one is here...</p>
-        </div>
-      )}
     </div>
   );
 }
