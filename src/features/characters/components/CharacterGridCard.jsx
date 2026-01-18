@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { cn } from '../../../lib/utils';
 import { FaUser, FaGhost } from 'react-icons/fa';
 import FavoriteButton from '../../../components/ui/FavoriteButton';
+import { CharacterMarks } from './CharacterMarks'; // New component
 
 export function CharacterGridCard({ character, onClick }) {
   const rotation = character.isTainted ? 2 : -2;
@@ -11,7 +12,7 @@ export function CharacterGridCard({ character, onClick }) {
     <div 
         onClick={() => onClick(character)}
         className={cn(
-            "group relative flex flex-col items-center bg-[#fdfbf7] p-3 pb-8 cursor-pointer transition-all duration-300 ease-out border border-gray-200",
+            "group relative flex flex-col items-center bg-[#fdfbf7] p-3 pb-4 cursor-pointer transition-all duration-300 ease-out border border-gray-200",
             character.isTainted ? "rotate-1 hover:-rotate-1" : "-rotate-1 hover:rotate-1",
             "shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.2)] hover:scale-105 hover:z-10"
         )}
@@ -26,7 +27,7 @@ export function CharacterGridCard({ character, onClick }) {
 
         {/* Photo Frame */}
         <div className={cn(
-            "w-full aspect-[4/5] flex items-center justify-center relative mb-4 overflow-hidden border-4 border-white shadow-inner",
+            "w-full aspect-[4/5] flex items-center justify-center relative mb-2 overflow-hidden border-4 border-white shadow-inner",
             character.isTainted ? "bg-[#2a2a2a]" : "bg-[#1a1a1a]"
         )}>
             {/* Glow */}
@@ -48,19 +49,26 @@ export function CharacterGridCard({ character, onClick }) {
                     e.target.src = 'https://placehold.co/100x100/1a1614/e6dcc8?text=?'; 
                 }}
             />
+
+            {/* Completion Marks Overlay - Always visible or on hover? Let's make it a corner overlay or separate section */}
+             <div className="absolute bottom-1 left-1 z-20 scale-75 origin-bottom-left opacity-80 hover:opacity-100 transition-opacity">
+                 {/*  Simplified mini-marks for the card view if desired, or detailed ones on modal */}
+             </div>
         </div>
 
         {/* Name Label */}
-        <div className="text-center w-full relative z-20">
+        <div className="text-center w-full relative z-20 mb-2">
             <h3 className={cn(
                 "font-bold font-handwriting text-3xl mb-0 transition-colors",
                 character.isTainted ? "text-text-heading group-hover:text-red-800" : "text-text-heading group-hover:text-accent-gold"
             )}>
                 {character.name}
             </h3>
-            <p className="font-handwriting text-text-dim text-sm">
-                {character.isTainted ? "The Twisted" : "The Child"}
-            </p>
+        </div>
+
+        {/* Sticky Note / Marks Section */}
+        <div className="w-full mt-auto pt-2 border-t border-dashed border-gray-300">
+           <CharacterMarks marks={character.completionMarks || {}} size="sm" />
         </div>
     </div>
   );

@@ -11,11 +11,8 @@ const LOG_TAG = '[AuthService]';
 // Helper to log in development only
 const log = (action, details = {}) => {
   if (import.meta.env.DEV) {
-    console.debug(`${LOG_TAG} ${action}`, {
-      timestamp: new Date().toISOString(),
-      ...details,
-      trace: new Error().stack // Simple stack trace
-    });
+    console.debug(`[AUTH_CALL] ${action}`, new Date().toISOString());
+    console.debug(new Error().stack); 
   }
 };
 

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { authService } from '../services/authService';
 
@@ -8,20 +8,23 @@ export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // Guard to prevent double-firing in StrictMode
+  const authListenerRef = useRef(null);
 
   useEffect(() => {
     let mounted = true;
 
-    // 1. Initial Session Load
-    const initSession = async () => {
+    const initAuth = async () => {
+      // 1. Initial Session Load
       try {
         const { data: { session: initialSession }, error } = await authService.getSession();
         if (mounted) {
-            if (error) {
-                console.error("[AuthProvider] Error loading session:", error);
-            }
-            setSession(initialSession);
-            setUser(initialSession?.user ?? null);
+           if (error) {
+             console.error("[AuthProvider] Error loading session:", error);
+           }
+           setSession(initialSession);
+           setUser(initialSession?.user ?? null);
         }
       } catch (err) {
         console.error("[AuthProvider] Unexpected error loading session:", err);
@@ -29,43 +32,37 @@ export const AuthProvider = ({ children }) => {
         if (mounted) setLoading(false);
       }
     };
-
-    initSession();
-
-    // 2. Event Listener
-    // In strict mode (dev), effects run twice. We use a global flag to warn/debug,
-    // though Supabase's returns a subscription object that handles unique listeners well if unsubscribed correctly.
-    if (import.meta.env.DEV && window.__auth_listener_attached) {
-       console.warn('[AuthProvider] Listener already attached. This is expected in React StrictMode but ensure it is cleaned up.');
-    }
     
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        if (import.meta.env.DEV) {
-           console.debug(`[AuthProvider] onAuthStateChange: ${event}`, { 
-               userId: currentSession?.user?.id,
-               timestamp: new Date().toISOString()
-           });
-        }
-        
-        if (mounted) {
-          setSession(currentSession);
-          setUser(currentSession?.user ?? null);
-          setLoading(false);
-        }
-      }
-    );
+    // Only fetch session if not already loading (optimization not really applicable here as effect runs on mount)
+    initAuth();
 
-    if (import.meta.env.DEV) {
-        window.__auth_listener_attached = true;
+    // 2. Event Listener logic with duplicate prevention
+    if (!authListenerRef.current) {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (event, currentSession) => {
+            if (import.meta.env.DEV) {
+               console.debug(`[AuthProvider] onAuthStateChange: ${event}`, { 
+                   userId: currentSession?.user?.id,
+                   timestamp: new Date().toISOString()
+               });
+            }
+            
+            if (mounted) {
+              setSession(currentSession);
+              setUser(currentSession?.user ?? null);
+              setLoading(false);
+            }
+          }
+        );
+        authListenerRef.current = subscription;
     }
 
     // Cleanup
     return () => {
       mounted = false;
-      subscription.unsubscribe();
-      if (import.meta.env.DEV) {
-          window.__auth_listener_attached = false;
+      if (authListenerRef.current) {
+        authListenerRef.current.unsubscribe();
+        authListenerRef.current = null;
       }
     };
   }, []);
