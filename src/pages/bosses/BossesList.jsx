@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchBosses } from '../../lib/api';
 import { Input } from '../../components/ui/Input';
-import { FaSearch, FaSkull, FaFilter, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaSkull, FaFilter, FaTimes, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { BossCard } from '../../features/bosses/components/BossCard';
 import { LocationSidebar } from '../../features/bosses/components/LocationSidebar';
 import { BossModal } from '../../features/bosses/components/BossModal';
@@ -178,21 +178,25 @@ export function BossesList() {
              
              {/* Pagination */}
              {totalPages > 1 && (
-                 <div className="flex justify-center gap-8 mt-4 text-[#f4e4bc] font-heading text-2xl">
+                 <div className="flex justify-center items-center gap-8 mt-12 mb-8 font-heading text-3xl">
                      <button 
                         disabled={page === 0}
                         onClick={() => setPage(p => Math.max(0, p - 1))}
-                        className="disabled:opacity-30 hover:text-white hover:scale-110 transition-all uppercase"
+                        className="flex items-center gap-2 text-[#8b0000] disabled:opacity-30 hover:scale-110 transition-all uppercase drop-shadow-sm"
                      >
-                        &lt; Prev
+                        <FaArrowLeft className="w-6 h-6" /> <span className="hidden sm:inline">PREV</span>
                      </button>
-                     <span>{page + 1}</span>
+                     
+                     <span className="text-[#2a1a10] bg-[#f4e4bc] px-4 py-2 border-2 border-[#8b0000] rotate-2 shadow-sm rounded-sm">
+                        {page + 1}
+                     </span>
+                     
                      <button 
                         disabled={!meta.hasMore && bossList.length < (meta.pageSize || 20)}
                         onClick={() => setPage(p => p + 1)}
-                        className="disabled:opacity-30 hover:text-white hover:scale-110 transition-all uppercase"
+                        className="flex items-center gap-2 text-[#8b0000] disabled:opacity-30 hover:scale-110 transition-all uppercase drop-shadow-sm"
                      >
-                        Next &gt;
+                        <span className="hidden sm:inline">NEXT</span> <FaArrowRight className="w-6 h-6" />
                      </button>
                  </div>
              )}

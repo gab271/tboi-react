@@ -11,7 +11,7 @@ export function Footer() {
 
   return (
     <footer 
-        className="relative w-full border-t border-[#EFE4B0]/20 mt-12 bg-black/90 text-[#EFE4B0] shadow-[inset_0_10px_30px_rgba(0,0,0,0.5)]"
+        className="relative w-full border-t border-stone-700 mt-12 bg-[#0c0c0c] text-stone-200 shadow-[inset_0_10px_30px_rgba(0,0,0,0.8)]"
         style={{
              // Irregular "Torn Paper" Bottom Edge
              // This complex polygon creates random "teeth" at non-uniform intervals to simulate ripping
@@ -40,11 +40,11 @@ export function Footer() {
                            <img src="/isaac.png" alt="Isaac" className="w-full h-full object-contain opacity-80" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="font-pixel text-3xl text-[#EFE4B0] tracking-wider drop-shadow-sm">TBOI: Codex</span>
+                            <span className="font-pixel text-3xl text-stone-100 tracking-wider drop-shadow-sm">TBOI: Codex</span>
                             <span className="text-[10px] uppercase tracking-[0.2em] text-gold/90 font-medium">Ultimate Wiki</span>
                         </div>
                     </div>
-                    <p className="text-[#EFE4B0]/80 font-medium text-sm leading-relaxed max-w-xs text-shadow-sm">
+                    <p className="text-stone-300 font-medium text-sm leading-relaxed max-w-xs text-shadow-sm">
                         The definitive community-driven knowledge base for The Binding of Isaac: Repentance. 
                         Discover items, defeat bosses, and master every run.
                     </p>
@@ -75,28 +75,28 @@ export function Footer() {
 
                 {/* Newsletter */}
                 <div className="md:col-span-3 space-y-4">
-                    <h4 className="text-gold font-pixel text-2xl tracking-widest uppercase mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)]">Stay Updated</h4>
-                    <p className="text-xs text-[#EFE4B0]/70 font-medium mb-4">Join our newsletter for the latest game updates and community highlights.</p>
+                    <h4 className="text-gold font-pixel text-2xl tracking-widest uppercase mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)] bg-black/50 w-fit px-2">Stay Updated</h4>
+                    <p className="text-xs text-stone-300 font-medium mb-4">Join our newsletter for the latest game updates and community highlights.</p>
                     <div className="flex flex-col gap-2">
                          <div className="flex gap-2">
-                            <Input placeholder="Enter your email" className="bg-black/60 border-[#EFE4B0]/20 h-10 text-sm text-[#EFE4B0] placeholder:text-[#EFE4B0]/40 focus:border-gold/50" />
+                            <Input placeholder="Enter your email" className="bg-black/60 border-white/10 h-10 text-sm text-stone-200 placeholder:text-stone-500 focus:border-gold/50" />
                             <Button size="icon" className="bg-gold hover:bg-gold/80 text-black h-10 w-10 shrink-0 shadow-[0_0_10px_rgba(234,179,8,0.3)]">
                                 <FaEnvelope />
                             </Button>
                          </div>
-                         <span className="text-[10px] text-[#EFE4B0]/50 font-medium">No spam, just Isaac. Unsubscribe anytime.</span>
+                         <span className="text-[10px] text-stone-400 font-medium">No spam, just Isaac. Unsubscribe anytime.</span>
                     </div>
                 </div>
             </div>
 
             {/* Divider */}
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-[#EFE4B0]/20 to-transparent mb-8" />
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-stone-700 to-transparent mb-8" />
 
             {/* Bottom Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#EFE4B0]/60 font-medium mb-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-stone-400 font-medium mb-8">
                 <div className="flex items-center gap-1">
                      <span>&copy; {new Date().getFullYear()} Basement Bible. Made with</span>
-                     <FaHeart className="text-red-600 mx-1 animate-pulse drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]" />
+                     <FaHeart className="text-red-800 mx-1 animate-pulse drop-shadow-[0_0_5px_rgba(220,38,38,0.5)]" />
                      <span>by the Community.</span>
                 </div>
                 
@@ -119,7 +119,7 @@ function SocialButton({ icon: Icon, href, label }) {
     return (
         <a 
             href={href} 
-            className="h-9 w-9 flex items-center justify-center rounded-lg bg-black/60 border border-[#EFE4B0]/10 text-[#EFE4B0] hover:text-gold hover:border-gold/50 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(234,179,8,0.4)] transition-all duration-300"
+            className="h-9 w-9 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-stone-300 hover:text-gold hover:border-gold/50 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(234,179,8,0.4)] transition-all duration-300"
             aria-label={label}
         >
             <Icon size={16} />
@@ -131,7 +131,7 @@ function FooterLink({ to, children }) {
     return (
         <Link 
             to={to} 
-            className="block text-sm font-medium text-[#EFE4B0]/80 hover:text-accent-blood hover:pl-2 transition-all duration-200 w-fit drop-shadow-sm"
+            className="block text-sm font-medium text-stone-300 hover:text-stone-100 hover:pl-2 transition-all duration-200 w-fit drop-shadow-sm"
         >
             {children}
         </Link>
