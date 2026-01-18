@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { FaEnvelope, FaLock, FaArrowLeft } from 'react-icons/fa';
+import { LoginLayout } from '../../components/LoginLayout/LoginLayout';
+import { CharacterCarousel } from '../../components/LoginLayout/CharacterCarousel';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -38,111 +39,95 @@ const Login = () => {
          navigate('/');
       }
     } catch (error) {
-      setError(error.message || 'Error al iniciar sesión');
+      console.error(error);
+      if (error.message && error.message.includes('Invalid login credentials')) {
+         setError('Incorrect email or password.');
+      } else {
+         setError('Failed to log in. Please check connection.');
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-bg-floor relative overflow-hidden">
-        {/* Floor Texture & Vignette */}
-        <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')] mix-blend-multiply z-0"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)] pointer-events-none z-0" />
+    <LoginLayout>
+      {/* Header Section */}
+      <div className="mb-6 text-center z-20 relative">
+        <CharacterCarousel />
+        <h2 className="font-heading text-4xl text-text-heading mb-1 mt-6 tracking-widest drop-shadow-md">BASEMENT AWAITS</h2>
+        <p className="text-text-dim/80 font-handwriting text-lg animate-pulse-slow">Resume your run...</p>
+      </div>
 
-      {/* Back Button */}
-      <Button 
-          variant="ghost" 
-          className="absolute top-8 left-8 z-20 text-text-ink/60 hover:text-accent-blood gap-2 font-handwriting text-lg"
-          onClick={() => navigate('/')}
-      >
-          <FaArrowLeft /> Volver al Codex
-      </Button>
-
-      <div className="w-full max-w-md z-10 animate-in fade-in zoom-in duration-500">
-        
-        {/* Paper Card */}
-        <div 
-            className="bg-[#fdfbf7] text-text-ink p-8 md:p-10 shadow-2xl relative transform -rotate-1 transition-transform hover:rotate-0 duration-500 ease-out"
-            style={{
-                clipPath: 'polygon(2% 0%, 99% 1%, 100% 100%, 1% 99%)',
-                boxShadow: '0 20px 50px -12px rgba(0, 0, 0, 0.5)'
-            }}
-        >
-             {/* Red Tack */}
-             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-red-700 shadow-md border border-red-900 z-20"></div>
-
-            <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 mb-4 filter drop-shadow-md">
-                   {/* Isaac Icon or similar */}
-                   <span className="text-4xl">⚡</span>
-                </div>
-                <h1 className="text-3xl font-display font-bold text-text-ink tracking-wide uppercase" style={{ fontFamily: 'Upheaval, sans-serif' }}>Bienvenido de nuevo</h1>
-                <p className="text-text-ink/60 mt-2 font-handwriting text-lg">Ingresa a tu cuenta para gestionar tus builds</p>
+      {error && (
+        <div className="bg-red-900/10 border-l-4 border-red-800 text-red-900 p-4 mb-6 font-handwriting text-base" role="alert">
+          <p>{error}</p>
+        </div>
+      )}
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-4">
+            <div className="relative group">
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-[#f0e6d2] border-2 border-black/20 focus:border-black font-handwriting text-xl h-12 pl-10 placeholder:text-black/30 transition-all"
+                  icon={null} // customizing icon manually
+                />
+                <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-black/40 group-focus-within:text-black transition-colors" />
             </div>
 
-            <div className="space-y-6">
-                {error && (
-                    <div className="bg-accent-blood/10 border-2 border-accent-blood/50 text-accent-blood text-sm p-3 font-handwriting text-center transform rotate-1">
-                        {error}
-                    </div>
-                )}
-                
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-text-ink uppercase tracking-wider ml-1" style={{ fontFamily: 'Upheaval, sans-serif' }}>Email</label>
-                        <div className="relative">
-                            <Input 
-                                type="email" 
-                                placeholder="isaac@basement.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="bg-transparent border-0 border-b-2 border-text-ink/20 focus:border-accent-blood rounded-none px-0 pl-8 h-12 font-handwriting text-xl placeholder:text-text-ink/30 focus:ring-0 shadow-none transition-colors"
-                                required
-                            />
-                            <FaEnvelope className="absolute left-0 top-1/2 -translate-y-1/2 text-text-ink/40" />
-                        </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                         <div className="flex justify-between items-center ml-1">
-                            <label className="text-sm font-bold text-text-ink uppercase tracking-wider" style={{ fontFamily: 'Upheaval, sans-serif' }}>Contraseña</label>
-                            <Link to="/forgot-password" className="text-sm font-handwriting text-accent-blood hover:underline opacity-80 hover:opacity-100 transition-opacity">
-                                ¿Olvidaste tu contraseña?
-                            </Link>
-                         </div>
-                         <div className="relative">
-                            <Input 
-                                type="password" 
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="bg-transparent border-0 border-b-2 border-text-ink/20 focus:border-accent-blood rounded-none px-0 pl-8 h-12 font-handwriting text-xl placeholder:text-text-ink/30 focus:ring-0 shadow-none transition-colors"
-                                required
-                            />
-                             <FaLock className="absolute left-0 top-1/2 -translate-y-1/2 text-text-ink/40" />
-                        </div>
-                    </div>
-
-                    <Button 
-                        className="w-full bg-text-ink hover:bg-black text-[#fdfbf7] font-bold py-6 mt-6 uppercase tracking-widest text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1" 
-                        type="submit" 
-                        style={{ fontFamily: 'Upheaval, sans-serif' }}
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? 'Cargando...' : 'Entrar al Sótano'}
-                    </Button>
-                </form>
-
-                 <div className="mt-8 text-center pt-6 border-t-2 border-dashed border-text-ink/10">
-                    <p className="text-text-ink/60 font-handwriting text-lg">
-                        ¿No tienes cuenta? <Link to="/register" className="text-accent-blood font-bold hover:underline decoration-2 underline-offset-2">Únete al descenso</Link>
-                    </p>
-                </div>
+            <div className="relative group">
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-[#f0e6d2] border-2 border-black/20 focus:border-black font-handwriting text-xl h-12 pl-10 placeholder:text-black/30 transition-all"
+                  icon={null}
+                />
+                <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-black/40 group-focus-within:text-black transition-colors" />
             </div>
         </div>
+
+        <Button 
+          type="submit" 
+          disabled={isSubmitting} 
+          className="w-full font-pixel text-xl py-6 mt-4 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all bg-black text-white hover:text-red-500"
+          variant="primary"
+        >
+          {isSubmitting ? 'DESCENDING...' : 'DESCEND'}
+        </Button>
+      </form>
+      
+      <div className="mt-10 text-center space-y-3">
+        <div className="text-md text-black/60 font-handwriting">
+          No seed?{' '}
+          <Link to="/register" className="font-bold text-red-800 hover:text-red-600 hover:underline decoration-wavy decoration-2">
+            START NEW RUN
+          </Link>
+        </div>
+        <div className="text-xs">
+          <Link to="/forgot-password" className="text-black/40 hover:text-black font-mono">
+           [FORGOT PASSWORD]
+          </Link>
+        </div>
       </div>
-    </div>
+
+      <div className="mt-8 flex justify-center">
+         <Link to="/" className="flex items-center gap-2 text-black/50 hover:text-black text-sm font-bold group transition-colors uppercase tracking-widest font-pixel">
+            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> 
+            Escape
+         </Link>
+      </div>
+
+    </LoginLayout>
   );
 };
 

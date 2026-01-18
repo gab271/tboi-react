@@ -161,8 +161,8 @@ export function Navbar() {
                </DropdownMenuContent>
              </DropdownMenu>
            ) : (
-             <Button variant="secondary" size="sm" onClick={() => navigate('/login')} className="font-handwriting font-bold text-lg whitespace-nowrap min-w-fit px-4 h-10">
-               Log In
+             <Button variant="secondary" size="sm" onClick={() => navigate('/login')} className="font-handwriting font-bold text-lg whitespace-nowrap min-w-fit px-4 h-10 border-2 border-transparent hover:border-red-500 animate-pulse">
+               LOG IN (START)
              </Button>
            )}
         </div>
