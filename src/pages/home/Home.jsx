@@ -2,8 +2,7 @@
 import React from 'react';
 import { HeroSection } from '../../components/home/HeroSection';
 import { MissingPoster } from '../../components/home/MissingPoster';
-import { ContentCard } from '../../components/home/ContentCard';
-import { FaSkull, FaDharmachakra, FaDiceD20, FaGhost } from 'react-icons/fa';
+import { NavigationCards } from '../../components/home/NavigationCards';
 
 export function Home() {
   return (
@@ -14,51 +13,17 @@ export function Home() {
 
       {/* Exploration Grid */}
       <section className="px-4 md:px-0">
-          <div className="flex items-center gap-4 mb-8">
-             <div className="h-1 flex-1 bg-black/10 rounded-full"></div>
-             <h3 className="font-heading text-4xl text-text-ink uppercase tracking-widest text-center">Explore the Depths</h3>
-             <div className="h-1 flex-1 bg-black/10 rounded-full"></div>
+          <div className="flex items-center gap-4 mb-12">
+             <div className="h-0 flex-1 border-t-2 border-dashed border-black/20"></div>
+             <h3 className="font-heading text-3xl md:text-4xl text-text-ink uppercase tracking-widest text-center">Explore the Depths</h3>
+             <div className="h-0 flex-1 border-t-2 border-dashed border-black/20"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
-             <ContentCard 
-                title="Items" 
-                description="700+ Items detailed" 
-                link="/items" 
-                icon={FaDharmachakra} 
-                color="bg-[#fff9e6]"
-                rotate="-rotate-1"
-             />
-             <ContentCard 
-                title="Bosses" 
-                description="Strategies & Drops" 
-                link="/bosses" 
-                icon={FaSkull} 
-                color="bg-[#ffe6e6]"
-                rotate="rotate-1"
-             />
-             <ContentCard 
-                title="Characters" 
-                description="Stats & Unlocks" 
-                link="/characters" 
-                icon={FaGhost} 
-                color="bg-[#e6f2ff]"
-                rotate="-rotate-1"
-             />
-             <ContentCard 
-                title="Builds" 
-                description="Synergy Calculator" 
-                link="/builds" 
-                icon={FaDiceD20} 
-                color="bg-[#e6ffe6]"
-                rotate="rotate-1"
-             />
-          </div>
+          <NavigationCards />
       </section>
 
       {/* Missing Poster (Login CTA) */}
       <MissingPoster />
-
     </div>
   );
 }

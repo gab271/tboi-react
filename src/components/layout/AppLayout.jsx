@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { NavHeader } from '../home/NavHeader';
+import Header from '../header/Header';
 import { Footer } from './Footer';
 import { DustParticles } from '../LoginLayout/DustParticles';
 
@@ -31,7 +31,7 @@ export function AppLayout() {
          <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.05)] pointer-events-none z-10 rounded-sm"></div>
 
          <div className="relative z-10 flex flex-col flex-1 h-full">
-            <NavHeader />
+            <Header />
             
             <main className="flex-1 mt-4 mb-12"> 
               <Outlet />
