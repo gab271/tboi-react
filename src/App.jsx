@@ -8,7 +8,7 @@ import { BossesList } from './pages/bosses/BossesList'
 import { CharactersList } from './pages/characters/CharactersList'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
-import FavoritesList from './pages/favorites/FavoritesList'
+import FavoritesPage from './pages/favorites/FavoritesPage'
 import BuildsList from './pages/builds/BuildsList'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 import ForgotPassword from './pages/auth/ForgotPassword'
@@ -44,7 +44,7 @@ function App() {
           
           <Route path="favorites" element={
             <ProtectedRoute>
-              <FavoritesList />
+              <FavoritesPage />
             </ProtectedRoute>
           } />
           
