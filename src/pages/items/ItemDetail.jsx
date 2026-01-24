@@ -12,12 +12,12 @@ import FavoriteButton from '../../components/ui/FavoriteButton';
 const QualityBadge = ({ quality }) => {
   const tier = quality ?? 0; // Default Tier 0 si null
   
-  // Colores oficiales por tier
+  // Colores oficiales por tier (tboi.com)
   const tierConfig = {
-    0: { bg: 'from-gray-600 to-gray-800', border: 'border-gray-500', text: 'text-gray-300', name: 'Mediocre' },
-    1: { bg: 'from-gray-300 to-gray-500', border: 'border-gray-400', text: 'text-white', name: 'Decent' },
-    2: { bg: 'from-green-500 to-green-700', border: 'border-green-400', text: 'text-white', name: 'Good' },
-    3: { bg: 'from-blue-500 to-blue-700', border: 'border-blue-400', text: 'text-white', name: 'Great' },
+    0: { bg: 'from-gray-500 to-gray-700', border: 'border-gray-400', text: 'text-white', name: 'Bad' },
+    1: { bg: 'from-green-500 to-green-700', border: 'border-green-400', text: 'text-white', name: 'Decent' },
+    2: { bg: 'from-blue-500 to-blue-700', border: 'border-blue-400', text: 'text-white', name: 'Good' },
+    3: { bg: 'from-purple-500 to-purple-700', border: 'border-purple-400', text: 'text-white', name: 'Great' },
     4: { bg: 'from-yellow-400 via-amber-500 to-yellow-600', border: 'border-yellow-300', text: 'text-yellow-900', name: 'God Tier', animated: true },
   };
   
