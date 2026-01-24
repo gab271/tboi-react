@@ -1,16 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchItem } from '../../lib/api';
 import { Button } from '../../components/ui/Button';
-// We don't use Card component here as it's styled for Dark Theme default. We want Paper text.
-import { Chip } from '../../components/ui/Chip';
-import { FaArrowLeft, FaHeart, FaShare, FaBookOpen } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { FaArrowLeft, FaHeart, FaShare, FaBookOpen, FaStar, FaInfoCircle } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ItemStatsTab } from '../../components/items/ItemStatsTab';
+import FavoriteButton from '../../components/ui/FavoriteButton';
+
+// Quality Badge Component con colores oficiales y animación
+const QualityBadge = ({ quality }) => {
+  const tier = quality ?? 0; // Default Tier 0 si null
+  
+  // Colores oficiales por tier
+  const tierConfig = {
+    0: { bg: 'from-gray-600 to-gray-800', border: 'border-gray-500', text: 'text-gray-300', name: 'Mediocre' },
+    1: { bg: 'from-gray-300 to-gray-500', border: 'border-gray-400', text: 'text-white', name: 'Decent' },
+    2: { bg: 'from-green-500 to-green-700', border: 'border-green-400', text: 'text-white', name: 'Good' },
+    3: { bg: 'from-blue-500 to-blue-700', border: 'border-blue-400', text: 'text-white', name: 'Great' },
+    4: { bg: 'from-yellow-400 via-amber-500 to-yellow-600', border: 'border-yellow-300', text: 'text-yellow-900', name: 'God Tier', animated: true },
+  };
+  
+  const config = tierConfig[tier] || tierConfig[0];
+  
+  return (
+    <div className="flex flex-col items-center gap-1 group">
+      <div className={`relative flex items-center justify-center w-16 h-16 bg-gradient-to-br ${config.bg} rounded-lg border-2 ${config.border} shadow-lg transform transition-transform group-hover:scale-110`}>
+        <span className={`text-3xl font-heading font-bold ${config.text} drop-shadow-md z-10`}>{tier}</span>
+        {config.animated && (
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/0 via-yellow-200/50 to-yellow-400/0 animate-shimmer rounded-lg"></div>
+        )}
+      </div>
+      <div className="text-center">
+        <span className="text-xs font-handwriting text-text-dim uppercase tracking-widest block">Quality</span>
+        <span className="text-[10px] font-bold text-text-dim/60">{config.name}</span>
+      </div>
+    </div>
+  );
+};
+
+// Tag Component
+const Tag = ({ label }) => (
+  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#d3c6aa] text-[#1c1917] border border-[#bdae93] shadow-sm font-heading hover:bg-[#c0b396] transition-colors cursor-default">
+    {label.replace(/_/g, ' ')}
+  </span>
+);
 
 export function ItemDetail() {
   const { id } = useParams(); 
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('details');
 
   const { data: item, isLoading, isError } = useQuery({
     queryKey: ['item', id],
@@ -20,103 +59,178 @@ export function ItemDetail() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-16 h-16 border-4 border-accent-blood border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-[80vh] bg-bg-paper">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-16 h-16 border-4 border-accent-blood border-t-transparent rounded-full animate-spin"></div>
+          <p className="font-handwriting text-2xl animate-pulse">Summoning Item...</p>
+        </div>
       </div>
     );
   }
 
   if (isError || !item) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <h2 className="text-3xl font-heading font-bold text-text-heading mb-4">Item Lost in the Basement</h2>
-        <p className="text-text-dim mb-8">We couldn't find the artifact you were looking for.</p>
+      <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-4 bg-bg-paper">
+        <h2 className="text-4xl font-heading font-bold text-text-heading mb-4">Item Lost in the Void</h2>
+        <p className="text-text-dim mb-8 font-handwriting text-2xl">The artifact you seek appears to have been rerolled.</p>
         <Button onClick={() => navigate('/items')}>Return to Collection</Button>
       </div>
     );
   }
 
-  const imageUrl = item.image || item.sprite_url;
+  const imageUrl = item.image || item.sprite_url || '/placeholder_item.png';
 
   return (
     <motion.div 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }}
-      className="max-w-6xl mx-auto px-4 py-8 md:py-12"
+      className="min-h-screen bg-bg-paper text-text-ink selection:bg-accent-blood selection:text-white pb-20"
     >
-      
-      {/* --- BREADCRUMBS --- */}
-      <div className="flex items-center gap-2 text-xs md:text-sm text-text-dim mb-8 font-handwriting text-lg">
-        <Link to="/" className="hover:text-text-ink hover:underline">Home</Link>
-        <span>/</span>
-        <Link to="/items" className="hover:text-text-ink hover:underline">Items</Link>
-        <span>/</span>
-        <span className="text-text-ink font-bold">{item.name}</span>
-      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        
+        {/* Breadcrumbs */}
+        <nav className="flex items-center gap-3 text-sm font-handwriting text-text-dim mb-8 text-lg">
+          <Link to="/" className="hover:text-accent-blood transition-colors">Home</Link>
+          <span>/</span>
+          <Link to="/items" className="hover:text-accent-blood transition-colors">Items</Link>
+          <span>/</span>
+          <span className="text-text-heading font-bold">{item.name}</span>
+        </nav>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
-        {/* --- LEFT COLUMN: IMAGE --- */}
-        <div className="md:col-span-5 lg:col-span-4 flex flex-col gap-6">
-          <motion.div 
-            initial={{ scale: 0.9, rotate: -2 }}
-            animate={{ scale: 1, rotate: 0 }}
-            className="aspect-square bg-[#1c1917] rounded-xl border-2 border-text-ink shadow-xl flex items-center justify-center p-8 relative overflow-hidden group"
-          >
-             {/* Background glow behind item */}
-             <div className={`absolute inset-0 opacity-20 bg-gradient-to-br from-white/10 to-transparent`} />
-             
-             <img 
-               src={imageUrl} 
-               alt={item.name} 
-               className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] z-10 transition-transform duration-500 hover:scale-110"
-             />
-          </motion.div>
-        </div>
-
-        {/* --- RIGHT COLUMN: INFO --- */}
-        <div className="md:col-span-7 lg:col-span-8 space-y-8">
-            <div>
-               <div className="flex flex-col gap-2 mb-4">
-                  <div className="flex items-center gap-2">
-                     <span className="px-3 py-1 bg-text-ink text-bg-paper text-xs font-bold uppercase tracking-widest rounded-sm font-heading">
-                        {item.item_type || 'Passive'}
-                     </span>
-                     {item.item_pool && (
-                        <span className="px-3 py-1 border border-text-ink text-text-ink text-xs font-bold uppercase tracking-widest rounded-sm font-heading">
-                           {typeof item.item_pool === 'string' ? item.item_pool : 'Treasure Room'}
-                        </span>
-                     )}
-                  </div>
-                  <h1 className="text-5xl md:text-6xl font-heading text-text-heading leading-tight uppercase tracking-tight">
-                    {item.name}
-                  </h1>
-               </div>
-               
-               <p className="text-2xl md:text-3xl font-handwriting text-text-dim italic leading-relaxed border-l-4 border-accent-gold pl-6 py-2">
-                  "{item.quote || item.description_short || '...'}"
-               </p>
-            </div>
-
-            <div className="prose prose-lg prose-p:text-text-ink prose-headings:font-heading prose-headings:text-text-heading prose-p:font-handwriting prose-p:text-2xl max-w-none">
-                <h3 className="text-2xl uppercase border-b border-text-ink/20 pb-2 mb-4">Effect</h3>
-                <p>
-                  {item.description || "No detailed description available."}
-                </p>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          
+          {/* --- LEFT COLUMN: SPRITE & QUICK STATS --- */}
+          <div className="lg:col-span-4 space-y-8">
+             {/* Main Card */}
+             <div className="bg-[#e6ddc5] rounded-lg shadow-[5px_5px_0px_0px_rgba(28,25,23,0.1)] border-2 border-[#bdae93] p-6 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-4 opacity-50 font-heading text-9xl leading-none text-[#d3c6aa] -z-0 select-none">
+                   ?
+                </div>
                 
-                {item.synergies && (
-                    <div className="mt-8 bg-white/40 p-6 rounded-lg border border-text-ink/10 -rotate-1">
-                        <h3 className="text-xl uppercase text-accent-blood mb-2 font-bold not-italic">Synergies</h3>
-                        <p>{item.synergies}</p>
+                <div className="relative z-10 flex flex-col items-center">
+                   <motion.div 
+                     whileHover={{ scale: 1.1, rotate: 5 }}
+                     transition={{ type: "spring", stiffness: 300 }}
+                     className="w-48 h-48 flex items-center justify-center mb-6 filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.2)]"
+                   >
+                     <img 
+                       src={imageUrl} 
+                       alt={item.name} 
+                       className="max-w-full max-h-full object-contain pixelated" 
+                     />
+                   </motion.div>
+
+                   <div className="flex gap-4 w-full justify-center border-t-2 border-[#d3c6aa] pt-6 mb-2">
+                       {item.item_id && (
+                           <div className="text-center">
+                               <div className="text-xs uppercase font-bold tracking-widest text-text-dim mb-1">ID</div>
+                               <div className="font-heading text-2xl">{item.item_id}</div>
+                           </div>
+                       )}
+                       <div className="w-px bg-[#d3c6aa]"></div>
+                       <QualityBadge quality={item.quality} />
+                   </div>
+                </div>
+             </div>
+
+             {/* Type & Pools */}
+             <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-[#e6ddc5] rounded border-l-4 border-accent-blood">
+                   <span className="font-heading uppercase font-bold text-sm tracking-widest text-text-dim">Type</span>
+                   <span className="font-heading font-bold text-lg capitalize">{item.type || item.item_type || 'Passive'}</span>
+                </div>
+                {item.pools && (
+                    <div className="flex items-center justify-between p-4 bg-[#e6ddc5] rounded border-l-4 border-accent-gold">
+                    <span className="font-heading uppercase font-bold text-sm tracking-widest text-text-dim">Pool</span>
+                    <span className="font-heading font-bold text-lg">{item.pools}</span>
                     </div>
                 )}
+             </div>
+
+             {/* Stats Actions */}
+             <div className="flex gap-3">
+                 <div 
+                   onClick={(e) => e.stopPropagation()} 
+                   className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                 >
+                     <FavoriteButton entityType="item" entityId={item.id} />
+                 </div>
+                 <Button variant="outline" className="flex-1 gap-2 border-2 border-text-ink">
+                     <FaShare /> Share
+                 </Button>
+             </div>
+          </div>
+
+          {/* --- RIGHT COLUMN: DETAILS --- */}
+          <div className="lg:col-span-8">
+            <div className="mb-8 border-b-2 border-[#d3c6aa] pb-8">
+               <h1 className="text-6xl md:text-7xl font-heading text-text-heading mb-2">{item.name}</h1>
+               <div className="flex flex-wrap gap-2 mb-6">
+                 {(item.tags || []).map(tag => <Tag key={tag} label={tag} />)}
+                 {(!item.tags || item.tags.length === 0) && (
+                     <span className="text-text-dim text-sm italic">No specific tags identified</span>
+                 )}
+               </div>
+               
+               {/* Quote "Pickup Text" */}
+               <blockquote className="bg-[#1c1917] text-[#e6ddc5] p-6 rounded-r-xl border-l-8 border-accent-gold shadow-lg">
+                   <p className="text-2xl md:text-3xl font-handwriting italic text-center leading-relaxed">
+                     "{item.quote || item.description || '...'}"
+                   </p>
+               </blockquote>
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-4 pt-8 border-t border-text-ink/10 border-dashed">
-                <Button variant="ghost" onClick={() => navigate(-1)} className="font-handwriting text-xl">
-                   <FaArrowLeft className="mr-2" /> Back
-                </Button>
+            {/* Content Tabs */}
+            <div className="space-y-6">
+               <div className="flex border-b border-[#bdae93]">
+                  <button 
+                    onClick={() => setActiveTab('details')}
+                    className={`px-6 py-3 font-heading font-bold text-lg tracking-wide transition-colors border-b-4 ${activeTab === 'details' ? 'border-accent-blood text-accent-blood' : 'border-transparent text-text-dim hover:text-text-ink'}`}
+                  >
+                    Effect & Notes
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('stats')}
+                    className={`px-6 py-3 font-heading font-bold text-lg tracking-wide transition-colors border-b-4 ${activeTab === 'stats' ? 'border-accent-blood text-accent-blood' : 'border-transparent text-text-dim hover:text-text-ink'}`}
+                  >
+                    Stats
+                  </button>
+               </div>
+               
+               <AnimatePresence mode="wait">
+                 {activeTab === 'details' && (
+                   <motion.div 
+                     key="details"
+                     initial={{ opacity: 0, y: 10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="prose prose-xl max-w-none text-text-ink font-handwriting"
+                   >
+                     <div className="bg-[#e6ddc5]/30 p-6 rounded-lg border border-[#bdae93]">
+                         <h3 className="font-heading font-bold text-2xl mb-4 flex items-center gap-2">
+                             <FaInfoCircle className="text-accent-gold" />
+                             Description
+                         </h3>
+                         {/* Split by newlines and render paragraphs */}
+                         {(item.description_long || item.notes || "No detailed description available.").split('\n').map((line, i) => (
+                             <p key={i} className="mb-2 last:mb-0 text-xl">{line}</p>
+                         ))}
+                     </div>
+                   </motion.div>
+                 )}
+
+                 {activeTab === 'stats' && (
+                    <motion.div 
+                        key="stats"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                    >
+                         <ItemStatsTab stats={item.stats} />
+                    </motion.div>
+                 )}
+               </AnimatePresence>
             </div>
+          </div>
+
         </div>
       </div>
     </motion.div>

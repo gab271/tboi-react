@@ -36,6 +36,13 @@
     @apply bg-transparent border-b-4 border-text-ink outline-none px-2 py-1 font-handwriting text-xl placeholder:text-text-dim placeholder:opacity-50;
     border-radius: 0;
   }
+  
+  /* Pixelated rendering for sprites */
+  .pixelated {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: pixelated;
+  }
 }
 
 @keyframes wiggle {
@@ -128,4 +135,14 @@
 @keyframes float-slow {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+/* Shimmer animation for Tier 4 quality badge */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
 }
