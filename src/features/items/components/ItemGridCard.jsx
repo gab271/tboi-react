@@ -29,10 +29,10 @@ export function ItemGridCard({ item, index, onClick }) {
       viewport={{ once: true }}
       transition={{ delay: index * 0.05 }}
       whileHover={{ 
-          scale: 1.05, 
-          rotate: rotation - 2, // Slight tilt lift
-          y: -5,
-          transition: { type: "spring", stiffness: 300, damping: 15 }
+          scale: 1.02, 
+          rotate: rotation - 1, // Slight tilt lift
+          y: -3,
+          transition: { type: "spring", stiffness: 120, damping: 20 }
       }}
       onClick={handleClick}
       className={cn(

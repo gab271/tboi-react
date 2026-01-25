@@ -10,6 +10,15 @@ export function CommandPalette({ open, onOpenChange }) {
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
 
+  // Static Routes Definition
+  const staticRoutes = [
+    { label: 'Home', path: '/', icon: <FaHome />, shortcut: 'H' },
+    { label: 'All Items', path: '/items', icon: <FaBoxOpen />, shortcut: 'I' },
+    { label: 'Bosses', path: '/bosses', icon: <FaSkull />, shortcut: 'B' },
+    { label: 'Characters', path: '/characters', icon: <FaUser />, shortcut: 'C' },
+    { label: 'Builds', path: '/builds', icon: <FaHammer />, shortcut: 'T' },
+  ];
+
   // Toggle/Escape Logic
   useEffect(() => {
     const down = (e) => {
@@ -50,6 +59,11 @@ export function CommandPalette({ open, onOpenChange }) {
 
     return () => clearTimeout(timer)
   }, [value])
+
+  // Filter static routes based on search
+  const filteredRoutes = value 
+    ? staticRoutes.filter(route => route.label.toLowerCase().includes(value.toLowerCase()))
+    : [];
 
   const runCommand = (action) => {
     // 1. Close first
@@ -128,45 +142,38 @@ export function CommandPalette({ open, onOpenChange }) {
                <Command.List className="max-h-[60vh] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-[#8f7e63] scrollbar-track-transparent">
                  
                  {/* Empty State */}
-                 {!loading && results.length === 0 && value.length >= 2 && (
+                 {!loading && results.length === 0 && filteredRoutes.length === 0 && value.length >= 2 && (
                     <div className="py-12 text-center">
                         <p className="font-handwriting text-xl text-[#8f7e63]">No scraps found for "{value}"...</p>
                     </div>
                  )}
 
+                 {/* Matching Routes (When Searching) */}
+                 {value && filteredRoutes.length > 0 && (
+                     <Command.Group heading="PAGES" className="text-xs font-heading tracking-widest text-[#5c503f] uppercase px-2 py-2 mb-2">
+                        {filteredRoutes.map((route) => (
+                             <QuickLink 
+                                key={route.path}
+                                icon={route.icon} 
+                                label={route.label} 
+                                onClick={() => runCommand(() => navigate(route.path))} 
+                            />
+                        ))}
+                     </Command.Group>
+                 )}
+
                  {/* Default Quick Links (When no search) */}
                  {!value && (
                      <Command.Group heading="QUICK TRAVEL" className="text-xs font-heading tracking-widest text-[#5c503f] uppercase px-2 py-2 mb-2">
-                        <QuickLink 
-                            icon={<FaHome />} 
-                            label="Home" 
-                            shortcut="H"
-                            onClick={() => runCommand(() => navigate('/'))} 
-                        />
-                         <QuickLink 
-                            icon={<FaBoxOpen />} 
-                            label="All Items" 
-                            shortcut="I"
-                            onClick={() => runCommand(() => navigate('/items'))} 
-                        />
-                         <QuickLink 
-                            icon={<FaSkull />} 
-                            label="Bosses" 
-                            shortcut="B"
-                            onClick={() => runCommand(() => navigate('/bosses'))} 
-                        />
-                         <QuickLink 
-                            icon={<FaUser />} 
-                            label="Characters" 
-                            shortcut="C"
-                            onClick={() => runCommand(() => navigate('/characters'))} 
-                        />
-                        <QuickLink 
-                            icon={<FaHammer />} 
-                            label="Builds" 
-                            shortcut="T"
-                            onClick={() => runCommand(() => navigate('/builds'))} 
-                        />
+                        {staticRoutes.map((route) => (
+                             <QuickLink 
+                                key={route.path}
+                                icon={route.icon} 
+                                label={route.label} 
+                                shortcut={route.shortcut}
+                                onClick={() => runCommand(() => navigate(route.path))} 
+                            />
+                        ))}
                      </Command.Group>
                  )}
 
