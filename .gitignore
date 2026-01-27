@@ -18,8 +18,12 @@ dist-ssr
 .idea
 .DS_Store
 *.suo
+
+# Ignorar sprites duplicados en public (ya existen en root /sprites)
+public/sprites
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 .env
+public/sprites

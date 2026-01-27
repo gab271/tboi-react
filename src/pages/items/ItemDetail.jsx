@@ -7,6 +7,46 @@ import { FaArrowLeft, FaHeart, FaShare, FaBookOpen, FaStar, FaInfoCircle } from 
 import { motion, AnimatePresence } from 'framer-motion';
 import { ItemStatsTab } from '../../components/items/ItemStatsTab';
 import FavoriteButton from '../../components/ui/FavoriteButton';
+import { NightmareLoading } from '../../components/ui/NightmareLoading';
+
+// Pool Icon Component
+const PoolIcon = ({ poolName }) => {
+    const normalized = poolName?.toLowerCase().trim();
+    if (!normalized) return null;
+
+    // Use specific icons if they exist in public/icons/
+    const icons = {
+        'treasure': '/icons/pool_treasure.png',
+        'shop': '/icons/pool_shop.png',
+        'boss': '/icons/pool_boss.png',
+        'devil': '/icons/pool_devil.png',
+        'angel': '/icons/pool_angel.png',
+        'secret': '/icons/pool_secret.png',
+        'library': '/icons/pool_library.png',
+        'curse': '/icons/pool_curse.png',
+    };
+    
+    // Fallback logic
+    const iconSrc = Object.entries(icons).find(([key]) => normalized.includes(key))?.[1] || '/icons/pool_default.png';
+    
+    return ( 
+        <div className="relative group" title={poolName}>
+           <img 
+             src={iconSrc} 
+             alt={poolName}
+             className="w-8 h-8 object-contain pixelated hover:scale-110 transition-transform filter drop-shadow-sm" 
+             onError={(e) => {
+               e.target.style.display = 'none'; 
+               e.target.nextSibling.style.display = 'flex';
+             }}
+           />
+           {/* Fallback Text Badge if image missing */}
+           <div className="hidden w-8 h-8 items-center justify-center bg-[#d3c6aa] border border-[#bdae93] rounded text-[10px] font-pixel text-center leading-none text-[#5a5a5a] uppercase shadow-sm" style={{display: 'none'}}>
+             {normalized.slice(0, 3)}
+           </div>
+        </div>
+    );
+};
 
 // Quality Badge Component con colores oficiales y animación
 const QualityBadge = ({ quality }) => {
@@ -58,14 +98,7 @@ export function ItemDetail() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[80vh] bg-bg-paper">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 border-4 border-accent-blood border-t-transparent rounded-full animate-spin"></div>
-          <p className="font-handwriting text-2xl animate-pulse">Summoning Item...</p>
-        </div>
-      </div>
-    );
+    return <NightmareLoading />;
   }
 
   if (isError || !item) {
@@ -140,16 +173,20 @@ export function ItemDetail() {
                    <span className="font-heading font-bold text-lg capitalize">{item.type || item.item_type || 'Passive'}</span>
                 </div>
                 {item.pools && (
-                    <div className="flex items-center justify-between p-4 bg-[#e6ddc5] rounded border-l-4 border-accent-gold">
-                    <span className="font-heading uppercase font-bold text-sm tracking-widest text-text-dim">Pool</span>
-                    <span className="font-heading font-bold text-lg">{item.pools}</span>
+                    <div className="flex flex-col gap-3 p-4 bg-[#e6ddc5] rounded border-l-4 border-accent-gold">
+                    <span className="font-heading uppercase font-bold text-sm tracking-widest text-text-dim">Pools</span>
+                    <div className="flex flex-wrap gap-3">
+                         {item.pools.split(',').map((p, i) => (
+                             <PoolIcon key={i} poolName={p.trim()} />
+                         ))}
+                    </div>
                     </div>
                 )}
              </div>
 
              {/* Stats Actions */}
              <div className="flex gap-3">
-                 <div 
+                 <div
                    onClick={(e) => e.stopPropagation()} 
                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                  >

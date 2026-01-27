@@ -65,10 +65,10 @@ const StatCard = ({ statKey, value }) => {
       </div>
       
       <div className="flex-1">
-        <div className="text-xs font-heading uppercase tracking-wider text-text-dim mb-0.5">
+        <div className="text-sm font-pixel uppercase tracking-widest text-text-dim mb-0.5">
           {config.label}
         </div>
-        <div className={`text-2xl font-bold font-heading ${valueColor}`}>
+        <div className={`text-3xl font-pixel ${valueColor}`}>
           {isPositive && '+'}
           {isMultiplier ? `×${numericValue}` : numericValue}
         </div>

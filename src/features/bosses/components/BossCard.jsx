@@ -53,7 +53,7 @@ export function BossCard({ boss, index, onClick }) {
 
       {/* Header: WANTED */}
       <div className="w-full text-center border-b-2 border-[#5c3a21] border-dashed mb-1 pb-0.5 relative">
-         <h2 className="font-heading text-2xl md:text-3xl text-[#3d2314] tracking-widest uppercase drop-shadow-sm select-none">
+         <h2 className="font-heading text-lg md:text-xl text-[#3d2314] tracking-widest uppercase drop-shadow-sm select-none break-all sm:break-normal">
             WANTED
          </h2>
       </div>
@@ -90,9 +90,9 @@ export function BossCard({ boss, index, onClick }) {
          </div>
          
          {/* Reward / Location Stamp */}
-         <div className="flex items-center justify-center gap-2 text-[#8b0000] opacity-80 rotate-1 pb-1">
-             <span className="font-heading text-lg">REWARD:</span>
-             <span className="font-handwriting font-bold border-2 border-[#8b0000] px-2 py-0.5 rounded text-sm -rotate-2">
+         <div className="flex flex-col items-center justify-center gap-1 text-[#8b0000] opacity-80 rotate-1 pb-1 mt-1">
+             <span className="font-heading text-xs md:text-sm">REWARD:</span>
+             <span className="font-handwriting font-bold border-2 border-[#8b0000] px-2 py-0.5 rounded text-xs -rotate-2 max-w-full truncate">
                  {boss.location || 'Unknown'}
              </span>
          </div>
