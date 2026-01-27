@@ -32,7 +32,7 @@ export const fetchBosses = async ({ page = 0, search = '', location = 'all' } = 
   return data;
 };
 
-export const fetchItems = async ({ page = 0, search = '', type = 'all', ids = [] }) => {
+export const fetchItems = async ({ page = 0, search = '', type = 'all', ids = [], quality = [] }) => {
   // Map 0-indexed page to 1-indexed
   const params = new URLSearchParams({
     page: page + 1,
@@ -42,6 +42,7 @@ export const fetchItems = async ({ page = 0, search = '', type = 'all', ids = []
   if (search) params.append('search', search);
   if (type && type !== 'all') params.append('type', type);
   if (ids && ids.length > 0) params.append('ids', ids.join(','));
+  if (quality && quality.length > 0) params.append('quality', quality.join(','));
 
   const { data } = await api.get(`/api/items?${params.toString()}`);
   return data;
