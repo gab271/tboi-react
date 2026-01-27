@@ -25,7 +25,7 @@ function useDebouncedValue(value, delay) {
 export function ItemsList() {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
-  const [activeFilters, setActiveFilters] = useState({ type: 'all' });
+  const [activeFilters, setActiveFilters] = useState({ type: 'all', quality: [] });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const debouncedSearch = useDebouncedValue(search, 500);
@@ -37,11 +37,14 @@ export function ItemsList() {
 
   // Data Fetching
   const { data, isLoading } = useQuery({
-      queryKey: ['items', page, debouncedSearch, activeFilters.type],
+      queryKey: ['items', page, debouncedSearch, activeFilters.type, activeFilters.quality],
       queryFn: () => fetchItems({ 
         page, 
         search: debouncedSearch, 
-        type: activeFilters.type 
+        type: activeFilters.type,
+        quality: activeFilters.quality && activeFilters.quality.length > 0 
+          ? activeFilters.quality.join(',') 
+          : undefined
       }),
       placeholderData: (prev) => prev,
       staleTime: 5000 

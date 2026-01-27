@@ -7,7 +7,28 @@ export function FilterSidebar({ activeFilters, setActiveFilters, className }) {
     setActiveFilters(prev => ({ ...prev, type: prev.type === type ? 'all' : type }));
   };
 
+  const toggleQuality = (quality) => {
+    setActiveFilters(prev => {
+      const currentQualities = prev.quality || [];
+      const isActive = currentQualities.includes(quality);
+      
+      return {
+        ...prev,
+        quality: isActive 
+          ? currentQualities.filter(q => q !== quality)
+          : [...currentQualities, quality]
+      };
+    });
+  };
+
   const types = ['passive', 'active', 'trinket', 'card', 'pill', 'rune'];
+  const qualities = [
+    { value: 4, label: 'Quality 4', emoji: '⭐⭐⭐⭐', color: 'text-yellow-400' },
+    { value: 3, label: 'Quality 3', emoji: '⭐⭐⭐', color: 'text-orange-400' },
+    { value: 2, label: 'Quality 2', emoji: '⭐⭐', color: 'text-blue-400' },
+    { value: 1, label: 'Quality 1', emoji: '⭐', color: 'text-gray-400' },
+    { value: 0, label: 'Quality 0', emoji: '💀', color: 'text-red-600' }
+  ];
 
   return (
     <aside className={cn("relative w-full md:w-64 flex-shrink-0 z-20", className)}>
@@ -56,13 +77,25 @@ export function FilterSidebar({ activeFilters, setActiveFilters, className }) {
                         </div>
                     </div>
 
-                    {/* Additional Filter Groups (Placeholders for now) */}
+                    {/* Quality Filter - NOW FUNCTIONAL */}
                     <div>
                         <h4 className="font-handwriting text-lg font-bold text-black/60 mb-3 underline decoration-wavy decoration-accent-blood/30">
-                           Quality
+                           Quality Tier
                         </h4>
-                        <div className="flex flex-col gap-2 pl-2 opacity-50 pointer-events-none">
-                             <span className="font-handwriting text-sm italic">Coming soon...</span>
+                        <div className="flex flex-col gap-2 pl-2">
+                             {qualities.map(({ value, label, emoji, color }) => (
+                                 <Checkbox 
+                                    key={value}
+                                    label={
+                                        <span className="flex items-center gap-2">
+                                            <span className={color}>{emoji}</span>
+                                            <span>{label}</span>
+                                        </span>
+                                    }
+                                    checked={(activeFilters.quality || []).includes(value)}
+                                    onChange={() => toggleQuality(value)}
+                                 />
+                             ))}
                         </div>
                     </div>
                 </div>
