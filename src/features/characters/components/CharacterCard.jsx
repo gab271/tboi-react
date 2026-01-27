@@ -15,9 +15,9 @@ export const CharacterCard = ({ character, isActive, isTainted, onSelect }) => {
             <motion.div 
                 layoutId={`char-card-${character.id}`}
                 className={cn(
-                    "relative w-72 h-96",
+                    "relative w-[260px] h-[360px] md:w-[320px] md:h-[480px]", // Increased height for laptop/desktop
                     "bg-[#f4e4bc] shadow-lg",
-                    "flex flex-col items-center pt-10 pb-6",
+                    "flex flex-col items-center pt-10 md:pt-14 pb-4 md:pb-8",
                     isTainted ? "bg-stone-400 border-t-4 border-red-900/50" : "bg-[#f4e4bc]",
                     isActive && "drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
                 )}
@@ -33,18 +33,18 @@ export const CharacterCard = ({ character, isActive, isTainted, onSelect }) => {
                 <div className="absolute inset-0 bg-noise opacity-10 pointer-events-none"></div>
                 {isTainted && <div className="absolute inset-0 bg-gradient-to-b from-red-900/10 to-black/20 pointer-events-none mix-blend-multiply"></div>}
 
-                {/* Name Header (Handwritten) */}
-                <h2 className={cn(
-                    "font-heading text-4xl mb-6 tracking-widest uppercase z-10",
-                    isTainted ? "text-red-900 drop-shadow-[2px_2px_0_#000]" : "text-black"
-                )}>
-                    {character.name}
-                </h2>
+                {/* Completion Note (Post-it) - Pinned to Top Right */}
+                <div className="absolute top-4 right-1 sm:top-6 sm:right-2 z-30 transform rotate-3 transition-transform origin-top-left scale-[0.7] sm:scale-90">
+                    {/* Pin visual */}
+                    <div className="absolute -top-2 left-1/2 w-3 h-3 bg-red-800 rounded-full border border-black z-40 shadow-sm"></div>
+                    <CompletionMarks isTainted={isTainted} />
+                </div>
 
                 {/* Character Sprite Container */}
-                <div className="relative w-48 h-48 md:w-56 md:h-56 flex items-center justify-center mb-8 z-10 group">
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 flex items-center justify-center mb-2 sm:mb-4 z-20 group -ml-2 sm:-ml-4"> 
+                    
                     {/* Shadow under sprite */}
-                    <div className="absolute bottom-4 w-32 h-8 bg-black/20 blur-xl rounded-[100%]"></div>
+                    <div className="absolute bottom-2 w-20 h-4 sm:w-24 sm:h-6 bg-black/20 blur-xl rounded-[100%]"></div>
                     
                     {character.image ? (
                         <motion.img 
@@ -52,27 +52,29 @@ export const CharacterCard = ({ character, isActive, isTainted, onSelect }) => {
                             alt={character.name}
                             className={cn(
                                 "w-full h-full object-contain filter drop-shadow-lg",
-                                isTainted && "brightness-90 contrast-125 sepia-[0.3] hue-rotate-[-20deg]" // Fake tainted effect if image is same
+                                isTainted && "brightness-90 contrast-125 sepia-[0.3]" 
                             )}
-                            animate={isActive ? { y: [0, -10, 0] } : {}}
+                            animate={isActive ? { y: [0, -5, 0] } : {}}
                             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
                         />
                     ) : (
-                        <div className="text-6xl text-gray-300">?</div>
+                        <div className="text-4xl sm:text-6xl text-gray-300">?</div>
                     )}
                 </div>
 
+                {/* Name Header - MOVED BELOW IMAGE */}
+                <h2 className={cn(
+                    "font-heading text-2xl sm:text-3xl mb-1 sm:mb-2 tracking-widest uppercase z-20 text-center -ml-2 sm:-ml-4",
+                    isTainted ? "text-red-900 drop-shadow-[2px_2px_0_#000]" : "text-black"
+                )}>
+                    {character.name}
+                </h2>
+
                 {/* "Who Am I?" Text or Flavor */}
-                <div className="font-handwriting text-xl text-center px-8 opacity-70 rotate-[-1deg] text-black">
-                    "{isTainted ? "The broken soul..." : "The lost child..."}"
+                <div className="font-handwriting text-base sm:text-lg text-center px-4 sm:px-8 opacity-70 rotate-[-1deg] text-black/60 -ml-2 sm:-ml-4">
+                    "{isTainted ? "The broken soul" : "The lost child"}"
                 </div>
-                
-                {/* Completion Note (Post-it) - Pinned to Top Right */}
-                <div className="absolute top-4 -right-6 md:-right-8 z-30 transform rotate-6 hover:rotate-3 transition-transform origin-top-left">
-                    {/* Pin visual */}
-                    <div className="absolute -top-2 left-1/2 w-3 h-3 bg-red-800 rounded-full border border-black z-40 shadow-sm"></div>
-                    <CompletionMarks isTainted={isTainted} />
-                </div>
+
 
                 {/* View Details Button (Only Visible when Active) */}
                 <AnimatePresence>

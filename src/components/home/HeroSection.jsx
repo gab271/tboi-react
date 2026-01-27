@@ -65,20 +65,20 @@ export function HeroSection() {
 
             {/* Right Visual - "The Polaroid" */}
             <motion.div 
-                className="relative flex justify-center items-center lg:justify-end pr-8"
+                className="relative flex justify-center items-center lg:justify-end pr-0 lg:pr-8 mt-12 lg:mt-0"
                 initial={{ opacity: 0, scale: 0.9, rotate: 5 }}
                 animate={{ opacity: 1, scale: 1, rotate: 6 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
             >
                 {/* Polaroid Frame */}
-                <div className="relative bg-white p-4 pb-28 shadow-[0_20px_50px_rgba(0,0,0,0.4)] rotate-3 hover:rotate-0 transition-transform duration-500 max-w-md w-full border-2 border-gray-300">
+                <div className="relative bg-white p-3 md:p-4 pb-24 md:pb-28 shadow-[0_20px_50px_rgba(0,0,0,0.4)] rotate-3 hover:rotate-0 transition-transform duration-500 max-w-[280px] md:max-w-md w-full border-2 border-gray-300 mx-auto">
                     <div className="bg-[#0a0a0a] w-full aspect-square overflow-hidden border-2 border-[#1a1a1a] relative group cursor-pointer" onClick={() => navigate('/items')}>
                         {/* Static / Noise Overlay */}
                         <div className="absolute inset-0 bg-noise opacity-30 pointer-events-none z-10"></div>
                         
                         {/* Hand Drawn 'X' Center Mark */}
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 bg-black/40 backdrop-blur-sm">
-                             <span className="text-8xl text-accent-blood font-handwriting font-bold drop-shadow-md animate-pulse">?</span>
+                             <span className="text-6xl md:text-8xl text-accent-blood font-handwriting font-bold drop-shadow-md animate-pulse">?</span>
                         </div>
 
                         {/* Placeholder Content */}

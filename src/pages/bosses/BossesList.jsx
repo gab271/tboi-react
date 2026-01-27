@@ -59,36 +59,38 @@ export function BossesList() {
     <div className="min-h-full p-4 md:p-8 relative">
       
       {/* Header: "BOUNTY BOARD" */}
-      <section className="mb-12 text-center relative z-20">
-         <div className="inline-block relative">
+      <section className="mb-8 md:mb-12 text-center relative z-20 px-4">
+         <div className="inline-block relative max-w-full">
              <div className="absolute inset-0 bg-black/80 blur-xl transform scale-110 rounded-full"></div>
-             <h1 className="relative font-heading text-6xl md:text-8xl text-[#d4c5a9] tracking-widest drop-shadow-[4px_4px_0_#000] rotate-[-2deg] border-b-8 border-double border-[#8b0000] pb-2">
+             <h1 className="relative font-heading text-3xl sm:text-5xl md:text-6xl lg:text-8xl text-[#d4c5a9] tracking-widest drop-shadow-[4px_4px_0_#000] rotate-[-2deg] border-b-4 md:border-b-8 border-double border-[#8b0000] pb-2 break-words">
                  THE BOUNTY BOARD
              </h1>
              {/* Nails/Bolts */}
-             <div className="absolute -top-4 -left-8 w-6 h-6 rounded-full bg-[#1a1a1a] border-2 border-[#555] shadow-lg"></div>
-             <div className="absolute -top-4 -right-8 w-6 h-6 rounded-full bg-[#1a1a1a] border-2 border-[#555] shadow-lg"></div>
+             <div className="absolute -top-4 -left-4 md:-left-8 w-4 h-4 md:w-6 md:h-6 rounded-full bg-[#1a1a1a] border-2 border-[#555] shadow-lg"></div>
+             <div className="absolute -top-4 -right-4 md:-right-8 w-4 h-4 md:w-6 md:h-6 rounded-full bg-[#1a1a1a] border-2 border-[#555] shadow-lg"></div>
          </div>
-         <p className="mt-4 font-handwriting text-2xl text-[#f4e4bc] drop-shadow-md opacity-80 rotate-1">
+         <p className="mt-4 font-handwriting text-lg md:text-2xl text-[#f4e4bc] drop-shadow-md opacity-80 rotate-1">
              Wanted Dead (preferably) or Alive
          </p>
       </section>
 
-      <div className="flex flex-col lg:flex-row gap-12 relative z-10">
+      <div className="flex flex-col lg:flex-row gap-6 md:gap-12 relative z-10">
         
-        {/* Sidebar: Map (Paper Style) */}
-        <LocationSidebar 
-            activeFilters={activeFilters} 
-            setActiveFilters={setActiveFilters} 
-        />
+        {/* Sidebar: Map (Paper Style) - HIDDEN ON MOBILE/TABLET */}
+        <div className="hidden lg:block">
+            <LocationSidebar 
+                activeFilters={activeFilters} 
+                setActiveFilters={setActiveFilters} 
+            />
+        </div>
 
-        {/* Mobile Filter Toggle */}
-         <div className="lg:hidden flex justify-between items-center mb-6">
+        {/* Mobile Filter Toggle - VISIBLE ON MOBILE (< lg) */}
+         <div className="lg:hidden flex flex-col gap-4 mb-6">
             <Button 
                 onClick={() => setShowMobileFilters(true)}
-                className="flex items-center gap-2 font-handwriting font-bold text-xl border-2 border-[#4a2c10] bg-[#f4e4bc] text-black shadow-[4px_4px_0_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none"
+                className="w-full flex items-center justify-center gap-2 font-handwriting font-bold text-xl border-2 border-[#4a2c10] bg-[#f4e4bc] text-black shadow-[4px_4px_0_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none py-4"
             >
-                <FaFilter /> Map / Locations
+                <FaFilter /> 🗺️ Show Map / Filter Locations
             </Button>
         </div>
 
@@ -156,7 +158,7 @@ export function BossesList() {
                    </div>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16 px-4 pb-20 perspective-[1000px]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-0 sm:px-2 pb-20 perspective-[1000px]">
                     <AnimatePresence mode="popLayout">
                         {bossList.map((boss, index) => (
                            <BossCard 
@@ -170,7 +172,7 @@ export function BossesList() {
                     
                     {bossList.length === 0 && (
                         <div className="col-span-full text-center py-20">
-                            <h3 className="font-heading text-4xl text-[#f4e4bc]/50">No bounties found.</h3>
+                            <h3 className="font-heading text-2xl md:text-4xl text-[#f4e4bc]/50">No bounties found.</h3>
                         </div>
                     )}
                 </div>

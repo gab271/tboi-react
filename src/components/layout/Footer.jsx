@@ -30,11 +30,11 @@ export function Footer() {
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-[128px] pointer-events-none -translate-y-1/2" />
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-[100px] pointer-events-none translate-y-1/2" />
 
-        <div className="container mx-auto px-12 pt-16 relative z-10">
+        <div className="container mx-auto px-4 sm:px-12 pt-16 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
                 
                 {/* Brand Column */}
-                <div className="md:col-span-4 space-y-6">
+                <div className="md:col-span-4 space-y-6 flex flex-col items-center md:items-start text-center md:text-left">
                     <div className="flex items-center gap-3">
                         <div className="h-12 w-12 flex items-center justify-center rounded-lg bg-gradient-to-br from-gold/5 to-transparent border border-gold/10 text-gold shadow-[0_0_15px_rgba(234,179,8,0.1)] overflow-hidden">
                            <img src="/isaac.png" alt="Isaac" className="w-full h-full object-contain opacity-80" />

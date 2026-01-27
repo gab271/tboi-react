@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../../lib/utils'
 import { Button } from '../ui/Button'
-import { FaSearch, FaUserCircle, FaSignOutAlt, FaHeart } from 'react-icons/fa'
+import { FaSearch, FaUserCircle, FaSignOutAlt, FaHeart, FaBars, FaTimes } from 'react-icons/fa'
 import { CommandPalette } from './CommandPalette'
 import { useAuth } from '../../hooks/useAuth';
 import { 
@@ -19,6 +19,7 @@ import { useIsAdmin } from '../../hooks/useAdmin'
 export function Navbar() {
   const { t } = useTranslation()
   const [showCmd, setShowCmd] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
   
   const { user, signOut } = useAuth();
@@ -59,45 +60,76 @@ export function Navbar() {
     <>
       <CommandPalette open={showCmd} onOpenChange={setShowCmd} />
 
-      <nav className="w-full mb-6 border-b-[3px] border-text-ink pb-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        
-        {/* Logo / Title Area */}
-        <NavLink to="/" className="group">
-            <h1 className="text-4xl md:text-5xl font-heading text-text-heading wiggle inline-block relative">
-               TBOI <span className="text-accent-blood">Codex</span>
-               {/* Sketchy Underline */}
-               <svg className="absolute -bottom-2 left-0 w-full h-3 text-text-ink" viewBox="0 0 100 10" preserveAspectRatio="none">
-                  <path d="M0,5 Q50,10 100,5" stroke="currentColor" strokeWidth="2" fill="none" />
-               </svg>
-            </h1>
-        </NavLink>
+      <nav className="w-full mb-6 border-b-[3px] border-text-ink pb-4 relative">
+        <div className="flex flex-row items-center justify-between gap-4">
+            
+            {/* Logo / Title Area */}
+            <NavLink to="/" className="group z-50">
+                <h1 className="text-3xl md:text-5xl font-heading text-text-heading wiggle inline-block relative">
+                TBOI <span className="text-accent-blood">Codex</span>
+                {/* Sketchy Underline */}
+                <svg className="absolute -bottom-2 left-0 w-full h-3 text-text-ink" viewBox="0 0 100 10" preserveAspectRatio="none">
+                    <path d="M0,5 Q50,10 100,5" stroke="currentColor" strokeWidth="2" fill="none" />
+                </svg>
+                </h1>
+            </NavLink>
 
-        {/* Doodle Links */}
-        <div className="flex items-center gap-6 font-handwriting text-2xl">
-           {links.map(link => (
-              <NavLink 
-                 key={link.path} 
-                 to={link.path}
-                 className={({ isActive }) => cn(
-                    "relative px-2 transition-transform font-bold group",
-                    isActive ? "text-accent-blood scale-110 -rotate-2" : "text-text-ink hover:text-accent-blood hover:scale-105"
-                 )}
-              >
-                 {({ isActive }) => (
-                    <>
-                       {link.name}
-                       {/* Shaky Hand-drawn Underline on Hover/Active */}
-                       <svg className={cn(
-                           "absolute -bottom-2 left-0 w-full h-2 text-current transition-opacity",
-                           isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                       )} viewBox="0 0 100 10" preserveAspectRatio="none">
-                           <path d="M0,5 Q25,8 50,5 T100,6" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                       </svg>
-                    </>
-                 )}
-              </NavLink>
-           ))}
+            {/* Desktop Links */}
+            <div className="hidden md:flex items-center gap-6 font-handwriting text-2xl">
+            {links.map(link => (
+                <NavLink 
+                    key={link.path} 
+                    to={link.path}
+                    className={({ isActive }) => cn(
+                        "relative px-2 transition-transform font-bold group",
+                        isActive ? "text-accent-blood scale-110 -rotate-2" : "text-text-ink hover:text-accent-blood hover:scale-105"
+                    )}
+                >
+                    {({ isActive }) => (
+                        <>
+                        {link.name}
+                        {/* Shaky Hand-drawn Underline on Hover/Active */}
+                        <svg className={cn(
+                            "absolute -bottom-2 left-0 w-full h-2 text-current transition-opacity",
+                            isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                        )} viewBox="0 0 100 10" preserveAspectRatio="none">
+                            <path d="M0,5 Q25,8 50,5 T100,6" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                        </svg>
+                        </>
+                    )}
+                </NavLink>
+            ))}
+            </div>
+            
+            {/* Mobile Menu Toggle */}
+            <button 
+                className="md:hidden z-50 text-2xl p-2" 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+                {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+            </button>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {mobileMenuOpen && (
+            <div className="fixed inset-0 z-40 bg-bg-paper flex flex-col items-center justify-center gap-8 md:hidden">
+                <div className="absolute inset-0 bg-noise opacity-10 pointer-events-none"></div>
+                {links.map(link => (
+                    <NavLink 
+                        key={link.path} 
+                        to={link.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={({ isActive }) => cn(
+                            "font-heading text-3xl uppercase tracking-widest",
+                            isActive ? "text-accent-blood border-b-4 border-accent-blood" : "text-text-ink"
+                        )}
+                    >
+                        {link.name}
+                    </NavLink>
+                ))}
+            </div>
+        )}
+
 
         {/* Actions (Search, Favorites, User) */}
         <div className="flex items-center gap-4">
