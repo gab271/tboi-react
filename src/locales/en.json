@@ -26,5 +26,121 @@
   "home": {
     "welcome": "Welcome to TBOI Codex",
     "description": "Your ultimate guide to The Binding of Isaac"
+  },
+  "builds": {
+    "title": "Community Builds",
+    "subtitle": "Discover & share powerful synergies",
+    "createBuild": "Share Build",
+    "loginToShare": "Log in to share your build",
+    "noPosts": "No builds yet",
+    "noPostsDescription": "Be the first to share a build!",
+    "loadMore": "Load more",
+    "loading": "Loading builds...",
+    "filters": {
+      "title": "Filters",
+      "search": "Search builds...",
+      "sort": "Sort by",
+      "character": "Character",
+      "difficulty": "Difficulty",
+      "type": "Build Type",
+      "tags": "Tags",
+      "clearAll": "Clear filters",
+      "anyCharacter": "Any character",
+      "anyDifficulty": "Any difficulty",
+      "anyType": "Any type"
+    },
+    "sort": {
+      "newest": "Newest",
+      "top": "Top Rated",
+      "hot": "Hot",
+      "discussed": "Most Discussed"
+    },
+    "card": {
+      "by": "by",
+      "comments": "comments",
+      "saves": "saves"
+    },
+    "detail": {
+      "backToFeed": "Back to builds",
+      "items": "Items in this build",
+      "noItems": "No items specified",
+      "description": "Description",
+      "media": "Screenshots & GIFs",
+      "comments": "Comments",
+      "share": "Share",
+      "save": "Save",
+      "saved": "Saved",
+      "report": "Report",
+      "block": "Block user",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this build?"
+    },
+    "create": {
+      "title": "Share a Build",
+      "titlePlaceholder": "Give your build a catchy title",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the synergy, strategy, and why this build is powerful...",
+      "character": "Character",
+      "difficulty": "Difficulty",
+      "gameVersion": "Game Version",
+      "buildType": "Build Type",
+      "items": "Items",
+      "itemsHelp": "Search and add items to your build",
+      "searchItems": "Search items...",
+      "tags": "Tags",
+      "tagsHelp": "Add tags to help others find your build",
+      "addTag": "Add tag",
+      "media": "Media",
+      "mediaHelp": "Upload screenshots or GIFs (max 5, 5MB each)",
+      "dragDrop": "Drag & drop or click to upload",
+      "submit": "Share Build",
+      "submitting": "Sharing...",
+      "validation": {
+        "titleRequired": "Title is required",
+        "titleTooLong": "Title must be less than 120 characters",
+        "descriptionRequired": "Description is required",
+        "descriptionTooLong": "Description must be less than 5000 characters",
+        "itemsRequired": "Add at least 2 items",
+        "tooManyItems": "Maximum 20 items allowed",
+        "tooManyTags": "Maximum 8 tags allowed",
+        "tooManyMedia": "Maximum 5 media files allowed"
+      }
+    },
+    "comments": {
+      "title": "Comments",
+      "placeholder": "Write a comment...",
+      "submit": "Post",
+      "reply": "Reply",
+      "replyTo": "Replying to",
+      "cancelReply": "Cancel",
+      "noComments": "No comments yet",
+      "beFirst": "Be the first to comment!",
+      "loginToComment": "Log in to comment",
+      "deleted": "[deleted]",
+      "edited": "(edited)",
+      "loadReplies": "Load replies"
+    },
+    "report": {
+      "title": "Report Content",
+      "reason": "Reason for report",
+      "details": "Additional details (optional)",
+      "detailsPlaceholder": "Provide more context...",
+      "submit": "Submit Report",
+      "success": "Report submitted. Thank you!",
+      "reasons": {
+        "spam": "Spam or advertising",
+        "harassment": "Harassment or hate speech",
+        "inappropriate": "Inappropriate content",
+        "misinformation": "Misinformation",
+        "other": "Other"
+      }
+    },
+    "loginRequired": {
+      "title": "Login Required",
+      "message": "You need to be logged in to perform this action.",
+      "login": "Log In",
+      "register": "Create Account"
+    }
   }
 }

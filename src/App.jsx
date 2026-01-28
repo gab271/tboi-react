@@ -8,8 +8,8 @@ import { CharactersList } from './pages/characters/CharactersList'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import FavoritesPage from './pages/favorites/FavoritesPage'
-import BuildsList from './pages/builds/BuildsList'
 import ProtectedRoute from './components/layout/ProtectedRoute'
+import { BuildsPage, BuildDetailPage, CreateBuildPage } from './features/builds'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
 import Account from './pages/account/Account'
@@ -39,7 +39,16 @@ function App() {
           <Route path="bosses" element={<BossesList />} />
           <Route path="characters" element={<CharactersList />} />
           
-          <Route path="builds" element={<BuildsList />} />
+          {/* Builds - Public feed */}
+          <Route path="builds" element={<BuildsPage />} />
+          <Route path="builds/:id" element={<BuildDetailPage />} />
+          
+          {/* Builds - Protected create */}
+          <Route path="builds/new" element={
+            <ProtectedRoute>
+              <CreateBuildPage />
+            </ProtectedRoute>
+          } />
           
           <Route path="favorites" element={
             <ProtectedRoute>

@@ -1,255 +1,633 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '../../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import AvatarUploader from '../../components/account/AvatarUploader';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/Tabs';
-import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
+import { motion } from 'framer-motion';
+import { 
+  FaEnvelope, 
+  FaKey, 
+  FaUser, 
+  FaHeart, 
+  FaStar,
+  FaBomb,
+  FaUpload,
+  FaSkull,
+  FaExclamationTriangle,
+  FaTrophy,
+  FaBookmark
+} from 'react-icons/fa';
 
-export default function Account() {
-    const { user: _user, session, updatePassword, signOut } = useAuth();
-    const navigate = useNavigate();
+// ═══════════════════════════════════════════════════════════════
+// TBOI-STYLED AVATAR COMPONENT (Character Portrait Frame)
+// ═══════════════════════════════════════════════════════════════
+function IsaacAvatar({ url, size = 120, onUpload, uploading }) {
+  const [avatarUrl, setAvatarUrl] = useState(null);
+  const { user } = useAuth();
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (url) downloadImage(url);
+  }, [url]);
+
+  async function downloadImage(path) {
+    try {
+      const { data, error } = await supabase.storage.from('avatars').download(path);
+      if (error) throw error;
+      setAvatarUrl(URL.createObjectURL(data));
+    } catch (error) {
+      console.log('Error downloading image:', error.message);
+    }
+  }
+
+  const uploadAvatar = async (event) => {
+    if (!event.target.files || event.target.files.length === 0) return;
     
-    // Profile State
-    const [loading, setLoading] = useState(false);
-    const [username, setUsername] = useState('');
-    const [avatarUrl, setAvatarUrl] = useState(null);
-    const [profileMessage, setProfileMessage] = useState(null);
+    const file = event.target.files[0];
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${user.id}/${Math.random()}.${fileExt}`;
 
-    // Password State
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [securityMessage, setSecurityMessage] = useState(null);
+    try {
+      const { error } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
+      if (error) throw error;
+      onUpload(filePath);
+      
+      const { data } = await supabase.storage.from('avatars').download(filePath);
+      setAvatarUrl(URL.createObjectURL(data));
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
-    // Initial Fetch
-    useEffect(() => {
-        let ignore = false;
-        async function getProfile() {
-            setLoading(true);
-            const { user } = session || {};
-            if (!user) return;
+  return (
+    <div className="flex flex-col items-center gap-3">
+      {/* Character Portrait Frame - Playing Card Style */}
+      <div 
+        className="relative bg-[#1a1a1a] border-4 border-black rounded-lg overflow-hidden"
+        style={{ 
+          width: size, 
+          height: size,
+          boxShadow: '6px 6px 0px 0px rgba(0,0,0,1)',
+        }}
+      >
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt="Avatar"
+            className="w-full h-full object-cover pixelated"
+          />
+        ) : (
+          /* Isaac Silhouette Placeholder - "Curse of the Unknown" style */
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a]">
+            <svg viewBox="0 0 64 64" className="w-3/4 h-3/4 opacity-40">
+              {/* Simplified Isaac head shape */}
+              <ellipse cx="32" cy="32" rx="24" ry="26" fill="#444" />
+              {/* Eyes */}
+              <ellipse cx="24" cy="30" rx="4" ry="5" fill="#222" />
+              <ellipse cx="40" cy="30" rx="4" ry="5" fill="#222" />
+              {/* Tear */}
+              <ellipse cx="24" cy="38" rx="2" ry="3" fill="#5588cc" opacity="0.7" />
+              {/* Mouth */}
+              <ellipse cx="32" cy="42" rx="4" ry="2" fill="#222" />
+              {/* Question mark */}
+              <text x="32" y="56" textAnchor="middle" fill="#666" fontSize="10" fontFamily="monospace">?</text>
+            </svg>
+          </div>
+        )}
+        
+        {/* Corner decorations - like a playing card */}
+        <div className="absolute top-1 left-1 text-[8px] font-pixel text-white/30">♠</div>
+        <div className="absolute top-1 right-1 text-[8px] font-pixel text-white/30">♠</div>
+        <div className="absolute bottom-1 left-1 text-[8px] font-pixel text-white/30 rotate-180">♠</div>
+        <div className="absolute bottom-1 right-1 text-[8px] font-pixel text-white/30 rotate-180">♠</div>
+      </div>
+      
+      {/* Upload Button - Retro style */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={uploadAvatar}
+        disabled={uploading}
+        className="hidden"
+      />
+      <button
+        onClick={() => fileInputRef.current?.click()}
+        disabled={uploading}
+        className="flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] text-white font-pixel text-sm border-2 border-black hover:bg-[#2a2a2a] transition-colors shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px]"
+      >
+        <FaUpload className="w-3 h-3" />
+        {uploading ? 'Subiendo...' : 'Cambiar'}
+      </button>
+    </div>
+  );
+}
 
-            const { data, error: _error } = await supabase
-                .from('profiles')
-                .select(`username, avatar_url`)
-                .eq('id', user.id)
-                .single();
+// ═══════════════════════════════════════════════════════════════
+// TBOI-STYLED INPUT (Cardboard/Paper Box Style)
+// ═══════════════════════════════════════════════════════════════
+function IsaacInput({ icon: Icon, label, error, ...props }) {
+  return (
+    <div className="space-y-2">
+      <label className="flex items-center gap-2 font-heading text-sm uppercase tracking-wide text-black">
+        {Icon && <Icon className="w-4 h-4 text-accent-blood" />}
+        {label}
+      </label>
+      <input
+        {...props}
+        className={`
+          w-full px-4 py-3 
+          bg-[#EBE1CE] 
+          border-2 border-black 
+          font-handwriting text-lg text-black
+          placeholder:text-black/40
+          focus:outline-none focus:border-[#5a1b1b] focus:ring-0
+          transition-colors
+          shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)]
+          ${props.disabled ? 'opacity-60 cursor-not-allowed bg-[#d4cfc2]' : ''}
+          ${error ? 'border-accent-blood' : ''}
+        `}
+      />
+      {error && <p className="text-sm text-accent-blood font-handwriting">{error}</p>}
+    </div>
+  );
+}
 
-            if (!ignore) {
-                if (data) {
-                    setUsername(data.username || '');
-                    setAvatarUrl(data.avatar_url);
-                }
-                setLoading(false);
-            }
+// ═══════════════════════════════════════════════════════════════
+// TBOI-STYLED BUTTON (Game Menu Style)
+// ═══════════════════════════════════════════════════════════════
+function IsaacButton({ children, variant = 'primary', className = '', ...props }) {
+  const variants = {
+    primary: 'bg-[#1a1a1a] text-white hover:bg-accent-blood border-black',
+    danger: 'bg-[#5a1b1b] text-white hover:bg-red-800 border-[#3a0a0a]',
+    ghost: 'bg-transparent text-black hover:bg-black/10 border-black/50',
+  };
+
+  return (
+    <button
+      {...props}
+      className={`
+        px-6 py-3 
+        font-pixel text-sm uppercase tracking-wider
+        border-2 
+        transition-all duration-150
+        shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+        hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
+        hover:translate-x-[2px] hover:translate-y-[2px]
+        active:shadow-none active:translate-x-[4px] active:translate-y-[4px]
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-x-0 disabled:hover:translate-y-0
+        flex items-center justify-center
+        ${variants[variant]}
+        ${className}
+      `}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PLAYER STATS PANEL (Gamification with TBOI icons)
+// ═══════════════════════════════════════════════════════════════
+function PlayerStats({ memberSince, buildsCount = 0, votesGiven = 0, savedBuilds = 0 }) {
+  const stats = [
+    { icon: FaHeart, label: 'Miembro desde', value: memberSince, color: 'text-red-500' },
+    { icon: FaTrophy, label: 'Builds', value: buildsCount, color: 'text-yellow-500' },
+    { icon: FaStar, label: 'Votos dados', value: votesGiven, color: 'text-yellow-400' },
+    { icon: FaBookmark, label: 'Guardados', value: savedBuilds, color: 'text-blue-400' },
+  ];
+
+  return (
+    <div className="bg-[#f4f1ea] border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] transform rotate-1">
+      <h3 className="font-heading text-lg uppercase mb-4 pb-2 border-b-2 border-dashed border-black/40 flex items-center gap-2">
+        <FaBomb className="text-black/60" />
+        Player Stats
+      </h3>
+      <div className="space-y-3">
+        {stats.map(({ icon: Icon, label, value, color }) => (
+          <div key={label} className="flex items-center gap-3">
+            <Icon className={`w-5 h-5 ${color}`} />
+            <span className="font-handwriting text-black/70">{label}:</span>
+            <span className="font-pixel text-sm text-black ml-auto">{value}</span>
+          </div>
+        ))}
+      </div>
+      
+      {/* Doodle decoration */}
+      <div className="mt-4 pt-3 border-t border-dashed border-black/20">
+        <p className="font-handwriting text-xs text-black/40 italic text-center">
+          "The more you explore, the more you find..."
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TAB BUTTON (Notebook Tab Style)
+// ═══════════════════════════════════════════════════════════════
+function TabButton({ active, onClick, children, icon: Icon }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        flex items-center gap-2 px-4 py-2 
+        font-heading text-sm uppercase tracking-wide
+        border-2 border-black border-b-0
+        transition-all
+        ${active 
+          ? 'bg-[#f4f1ea] text-black -mb-[2px] z-10' 
+          : 'bg-[#d4cfc2] text-black/60 hover:bg-[#e4dfd2] hover:text-black'
         }
+      `}
+    >
+      {Icon && <Icon className="w-4 h-4" />}
+      {children}
+    </button>
+  );
+}
 
-        getProfile();
-        return () => { ignore = true; };
-    }, [session]);
+// ═══════════════════════════════════════════════════════════════
+// ALERT MESSAGE
+// ═══════════════════════════════════════════════════════════════
+function Alert({ type, message }) {
+  if (!message) return null;
+  
+  const styles = {
+    error: 'bg-red-900/20 border-red-800 text-red-300',
+    success: 'bg-green-900/20 border-green-800 text-green-300',
+  };
 
-    // Handle Profile Update
-    async function updateProfile(event) {
-        event.preventDefault();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`p-3 border-2 font-handwriting text-sm ${styles[type]}`}
+    >
+      {message}
+    </motion.div>
+  );
+}
 
-        setLoading(true);
-        const { user } = session;
+// ═══════════════════════════════════════════════════════════════
+// MAIN ACCOUNT PAGE COMPONENT
+// ═══════════════════════════════════════════════════════════════
+export default function Account() {
+  const { user: _user, session, updatePassword, signOut } = useAuth();
+  const navigate = useNavigate();
+  
+  // Profile State
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [username, setUsername] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState(null);
+  const [profileMessage, setProfileMessage] = useState(null);
+  const [memberSince, setMemberSince] = useState('');
 
-        const updates = {
-            id: user.id,
-            username,
-            avatar_url: avatarUrl,
-            updated_at: new Date(),
-        };
+  // Password State
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [securityMessage, setSecurityMessage] = useState(null);
 
-        const { error } = await supabase.from('profiles').upsert(updates);
+  // Tab State
+  const [activeTab, setActiveTab] = useState('profile');
 
-        if (error) {
-            setProfileMessage({ type: 'error', text: error.message });
-        } else {
-            setProfileMessage({ type: 'success', text: 'Perfil actualizado correctamente' });
+  // Initial Fetch
+  useEffect(() => {
+    let ignore = false;
+    async function getProfile() {
+      setLoading(true);
+      const { user } = session || {};
+      if (!user) return;
+
+      const { data, error: _error } = await supabase
+        .from('profiles')
+        .select(`username, avatar_url, created_at`)
+        .eq('id', user.id)
+        .single();
+
+      if (!ignore && data) {
+        setUsername(data.username || '');
+        setAvatarUrl(data.avatar_url);
+        if (data.created_at) {
+          setMemberSince(new Date(data.created_at).toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'short'
+          }));
         }
-        setLoading(false);
+      }
+      setLoading(false);
     }
 
-    // Handle Password Update
-    async function handlePasswordUpdate(e) {
-        e.preventDefault();
-        setSecurityMessage(null);
+    getProfile();
+    return () => { ignore = true; };
+  }, [session]);
 
-        if (password !== confirmPassword) {
-            setSecurityMessage({ type: 'error', text: 'Las contraseñas no coinciden' });
-            return;
-        }
+  // Handle Profile Update
+  async function updateProfile(event) {
+    event.preventDefault();
+    setLoading(true);
+    setProfileMessage(null);
+    
+    const { user } = session;
+    const updates = {
+      id: user.id,
+      username,
+      avatar_url: avatarUrl,
+      updated_at: new Date(),
+    };
 
-        const { error } = await updatePassword(password);
-        if (error) {
-            setSecurityMessage({ type: 'error', text: error.message });
-        } else {
-            setSecurityMessage({ type: 'success', text: 'Contraseña actualizada correctamente' });
-            setPassword('');
-            setConfirmPassword('');
-        }
+    const { error } = await supabase.from('profiles').upsert(updates);
+
+    if (error) {
+      setProfileMessage({ type: 'error', text: error.message });
+    } else {
+      setProfileMessage({ type: 'success', text: '¡Perfil actualizado!' });
+    }
+    setLoading(false);
+  }
+
+  // Handle Avatar Upload
+  const handleAvatarUpload = (filePath) => {
+    setAvatarUrl(filePath);
+  };
+
+  // Handle Password Update
+  async function handlePasswordUpdate(e) {
+    e.preventDefault();
+    setSecurityMessage(null);
+
+    if (password !== confirmPassword) {
+      setSecurityMessage({ type: 'error', text: 'Las contraseñas no coinciden' });
+      return;
     }
 
-    // Handle Account Deletion
-    async function handleDeleteAccount() {
-        if (!window.confirm('¿Estás SEGURO? Esta acción es irreversible y borrará todos tus datos.')) {
-            return;
-        }
-
-        const { error } = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/admin/delete-account`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.access_token}`
-            }
-        }).then(res => res.json());
-
-        if (error) {
-            alert('Error al borrar cuenta: ' + error);
-        } else {
-            await signOut();
-            navigate('/');
-        }
+    if (password.length < 6) {
+      setSecurityMessage({ type: 'error', text: 'La contraseña debe tener al menos 6 caracteres' });
+      return;
     }
 
-    const [activeTab, setActiveTab] = useState('profile');
+    const { error } = await updatePassword(password);
+    if (error) {
+      setSecurityMessage({ type: 'error', text: error.message });
+    } else {
+      setSecurityMessage({ type: 'success', text: '¡Contraseña actualizada!' });
+      setPassword('');
+      setConfirmPassword('');
+    }
+  }
 
-    return (
-        <div className="container mx-auto max-w-4xl py-12 px-4 space-y-8">
-            <header className="mb-8">
-                <h1 className="text-3xl font-serif font-bold text-fg">Cuenta</h1>
-                <p className="text-fg-muted mt-2">Gestiona tu perfil y seguridad</p>
-            </header>
+  // Handle Account Deletion
+  async function handleDeleteAccount() {
+    if (!window.confirm('⚠️ ¿Estás SEGURO?\n\nEsta acción es IRREVERSIBLE y borrará todos tus datos, incluyendo:\n- Tu perfil\n- Tus builds\n- Tus favoritos\n- Todos tus datos')) {
+      return;
+    }
 
-            <Tabs activeTab={activeTab} className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="profile" active={activeTab === 'profile'} onClick={setActiveTab}>
-                        Perfil
-                    </TabsTrigger>
-                    <TabsTrigger value="security" active={activeTab === 'security'} onClick={setActiveTab}>
-                        Seguridad
-                    </TabsTrigger>
-                    <TabsTrigger value="danger" active={activeTab === 'danger'} onClick={setActiveTab}>
-                        Zona de Peligro
-                    </TabsTrigger>
-                </TabsList>
+    const { error } = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/admin/delete-account`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
+      }
+    }).then(res => res.json());
 
-                {/* Profile Tab */}
-                <TabsContent value="profile" activeTab={activeTab}>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Información Pública</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="flex flex-col md:flex-row gap-8 items-start">
-                                <AvatarUploader
-                                    url={avatarUrl}
-                                    size={150}
-                                    onUpload={(url) => {
-                                        setAvatarUrl(url);
-                                        // Auto update profile when avatar changes (optional, but good UX)
-                                    }}
-                                />
-                                <form onSubmit={updateProfile} className="flex-1 space-y-4 w-full">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-fg-muted">Email</label>
-                                        <Input disabled value={session?.user.email} className="bg-bg-2" />
-                                        <p className="text-xs text-fg-muted">El email no se puede cambiar.</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium" htmlFor="username">Nombre de Usuario</label>
-                                        <Input
-                                            id="username"
-                                            type="text"
-                                            value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
-                                        />
-                                    </div>
-                                    
-                                    {profileMessage && (
-                                        <div className={`text-sm p-3 rounded ${profileMessage.type === 'error' ? 'bg-red-900/20 text-red-200' : 'bg-green-900/20 text-green-200'}`}>
-                                            {profileMessage.text}
-                                        </div>
-                                    )}
+    if (error) {
+      alert('Error al borrar cuenta: ' + error);
+    } else {
+      await signOut();
+      navigate('/');
+    }
+  }
 
-                                    <Button type="submit" disabled={loading}>
-                                        {loading ? 'Guardando...' : 'Guardar Cambios'}
-                                    </Button>
-                                </form>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
+  return (
+    <div className="min-h-screen bg-bg-floor py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        
+        {/* ═══ PAGE HEADER - Sketchy Style ═══ */}
+        <header className="mb-8 border-b-4 border-dashed border-black pb-4">
+          <h1 className="text-4xl md:text-5xl font-heading uppercase tracking-tight text-black flex items-center gap-3">
+            <FaUser className="text-accent-blood" />
+            Tu Cuenta
+          </h1>
+          <p className="font-handwriting text-xl text-black/60 mt-2 transform -rotate-1">
+            Gestiona tu perfil y seguridad
+          </p>
+        </header>
 
-                {/* Security Tab */}
-                <TabsContent value="security" activeTab={activeTab}>
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>Contraseña</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                             <form onSubmit={handlePasswordUpdate} className="grid w-full max-w-sm gap-4">
-                                <div className="space-y-2">
-                                    <label htmlFor="password">Nueva Contraseña</label>
-                                    <Input 
-                                        type="password" 
-                                        id="password" 
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        placeholder="••••••••"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-                                    <Input 
-                                        type="password" 
-                                        id="confirmPassword" 
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        placeholder="••••••••"
-                                    />
-                                </div>
-
-                                {securityMessage && (
-                                    <div className={`text-sm p-3 rounded ${securityMessage.type === 'error' ? 'bg-red-900/20 text-red-200' : 'bg-green-900/20 text-green-200'}`}>
-                                        {securityMessage.text}
-                                    </div>
-                                )}
-
-                                <Button type="submit" disabled={loading}>
-                                    Actualizar Contraseña
-                                </Button>
-                            </form>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                {/* Danger Zone Tab */}
-                <TabsContent value="danger" activeTab={activeTab}>
-                    <Card className="border-red-900/50 bg-red-900/10">
-                         <CardHeader>
-                            <CardTitle className="text-red-400">Eliminar Cuenta</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="text-sm text-fg-muted">
-                                Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor, ten en cuenta seguro.
-                                Esto eliminará tu perfil, todos tus favoritos y cualquier dato asociado.
-                            </p>
-                            <Button 
-                                variant="destructive" 
-                                onClick={handleDeleteAccount}
-                                className="bg-red-600 hover:bg-red-700 text-white border-none" 
-                            >
-                                Eliminar mi cuenta permanentemente
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
+        {/* ═══ TABS ═══ */}
+        <div className="flex gap-1 mb-0">
+          <TabButton 
+            active={activeTab === 'profile'} 
+            onClick={() => setActiveTab('profile')}
+            icon={FaUser}
+          >
+            Perfil
+          </TabButton>
+          <TabButton 
+            active={activeTab === 'security'} 
+            onClick={() => setActiveTab('security')}
+            icon={FaKey}
+          >
+            Seguridad
+          </TabButton>
+          <TabButton 
+            active={activeTab === 'danger'} 
+            onClick={() => setActiveTab('danger')}
+            icon={FaSkull}
+          >
+            Peligro
+          </TabButton>
         </div>
-    );
+
+        {/* ═══ TAB CONTENT CONTAINER - Paper Style ═══ */}
+        <div className="bg-[#f4f1ea] border-2 border-black p-6 md:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)] relative">
+          
+          {/* Paper texture overlay */}
+          <div className="absolute inset-0 bg-noise opacity-5 pointer-events-none" />
+          
+          {/* ─── PROFILE TAB ─── */}
+          {activeTab === 'profile' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="relative z-10"
+            >
+              <div className="flex flex-col lg:flex-row gap-8">
+                
+                {/* Left: Avatar + Stats */}
+                <div className="flex flex-col gap-6 items-center lg:items-start">
+                  <IsaacAvatar
+                    url={avatarUrl}
+                    size={140}
+                    onUpload={handleAvatarUpload}
+                    uploading={uploading}
+                  />
+                  
+                  {/* Stats Panel - Desktop only */}
+                  <div className="hidden lg:block w-full">
+                    <PlayerStats 
+                      memberSince={memberSince || '???'}
+                      buildsCount={0}
+                      votesGiven={0}
+                      savedBuilds={0}
+                    />
+                  </div>
+                </div>
+
+                {/* Right: Form */}
+                <form onSubmit={updateProfile} className="flex-1 space-y-6">
+                  <IsaacInput
+                    icon={FaEnvelope}
+                    label="Email"
+                    type="email"
+                    value={session?.user.email || ''}
+                    disabled
+                  />
+                  <p className="text-xs font-handwriting text-black/50 -mt-4 ml-6">
+                    (El email no se puede cambiar)
+                  </p>
+                  
+                  <IsaacInput
+                    icon={FaUser}
+                    label="Nombre de Usuario"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Tu nombre en el codex..."
+                  />
+
+                  <Alert type={profileMessage?.type} message={profileMessage?.text} />
+
+                  <IsaacButton type="submit" disabled={loading}>
+                    {loading ? 'Guardando...' : 'Guardar Cambios'}
+                  </IsaacButton>
+                </form>
+              </div>
+              
+              {/* Stats Panel - Mobile */}
+              <div className="lg:hidden mt-8">
+                <PlayerStats 
+                  memberSince={memberSince || '???'}
+                  buildsCount={0}
+                  votesGiven={0}
+                  savedBuilds={0}
+                />
+              </div>
+            </motion.div>
+          )}
+
+          {/* ─── SECURITY TAB ─── */}
+          {activeTab === 'security' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="relative z-10 max-w-md"
+            >
+              <div className="flex items-center gap-3 mb-6 pb-3 border-b-2 border-dashed border-black/30">
+                <FaKey className="w-6 h-6 text-accent-blood" />
+                <h2 className="font-heading text-xl uppercase">Cambiar Contraseña</h2>
+              </div>
+              
+              <form onSubmit={handlePasswordUpdate} className="space-y-6">
+                <IsaacInput
+                  icon={FaKey}
+                  label="Nueva Contraseña"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                />
+                
+                <IsaacInput
+                  icon={FaKey}
+                  label="Confirmar Contraseña"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                />
+
+                <Alert type={securityMessage?.type} message={securityMessage?.text} />
+
+                <IsaacButton type="submit" disabled={loading}>
+                  Actualizar Contraseña
+                </IsaacButton>
+              </form>
+            </motion.div>
+          )}
+
+          {/* ─── DANGER ZONE TAB ─── */}
+          {activeTab === 'danger' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="relative z-10"
+            >
+              {/* Warning Banner */}
+              <div className="bg-red-900/20 border-2 border-red-800 p-4 mb-6 flex items-start gap-3">
+                <FaExclamationTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-heading text-lg text-red-400 uppercase">Zona de Peligro</h3>
+                  <p className="font-handwriting text-red-300/80 mt-1">
+                    Las acciones aquí son irreversibles. Procede con cuidado.
+                  </p>
+                </div>
+              </div>
+
+              {/* Delete Account Section */}
+              <div className="bg-[#2a1a1a] border-2 border-red-900/50 p-6 transform -rotate-[0.5deg]">
+                <div className="flex items-center gap-3 mb-4">
+                  <FaSkull className="w-6 h-6 text-red-500" />
+                  <h3 className="font-heading text-lg text-red-400 uppercase">Eliminar Cuenta</h3>
+                </div>
+                
+                <p className="font-handwriting text-gray-400 mb-4 leading-relaxed">
+                  Una vez que elimines tu cuenta, <span className="text-red-400 font-bold">no hay vuelta atrás</span>. 
+                  Esto eliminará permanentemente:
+                </p>
+                
+                <ul className="font-pixel text-sm text-gray-500 space-y-1 mb-6 ml-4">
+                  <li className="flex items-center gap-2">
+                    <span className="text-red-500">×</span> Tu perfil y avatar
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-red-500">×</span> Todas tus builds
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-red-500">×</span> Tus favoritos y votos
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-red-500">×</span> Todos tus comentarios
+                  </li>
+                </ul>
+
+                <IsaacButton 
+                  variant="danger"
+                  onClick={handleDeleteAccount}
+                >
+                  <FaSkull className="w-4 h-4 mr-2" />
+                  Eliminar mi cuenta permanentemente
+                </IsaacButton>
+              </div>
+            </motion.div>
+          )}
+        </div>
+
+        {/* ═══ BOTTOM DECORATION - Hand drawn doodles ═══ */}
+        <div className="mt-8 flex justify-center opacity-20">
+          <svg viewBox="0 0 200 40" className="w-48 h-10">
+            {/* Sketchy line */}
+            <path 
+              d="M 10 20 Q 30 15, 50 20 T 90 20 T 130 20 T 170 20 T 190 20" 
+              stroke="black" 
+              strokeWidth="2" 
+              fill="none"
+              strokeLinecap="round"
+            />
+            {/* Small hearts/items doodles */}
+            <text x="100" y="35" textAnchor="middle" fontSize="12" fill="black">♥ ♦ ♠ ♣</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -26,5 +26,121 @@
   "home": {
     "welcome": "Bienvenido a TBOI Codex",
     "description": "Tu guía definitiva para The Binding of Isaac"
+  },
+  "builds": {
+    "title": "Builds de la Comunidad",
+    "subtitle": "Descubre y comparte sinergias poderosas",
+    "createBuild": "Compartir Build",
+    "loginToShare": "Inicia sesión para compartir tu build",
+    "noPosts": "No hay builds todavía",
+    "noPostsDescription": "¡Sé el primero en compartir una build!",
+    "loadMore": "Cargar más",
+    "loading": "Cargando builds...",
+    "filters": {
+      "title": "Filtros",
+      "search": "Buscar builds...",
+      "sort": "Ordenar por",
+      "character": "Personaje",
+      "difficulty": "Dificultad",
+      "type": "Tipo de Build",
+      "tags": "Etiquetas",
+      "clearAll": "Limpiar filtros",
+      "anyCharacter": "Cualquier personaje",
+      "anyDifficulty": "Cualquier dificultad",
+      "anyType": "Cualquier tipo"
+    },
+    "sort": {
+      "newest": "Más recientes",
+      "top": "Mejor valoradas",
+      "hot": "Populares",
+      "discussed": "Más comentadas"
+    },
+    "card": {
+      "by": "por",
+      "comments": "comentarios",
+      "saves": "guardados"
+    },
+    "detail": {
+      "backToFeed": "Volver a builds",
+      "items": "Items en esta build",
+      "noItems": "Sin items especificados",
+      "description": "Descripción",
+      "media": "Capturas y GIFs",
+      "comments": "Comentarios",
+      "share": "Compartir",
+      "save": "Guardar",
+      "saved": "Guardado",
+      "report": "Reportar",
+      "block": "Bloquear usuario",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "confirmDelete": "¿Estás seguro de que quieres eliminar esta build?"
+    },
+    "create": {
+      "title": "Compartir una Build",
+      "titlePlaceholder": "Dale un título llamativo a tu build",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe la sinergia, estrategia y por qué esta build es poderosa...",
+      "character": "Personaje",
+      "difficulty": "Dificultad",
+      "gameVersion": "Versión del Juego",
+      "buildType": "Tipo de Build",
+      "items": "Items",
+      "itemsHelp": "Busca y añade items a tu build",
+      "searchItems": "Buscar items...",
+      "tags": "Etiquetas",
+      "tagsHelp": "Añade etiquetas para ayudar a otros a encontrar tu build",
+      "addTag": "Añadir etiqueta",
+      "media": "Media",
+      "mediaHelp": "Sube capturas o GIFs (máx. 5, 5MB cada uno)",
+      "dragDrop": "Arrastra o haz clic para subir",
+      "submit": "Compartir Build",
+      "submitting": "Compartiendo...",
+      "validation": {
+        "titleRequired": "El título es obligatorio",
+        "titleTooLong": "El título debe tener menos de 120 caracteres",
+        "descriptionRequired": "La descripción es obligatoria",
+        "descriptionTooLong": "La descripción debe tener menos de 5000 caracteres",
+        "itemsRequired": "Añade al menos 2 items",
+        "tooManyItems": "Máximo 20 items permitidos",
+        "tooManyTags": "Máximo 8 etiquetas permitidas",
+        "tooManyMedia": "Máximo 5 archivos de media permitidos"
+      }
+    },
+    "comments": {
+      "title": "Comentarios",
+      "placeholder": "Escribe un comentario...",
+      "submit": "Publicar",
+      "reply": "Responder",
+      "replyTo": "Respondiendo a",
+      "cancelReply": "Cancelar",
+      "noComments": "Sin comentarios todavía",
+      "beFirst": "¡Sé el primero en comentar!",
+      "loginToComment": "Inicia sesión para comentar",
+      "deleted": "[eliminado]",
+      "edited": "(editado)",
+      "loadReplies": "Cargar respuestas"
+    },
+    "report": {
+      "title": "Reportar Contenido",
+      "reason": "Motivo del reporte",
+      "details": "Detalles adicionales (opcional)",
+      "detailsPlaceholder": "Proporciona más contexto...",
+      "submit": "Enviar Reporte",
+      "success": "Reporte enviado. ¡Gracias!",
+      "reasons": {
+        "spam": "Spam o publicidad",
+        "harassment": "Acoso o discurso de odio",
+        "inappropriate": "Contenido inapropiado",
+        "misinformation": "Desinformación",
+        "other": "Otro"
+      }
+    },
+    "loginRequired": {
+      "title": "Inicio de Sesión Requerido",
+      "message": "Necesitas iniciar sesión para realizar esta acción.",
+      "login": "Iniciar Sesión",
+      "register": "Crear Cuenta"
+    }
   }
 }

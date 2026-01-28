@@ -42,9 +42,7 @@ export function ItemsList() {
         page, 
         search: debouncedSearch, 
         type: activeFilters.type,
-        quality: activeFilters.quality && activeFilters.quality.length > 0 
-          ? activeFilters.quality.join(',') 
-          : undefined
+        quality: activeFilters.quality || []
       }),
       placeholderData: (prev) => prev,
       staleTime: 5000 
