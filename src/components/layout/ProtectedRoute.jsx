@@ -1,6 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Skeleton } from '../ui/Skeleton'; // Assuming Skeleton exists or I should create/use default
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();

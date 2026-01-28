@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchItems } from '../../lib/api';
 import { useFavorites } from '../../features/favorites/useFavorites';
@@ -6,7 +6,7 @@ import { SecretItemCard } from './SecretItemCard';
 import { EmptyState } from './EmptyState';
 import { ItemModal } from '../../features/items/components/ItemModal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaHeart, FaBomb } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 
 const FavoritesPage = () => {
   const { favorites, isLoading: loadingFavs } = useFavorites('item');

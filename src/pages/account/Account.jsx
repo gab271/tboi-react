@@ -9,7 +9,7 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 
 export default function Account() {
-    const { user, session, updatePassword, signOut } = useAuth();
+    const { user: _user, session, updatePassword, signOut } = useAuth();
     const navigate = useNavigate();
     
     // Profile State
@@ -31,7 +31,7 @@ export default function Account() {
             const { user } = session || {};
             if (!user) return;
 
-            const { data, error } = await supabase
+            const { data, error: _error } = await supabase
                 .from('profiles')
                 .select(`username, avatar_url`)
                 .eq('id', user.id)

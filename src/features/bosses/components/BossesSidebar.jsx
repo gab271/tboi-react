@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaLayerGroup, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 import api from '../../../lib/api';
 
 export function BossesSidebar({ activeFilters, setActiveFilters }) {
@@ -18,7 +18,7 @@ export function BossesSidebar({ activeFilters, setActiveFilters }) {
               if (Array.isArray(data)) {
                   setLocations(['all', ...data]);
               }
-          } catch(e) {
+          } catch {
               // fallback
               setLocations(['all', 'Basement', 'Caves', 'Depths', 'Womb', 'Sheol', 'Cathedral', 'Chest', 'Dark Room', 'Void']);
           }

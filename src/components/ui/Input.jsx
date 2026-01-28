@@ -1,6 +1,4 @@
-import React from 'react';
 import { cn } from '../../lib/utils';
-import { FaSearch } from 'react-icons/fa';
 
 export function Input({ className, icon: Icon, onClear, value, ...props }) {
   return (

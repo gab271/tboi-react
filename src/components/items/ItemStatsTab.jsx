@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   FaHeart, 
@@ -88,7 +87,7 @@ export function ItemStatsTab({ stats }) {
           No Stat Changes
         </h3>
         <p className="text-lg font-handwriting text-text-dim max-w-md">
-          This item provides utility or special effects without modifying Isaac's base statistics.
+          This item provides utility or special effects without modifying Isaac&apos;s base statistics.
         </p>
       </div>
     );

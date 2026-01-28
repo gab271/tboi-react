@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { uploadItemImage } from '../api';
 
-const ItemImageUploader = ({ externalId, currentThumb, currentFull, onUploadSuccess }) => {
+const ItemImageUploader = ({ externalId, currentThumb, currentFull: _currentFull, onUploadSuccess }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);

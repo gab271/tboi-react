@@ -1,4 +1,3 @@
-import React from 'react';
 import { DustParticles } from './DustParticles';
 import { cn } from '../../lib/utils';
 

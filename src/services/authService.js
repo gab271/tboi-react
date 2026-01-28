@@ -9,7 +9,7 @@ import { supabase } from '../lib/supabaseClient';
 const LOG_TAG = '[AuthService]';
 
 // Helper to log in development only
-const log = (action, details = {}) => {
+const log = (action, _details = {}) => {
   if (import.meta.env.DEV) {
     console.debug(`[AUTH_CALL] ${action}`, new Date().toISOString());
     console.debug(new Error().stack); 

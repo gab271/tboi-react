@@ -1,7 +1,6 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaSkull, FaBook, FaUser, FaTrophy, FaDharmachakra } from 'react-icons/fa';
+import { FaSkull, FaBook, FaUser, FaDharmachakra } from 'react-icons/fa';
 import { cn } from '../../lib/utils';
 
 const BentoCard = ({ className, title, description, icon: Icon, onClick, delay, bgImage }) => (
@@ -46,7 +45,7 @@ export function FeaturesGrid() {
        <div className="mb-12">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">Explore the Basement</h2>
           <p className="text-muted-foreground max-w-2xl text-lg">
-             Access comprehensive data sets relative to the game's mechanics, items, and enemies.
+             Access comprehensive data sets relative to the game&apos;s mechanics, items, and enemies.
           </p>
        </div>
 

@@ -1,6 +1,3 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-
 // --- ANIMATIONS ---
 const styles = `
 @keyframes fly-move {
@@ -14,7 +11,7 @@ const styles = `
 
 // --- COMPONENTS ---
 
-export const Fly = ({ className, delay = 0 }) => (
+export const Fly = ({ className, _delay = 0 }) => (
     <>
         <style>{styles}</style>
         <div 

@@ -1,8 +1,6 @@
-import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
-import { FaTimes, FaSkull, FaHeart, FaMapMarkerAlt, FaExclamationTriangle } from 'react-icons/fa';
-import { Button } from '../../../components/ui/Button';
+import { FaSkull, FaHeart, FaMapMarkerAlt, FaExclamationTriangle } from 'react-icons/fa';
 
 export function BossModal({ boss, onClose }) {
   if (!boss) return null;

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { supabase } from '../../lib/supabaseClient';
 import { itemsData } from '../../features/items/data/mockItems';
 import { bossesData } from '../../features/bosses/data/bossesData';
 import { charactersData } from '../../features/characters/data/charactersData';
-import { FaDatabase, FaCheck, FaExclamationTriangle } from 'react-icons/fa';
+import { FaDatabase } from 'react-icons/fa';
 
 export default function AdminDataSeeder({ onComplete }) {
     const [loading, setLoading] = useState(false);

@@ -1,4 +1,3 @@
-import React from 'react';
 import { MissingPoster } from './MissingPoster';
 import { Fly, DoodleArrow, FloorItem } from './Decorations';
 

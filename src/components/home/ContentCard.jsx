@@ -1,5 +1,4 @@
 // ContentCard.jsx - Reusable Card for "Browse sections"
-import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { NavLink } from 'react-router-dom';

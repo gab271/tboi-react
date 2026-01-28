@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { charactersData } from '../data/charactersData';
 
 // Constants for Completion Marks (12 standard marks)
@@ -85,19 +85,19 @@ export function CharacterTracker() {
     if (!selectedChar) return <div>Loading...</div>;
 
     return (
-        <section className="w-full max-w-5xl mx-auto my-12 p-4">
-             <h2 className="text-3xl font-display text-center text-text-ink mb-8 tracking-widest uppercase" style={{ fontFamily: 'Upheaval, sans-serif' }}>
+        <section className="w-full max-w-5xl mx-auto my-8 sm:my-12 p-2 sm:p-4">
+             <h2 className="text-xl sm:text-2xl md:text-3xl font-display text-center text-text-ink mb-6 sm:mb-8 tracking-widest uppercase" style={{ fontFamily: 'Upheaval, sans-serif' }}>
                 Completion Tracker
              </h2>
              
              {/* Character Selector Strip */}
-             <div className="flex overflow-x-auto pb-6 mb-8 gap-4 px-4 snap-x justify-start md:justify-center scrollbar-thin scrollbar-thumb-accent-blood scrollbar-track-transparent">
+             <div className="flex overflow-x-auto pb-4 sm:pb-6 mb-6 sm:mb-8 gap-2 sm:gap-4 px-2 sm:px-4 snap-x justify-start md:justify-center scrollbar-thin scrollbar-thumb-accent-blood scrollbar-track-transparent hide-scrollbar">
                 {charactersData.map(char => (
                     <button
                         key={char.id}
                         onClick={() => setSelectedCharId(char.id)}
                         className={`
-                            relative flex-shrink-0 w-16 h-16 rounded-full border-2 transition-all duration-300
+                            relative flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 transition-all duration-300 snap-center
                             ${selectedCharId === char.id 
                                 ? 'border-accent-blood scale-110 shadow-[0_0_15px_rgba(255,0,0,0.4)] bg-bg-paper' 
                                 : 'border-transparent hover:border-text-ink/30 opacity-70 hover:opacity-100 grayscale hover:grayscale-0'
@@ -120,23 +120,23 @@ export function CharacterTracker() {
             </div>
 
             {/* The Post-it Note Container */}
-            <div className="relative w-full max-w-lg mx-auto transform rotate-1 transition-transform duration-500 hover:rotate-0">
+            <div className="relative w-full max-w-md sm:max-w-lg mx-auto transform rotate-1 transition-transform duration-500 hover:rotate-0">
                 {/* Red Tack */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-4 h-4 rounded-full bg-red-700 shadow-md border border-red-900"></div>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-red-700 shadow-md border border-red-900"></div>
 
                 {/* Paper Body */}
-                <div className="bg-[#fdfac8] text-black/80 p-8 pt-12 shadow-xl relative min-h-[400px]" style={{ clipPath: 'polygon(2% 0%, 98% 2%, 100% 100%, 0% 98%)' }}>
+                <div className="bg-[#fdfac8] text-black/80 p-4 sm:p-6 md:p-8 pt-10 sm:pt-12 shadow-xl relative min-h-[300px] sm:min-h-[400px]" style={{ clipPath: 'polygon(2% 0%, 98% 2%, 100% 100%, 0% 98%)' }}>
                     
                     {/* Character Name Title */}
-                    <div className="text-center mb-6 border-b-2 border-black/10 pb-2 border-dashed">
-                        <h3 className="text-2xl font-bold uppercase tracking-widest" style={{ fontFamily: 'Upheaval, cursive' }}>
+                    <div className="text-center mb-4 sm:mb-6 border-b-2 border-black/10 pb-2 border-dashed">
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold uppercase tracking-widest" style={{ fontFamily: 'Upheaval, cursive' }}>
                             {selectedChar.name}
                         </h3>
-                         <p className="text-xs text-black/50 font-handwriting">Completion Marks</p>
+                         <p className="text-[10px] sm:text-xs text-black/50 font-handwriting">Completion Marks</p>
                     </div>
 
                     {/* The Grid (3x4) */}
-                    <div className="grid grid-cols-3 gap-4 auto-rows-fr justify-items-center">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-4 auto-rows-fr justify-items-center">
                         {COMPLETION_MARKS.map((mark) => {
                             const isCompleted = progress[selectedCharId]?.[mark.id];
 
@@ -151,7 +151,7 @@ export function CharacterTracker() {
                                     <button
                                         onClick={() => toggleMark(selectedCharId, mark.id)}
                                         className={`
-                                            w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center transition-all duration-200 border-2 rounded-sm
+                                            w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center transition-all duration-200 border-2 rounded-sm
                                             ${isCompleted 
                                                 ? 'border-transparent opacity-100' 
                                                 : 'border-text-ink/20 opacity-40 grayscale hover:opacity-60 bg-text-ink/5 border-dashed'
@@ -171,7 +171,7 @@ export function CharacterTracker() {
                                         >
                                             {/* Fallback Text/Symbol always visible if image fails or isn't completed to show what it is */}
                                             { (!isCompleted) && (
-                                                <span className="text-2xl font-bold text-text-ink/30 select-none">
+                                                <span className="text-lg sm:text-xl md:text-2xl font-bold text-text-ink/30 select-none">
                                                     {mark.symbol}
                                                 </span>
                                             )}

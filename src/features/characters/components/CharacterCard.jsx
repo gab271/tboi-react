@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../../lib/utils';
 import { CompletionMarks } from './CompletionMarks';
@@ -72,7 +71,7 @@ export const CharacterCard = ({ character, isActive, isTainted, onSelect }) => {
 
                 {/* "Who Am I?" Text or Flavor */}
                 <div className="font-handwriting text-base sm:text-lg text-center px-4 sm:px-8 opacity-70 rotate-[-1deg] text-black/60 -ml-2 sm:-ml-4">
-                    "{isTainted ? "The broken soul" : "The lost child"}"
+                    &quot;{isTainted ? "The broken soul" : "The lost child"}&quot;
                 </div>
 
 

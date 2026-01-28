@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaBars } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
 
-function Navbar({ title }) {
+function Navbar({ _title }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {

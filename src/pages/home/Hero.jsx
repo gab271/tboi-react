@@ -1,13 +1,11 @@
-import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '../../components/ui/Button';
-import { FaArrowRight, FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 export function Hero() {
   const navigate = useNavigate();
   const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const _opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
     <div className="relative min-h-[800px] w-full flex items-center justify-center py-20 overflow-visible">
@@ -70,7 +68,7 @@ export function Hero() {
                 </div>
 
                 <p className="max-w-2xl text-xl md:text-2xl font-handwriting text-text-ink mb-12 leading-relaxed">
-                   "A crude map drawn in crayon... it details every item, monster, and secret found in the depths below."
+                   &quot;A crude map drawn in crayon... it details every item, monster, and secret found in the depths below.&quot;
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-6">

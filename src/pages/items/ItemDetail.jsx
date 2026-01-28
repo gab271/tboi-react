@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchItem } from '../../lib/api';
 import { Button } from '../../components/ui/Button';
-import { FaArrowLeft, FaHeart, FaShare, FaBookOpen, FaStar, FaInfoCircle } from 'react-icons/fa';
+import { FaShare, FaInfoCircle } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ItemStatsTab } from '../../components/items/ItemStatsTab';
 import FavoriteButton from '../../components/ui/FavoriteButton';
@@ -212,7 +212,7 @@ export function ItemDetail() {
                {/* Quote "Pickup Text" */}
                <blockquote className="bg-[#1c1917] text-[#e6ddc5] p-6 rounded-r-xl border-l-8 border-accent-gold shadow-lg">
                    <p className="text-2xl md:text-3xl font-handwriting italic text-center leading-relaxed">
-                     "{item.quote || item.description || '...'}"
+                     &quot;{item.quote || item.description || '...'}&quot;
                    </p>
                </blockquote>
             </div>

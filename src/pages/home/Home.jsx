@@ -1,9 +1,7 @@
 // Home.jsx - Main Landing Page
-import React from 'react';
 import { HeroSection } from '../../components/home/HeroSection';
 import { MissingPosterSection } from '../../components/home/MissingPosterSection';
 import { NavigationCards } from '../../components/home/NavigationCards';
-import { ConnectorLine } from '../../components/home/Decorations';
 
 export function Home() {
   return (

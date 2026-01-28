@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchBosses } from '../../lib/api';
-import { Input } from '../../components/ui/Input';
 import { FaSearch, FaSkull, FaFilter, FaTimes, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { BossCard } from '../../features/bosses/components/BossCard';
 import { LocationSidebar } from '../../features/bosses/components/LocationSidebar';

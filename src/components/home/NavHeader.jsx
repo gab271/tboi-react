@@ -1,10 +1,10 @@
 // NavHeader.jsx - Updated Header with robust visibility
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
-import { FaSearch, FaUserCircle, FaSignOutAlt, FaHeart } from 'react-icons/fa';
+import { FaSearch, FaSignOutAlt, FaHeart } from 'react-icons/fa';
 import { CommandPalette } from '../layout/CommandPalette';
 import { useAuth } from '../../hooks/useAuth';
 import { 

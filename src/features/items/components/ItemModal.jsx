@@ -1,8 +1,6 @@
-import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaBookOpen, FaStar, FaQuoteLeft } from 'react-icons/fa';
-import { Button } from '../../../components/ui/Button';
+import { FaBookOpen, FaStar, FaQuoteLeft } from 'react-icons/fa';
 import FavoriteButton from '../../../components/ui/FavoriteButton';
 
 export function ItemModal({ item, onClose }) {
@@ -82,7 +80,7 @@ export function ItemModal({ item, onClose }) {
                       {/* Pickup Quote */}
                       {item.pickup_quote && (
                           <div className="text-2xl font-handwriting text-accent-blood/80 italic mb-4 -rotate-1">
-                              "{item.pickup_quote}"
+                              &quot;{item.pickup_quote}&quot;
                           </div>
                       )}
                   </div>

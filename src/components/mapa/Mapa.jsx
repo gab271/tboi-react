@@ -1,4 +1,3 @@
-import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -36,7 +35,7 @@ function Mapa() {
                 alt="Edmund McMillen"
                 className="popup-image"
               />
-              <h3>Edmund McMillen's Hometown 🎮</h3>
+              <h3>Edmund McMillen&apos;s Hometown 🎮</h3>
               <p>Santa Cruz, California</p>
             </div>
           </Popup>

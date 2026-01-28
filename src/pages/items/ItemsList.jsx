@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchItems } from '../../lib/api';
 import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';

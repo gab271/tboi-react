@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
@@ -28,7 +28,7 @@ export default function AdminItemEditor({ mode = 'create' }) {
     }, [mode, id]);
 
     const fetchItem = async (itemId) => {
-        const { data, error } = await supabase
+        const { data, _error } = await supabase
             .from('codex_items')
             .select('*')
             .eq('id', itemId)

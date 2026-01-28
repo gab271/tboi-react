@@ -1,12 +1,8 @@
-import React from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '../../../lib/utils';
-import { FaUser, FaGhost } from 'react-icons/fa';
 import FavoriteButton from '../../../components/ui/FavoriteButton';
-import { CharacterMarks } from './CharacterMarks'; // New component
+import { CharacterMarks } from './CharacterMarks';
 
 export function CharacterGridCard({ character, onClick }) {
-  const rotation = character.isTainted ? 2 : -2;
 
   return (
     <div 

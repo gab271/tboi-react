@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Command } from 'cmdk'
 import { FaSearch, FaSpinner, FaBoxOpen, FaSkull, FaUser, FaHome, FaHammer, FaTimes } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
-import { cn } from '../../lib/utils'
 
 export function CommandPalette({ open, onOpenChange }) {
   const navigate = useNavigate()
@@ -144,7 +143,7 @@ export function CommandPalette({ open, onOpenChange }) {
                  {/* Empty State */}
                  {!loading && results.length === 0 && filteredRoutes.length === 0 && value.length >= 2 && (
                     <div className="py-12 text-center">
-                        <p className="font-handwriting text-xl text-[#8f7e63]">No scraps found for "{value}"...</p>
+                        <p className="font-handwriting text-xl text-[#8f7e63]">No scraps found for &quot;{value}&quot;...</p>
                     </div>
                  )}
 

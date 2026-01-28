@@ -1,8 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../../lib/utils';
 import FavoriteButton from '../../../components/ui/FavoriteButton';
-import { FaBookOpen } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 export function ItemGridCard({ item, index, onClick }) {

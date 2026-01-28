@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchItems } from '../../lib/api';
 import { useFavorites } from '../../features/favorites/useFavorites';
 import { ItemGridCard } from '../../features/items/components/ItemGridCard';
 import { ItemModal } from '../../features/items/components/ItemModal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaHeart, FaSearch } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 import { Button } from '../../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 

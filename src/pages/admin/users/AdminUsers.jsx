@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { adminService } from '../../../services/admin';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
-import { FaTrash, FaSearch, FaUserShield, FaUser, FaArrowLeft } from 'react-icons/fa';
+import { FaTrash, FaSearch, FaUserShield, FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../../lib/utils';
 import { FaSkull, FaHeart } from 'react-icons/fa';

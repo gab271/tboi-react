@@ -1,7 +1,6 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 import { cva } from 'class-variance-authority';
-import { motion } from 'framer-motion';
 
 const buttonVariants = cva(
   "relative inline-flex items-center justify-center font-pixel text-lg uppercase tracking-wider transition-all focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 active:scale-95 group overflow-visible",

@@ -1,6 +1,4 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Chip } from '../../../components/ui/Chip';
 import { FaFilter, FaLayerGroup } from 'react-icons/fa';
 
 // Hand-drawn circle component for active selection

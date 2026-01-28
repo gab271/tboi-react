@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '../../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +15,7 @@ export const EmptyState = () => {
                  </svg>
              </div>
              
-             <h2 className="text-2xl md:text-3xl font-heading text-gray-500 mb-2 tracking-widest uppercase">It's lovely here...</h2>
+             <h2 className="text-2xl md:text-3xl font-heading text-gray-500 mb-2 tracking-widest uppercase">It&apos;s lovely here...</h2>
              <p className="text-gray-600 mb-8 font-heading text-xs md:text-sm max-w-md">No treasures found yet.</p>
              
              <Button 

@@ -1,12 +1,10 @@
-import React from 'react';
 import { cn } from '../../../lib/utils';
-import { FaHeart, FaCross, FaStar, FaCircle, FaSquare } from 'react-icons/fa';
 
 // Symbol mapping for completion marks
 // In a real TBoI app, these would be specific SVGs (Delirium wrinkled page, etc.)
 // For now, we use available icons + rotation to simulate stamps.
 
-const Symbol = ({ type, color }) => {
+const Symbol = ({ type, _color }) => {
     // Randomize rotation slightly for stamp effect
     const rot = Math.random() * 20 - 10;
     
@@ -27,7 +25,7 @@ const Symbol = ({ type, color }) => {
     }
 };
 
-export const CompletionMarks = ({ marks = {}, isTainted = false }) => {
+export const CompletionMarks = ({ _marks = {}, isTainted = false }) => {
     // Marks Grid Layout (3x3 approx)
     // Row 1: Mom's Heart, Isaac, Boss Rush
     // Row 2: Satan, ???, Hush
@@ -51,8 +49,8 @@ export const CompletionMarks = ({ marks = {}, isTainted = false }) => {
         { id: 'greed', icon: 'star', status: 'hard' },
     ];
     
-    const inkColor = isTainted ? 'text-red-900' : 'text-black';
-    const stampColorVal = isTainted ? '#8b0000' : '#000';
+    const _inkColor = isTainted ? 'text-red-900' : 'text-black';
+    const _stampColorVal = isTainted ? '#8b0000' : '#000';
 
     return (
         <div className={cn(

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
-import { FaPlus, FaEdit, FaTrash, FaSearch, FaArrowLeft } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaSearch, FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminBosses() {
@@ -17,7 +17,7 @@ export default function AdminBosses() {
 
     const fetchBosses = async () => {
         setLoading(true);
-        const { data, error } = await supabase
+        const { data, error: _error } = await supabase
             .from('codex_bosses')
             .select('*')
             .order('created_at', { ascending: false });

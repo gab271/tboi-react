@@ -1,4 +1,3 @@
-import React from 'react';
 import './Character.css';
 
 function Character({ characterName, characterImage, characterLife, characterDescription }) {

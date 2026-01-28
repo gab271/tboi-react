@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   DropdownMenu, 
@@ -7,7 +6,7 @@ import {
   DropdownMenuItem 
 } from './DropdownMenu';
 import { Button } from './Button';
-import { FaGlobe, FaCheck } from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa';
 import { cn } from '../../lib/utils';
 
 export function LanguageSwitcher() {

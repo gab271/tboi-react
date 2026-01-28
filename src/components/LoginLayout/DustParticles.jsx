@@ -1,6 +1,5 @@
 // CSS Module for particle animations
-import { cn } from '../../lib/utils';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Random number generator within a range
 const random = (min, max) => Math.random() * (max - min) + min;

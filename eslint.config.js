@@ -17,7 +17,7 @@ export default [
         sourceType: 'module',
       },
     },
-    settings: { react: { version: '18.3' } },
+    settings: { react: { version: '19.0' } },
     plugins: {
       react,
       'react-hooks': reactHooks,
@@ -33,6 +33,13 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      // Disable prop-types (using plain JS, not TypeScript)
+      'react/prop-types': 'off',
+      // Allow unused vars starting with underscore
+      'no-unused-vars': ['error', { 
+        'argsIgnorePattern': '^_',
+        'varsIgnorePattern': '^_'
+      }],
     },
   },
 ]

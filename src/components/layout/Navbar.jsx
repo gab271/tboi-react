@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { cn } from '../../lib/utils'
 import { Button } from '../ui/Button'
-import { FaSearch, FaUserCircle, FaSignOutAlt, FaHeart, FaBars, FaTimes } from 'react-icons/fa'
+import { FaSearch, FaSignOutAlt, FaHeart, FaBars, FaTimes } from 'react-icons/fa'
 import { CommandPalette } from './CommandPalette'
 import { useAuth } from '../../hooks/useAuth';
 import { 

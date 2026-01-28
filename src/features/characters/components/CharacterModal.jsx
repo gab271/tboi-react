@@ -1,8 +1,6 @@
-import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaHeart, FaGamepad, FaCoins, FaBomb, FaKey } from 'react-icons/fa';
-import { Button } from '../../../components/ui/Button';
+import { FaHeart, FaGamepad, FaCoins, FaBomb, FaKey } from 'react-icons/fa';
 
 // Symbols for marks to display (read-only in modal)
 const COMPLETION_MARKS = [
@@ -20,8 +18,8 @@ const COMPLETION_MARKS = [
   { id: 'beast', name: "The beast", symbol: "B" }
 ];
 
-export function CharacterModal({ character, isOpen, onClose }) {
-  if (!isOpen || !character) return null;
+export function CharacterModal({ character, onClose, _isTainted }) {
+  if (!character) return null;
 
   // Retrieve progress from localStorage just for display
   const savedProgress = localStorage.getItem(`tboi_tracker_${character.id}`);
@@ -29,7 +27,7 @@ export function CharacterModal({ character, isOpen, onClose }) {
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
         {/* Backdrop */}
         <motion.div 
           initial={{ opacity: 0 }}
@@ -44,17 +42,17 @@ export function CharacterModal({ character, isOpen, onClose }) {
             initial={{ opacity: 0, scale: 0.95, y: 20, rotate: -1 }}
             animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20, rotate: -1 }}
-            className="relative w-full max-w-4xl bg-bg-paper text-text-ink paper-shadow rounded-sm max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-4xl bg-bg-paper text-text-ink paper-shadow rounded-sm max-h-[90vh] overflow-y-auto mx-2"
         >
             {/* Close Button Doodle */}
            <button 
-                className="absolute top-4 right-5 z-20 font-handwriting font-bold text-2xl hover:text-accent-blood transition-colors"
+                className="absolute top-3 right-3 sm:top-4 sm:right-5 z-20 font-handwriting font-bold text-xl sm:text-2xl hover:text-accent-blood transition-colors"
                 onClick={onClose}
             >
                 X
             </button>
 
-            <div className="p-8 md:p-12 flex flex-col md:flex-row gap-8">
+            <div className="p-4 sm:p-8 md:p-12 flex flex-col md:flex-row gap-6 sm:gap-8">
                 
                 {/* Left: Polaroid-style Portrait */}
                 <div className="w-full md:w-1/3 flex-shrink-0 flex flex-col items-center">

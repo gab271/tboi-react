@@ -1,5 +1,4 @@
 // MissingPoster.jsx - A torn paper style poster for the 'Missing' section
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { useNavigate } from 'react-router-dom';
