@@ -69,6 +69,14 @@ function IsaacAvatar({ url, size = 120, onUpload, uploading }) {
           boxShadow: '6px 6px 0px 0px rgba(0,0,0,1)',
         }}
       >
+        {/* Tape effect - holding the photo */}
+        <div 
+          className="absolute -top-1 -right-1 w-10 h-6 bg-white/30 rotate-[35deg] z-20 pointer-events-none"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.2) 100%)',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+          }}
+        />
         {avatarUrl ? (
           <img
             src={avatarUrl}
@@ -186,7 +194,7 @@ function IsaacButton({ children, variant = 'primary', className = '', ...props }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PLAYER STATS PANEL (Gamification with TBOI icons)
+// PLAYER STATS PANEL (Gamification with TBOI icons) - IMPROVED GRID
 // ═══════════════════════════════════════════════════════════════
 function PlayerStats({ memberSince, buildsCount = 0, votesGiven = 0, savedBuilds = 0 }) {
   const stats = [
@@ -202,13 +210,14 @@ function PlayerStats({ memberSince, buildsCount = 0, votesGiven = 0, savedBuilds
         <FaBomb className="text-black/60" />
         Player Stats
       </h3>
-      <div className="space-y-3">
+      {/* Grid layout for better alignment */}
+      <div className="grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-2 items-center">
         {stats.map(({ icon: Icon, label, value, color }) => (
-          <div key={label} className="flex items-center gap-3">
-            <Icon className={`w-5 h-5 ${color}`} />
-            <span className="font-handwriting text-black/70">{label}:</span>
-            <span className="font-pixel text-sm text-black ml-auto">{value}</span>
-          </div>
+          <>
+            <Icon key={`icon-${label}`} className={`w-5 h-5 ${color}`} />
+            <span key={`label-${label}`} className="font-handwriting text-black/70">{label}</span>
+            <span key={`value-${label}`} className="font-pixel text-sm text-black text-right tabular-nums">{value}</span>
+          </>
         ))}
       </div>
       
@@ -223,20 +232,32 @@ function PlayerStats({ memberSince, buildsCount = 0, votesGiven = 0, savedBuilds
 }
 
 // ═══════════════════════════════════════════════════════════════
-// TAB BUTTON (Notebook Tab Style)
+// TAB BUTTON (Notebook Tab Style) - FIXED VISIBILITY
 // ═══════════════════════════════════════════════════════════════
-function TabButton({ active, onClick, children, icon: Icon }) {
+function TabButton({ active, onClick, children, icon: Icon, variant = 'default' }) {
+  // Prevent scroll on click
+  const handleClick = (e) => {
+    e.preventDefault();
+    onClick();
+  };
+
+  // Different styles for danger tab when inactive
+  const inactiveStyles = variant === 'danger'
+    ? 'bg-red-900/60 text-red-100 hover:bg-red-800/70 hover:text-white'
+    : 'bg-stone-500 text-stone-100 hover:bg-stone-400 hover:text-white';
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
+      type="button"
       className={`
         flex items-center gap-2 px-4 py-2 
         font-heading text-sm uppercase tracking-wide
         border-2 border-black border-b-0
-        transition-all
+        transition-all cursor-pointer
         ${active 
-          ? 'bg-[#f4f1ea] text-black -mb-[2px] z-10' 
-          : 'bg-[#d4cfc2] text-black/60 hover:bg-[#e4dfd2] hover:text-black'
+          ? 'bg-[#fdfbf7] text-black -mb-[2px] z-10 relative' 
+          : inactiveStyles
         }
       `}
     >
@@ -399,22 +420,27 @@ export default function Account() {
   }
 
   return (
-    <div className="min-h-screen bg-bg-floor py-8 px-4">
+    <div 
+      className="min-h-screen py-8 px-4"
+      style={{
+        background: 'radial-gradient(ellipse at center, #3a3632 0%, #2a2725 50%, #1a1918 100%)',
+      }}
+    >
       <div className="max-w-4xl mx-auto">
         
         {/* ═══ PAGE HEADER - Sketchy Style ═══ */}
-        <header className="mb-8 border-b-4 border-dashed border-black pb-4">
-          <h1 className="text-4xl md:text-5xl font-heading uppercase tracking-tight text-black flex items-center gap-3">
+        <header className="mb-8 border-b-4 border-dashed border-stone-600 pb-4">
+          <h1 className="text-4xl md:text-5xl font-heading uppercase tracking-tight text-stone-200 flex items-center gap-3">
             <FaUser className="text-accent-blood" />
             Tu Cuenta
           </h1>
-          <p className="font-handwriting text-xl text-black/60 mt-2 transform -rotate-1">
+          <p className="font-handwriting text-xl text-stone-400 mt-2 transform -rotate-1">
             Gestiona tu perfil y seguridad
           </p>
         </header>
 
         {/* ═══ TABS ═══ */}
-        <div className="flex gap-1 mb-0">
+        <div className="flex gap-1 mb-0 relative z-10">
           <TabButton 
             active={activeTab === 'profile'} 
             onClick={() => setActiveTab('profile')}
@@ -433,13 +459,14 @@ export default function Account() {
             active={activeTab === 'danger'} 
             onClick={() => setActiveTab('danger')}
             icon={FaSkull}
+            variant="danger"
           >
             Peligro
           </TabButton>
         </div>
 
         {/* ═══ TAB CONTENT CONTAINER - Paper Style ═══ */}
-        <div className="bg-[#f4f1ea] border-2 border-black p-6 md:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)] relative">
+        <div className="bg-[#fdfbf7] border-2 border-black p-6 md:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] relative">
           
           {/* Paper texture overlay */}
           <div className="absolute inset-0 bg-noise opacity-5 pointer-events-none" />
@@ -613,18 +640,18 @@ export default function Account() {
         </div>
 
         {/* ═══ BOTTOM DECORATION - Hand drawn doodles ═══ */}
-        <div className="mt-8 flex justify-center opacity-20">
+        <div className="mt-8 flex justify-center opacity-30">
           <svg viewBox="0 0 200 40" className="w-48 h-10">
             {/* Sketchy line */}
             <path 
               d="M 10 20 Q 30 15, 50 20 T 90 20 T 130 20 T 170 20 T 190 20" 
-              stroke="black" 
+              stroke="#a8a29e" 
               strokeWidth="2" 
               fill="none"
               strokeLinecap="round"
             />
             {/* Small hearts/items doodles */}
-            <text x="100" y="35" textAnchor="middle" fontSize="12" fill="black">♥ ♦ ♠ ♣</text>
+            <text x="100" y="35" textAnchor="middle" fontSize="12" fill="#a8a29e">♥ ♦ ♠ ♣</text>
           </svg>
         </div>
       </div>
