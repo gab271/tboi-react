@@ -213,11 +213,11 @@ function PlayerStats({ memberSince, buildsCount = 0, votesGiven = 0, savedBuilds
       {/* Grid layout for better alignment */}
       <div className="grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-2 items-center">
         {stats.map(({ icon: Icon, label, value, color }) => (
-          <>
-            <Icon key={`icon-${label}`} className={`w-5 h-5 ${color}`} />
-            <span key={`label-${label}`} className="font-handwriting text-black/70">{label}</span>
-            <span key={`value-${label}`} className="font-pixel text-sm text-black text-right tabular-nums">{value}</span>
-          </>
+          <React.Fragment key={label}>
+            <Icon className={`w-5 h-5 ${color}`} />
+            <span className="font-handwriting text-black/70">{label}</span>
+            <span className="font-pixel text-sm text-black text-right tabular-nums">{value}</span>
+          </React.Fragment>
         ))}
       </div>
       

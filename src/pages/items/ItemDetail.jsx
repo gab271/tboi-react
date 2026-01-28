@@ -49,8 +49,14 @@ const PoolIcon = ({ poolName }) => {
 };
 
 // Quality Badge Component con colores oficiales y animación
-const QualityBadge = ({ quality }) => {
-  const tier = quality ?? 0; // Default Tier 0 si null
+// Returns null for trinkets (quality is null/undefined)
+const QualityBadge = ({ quality, itemType }) => {
+  // Don't show quality for trinkets - they don't have quality in TBOI
+  if (itemType === 'trinket' || quality === null || quality === undefined) {
+    return null;
+  }
+  
+  const tier = quality;
   
   // Colores oficiales por tier (tboi.com)
   const tierConfig = {
@@ -160,8 +166,13 @@ export function ItemDetail() {
                                <div className="font-heading text-2xl">{item.item_id}</div>
                            </div>
                        )}
-                       <div className="w-px bg-[#d3c6aa]"></div>
-                       <QualityBadge quality={item.quality} />
+                       {/* Only show divider and quality badge for non-trinkets */}
+                       {(item.type || item.item_type) !== 'trinket' && item.quality !== null && item.quality !== undefined && (
+                         <>
+                           <div className="w-px bg-[#d3c6aa]"></div>
+                           <QualityBadge quality={item.quality} itemType={item.type || item.item_type} />
+                         </>
+                       )}
                    </div>
                 </div>
              </div>
