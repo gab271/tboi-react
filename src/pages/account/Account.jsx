@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '../../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
@@ -213,11 +213,11 @@ function PlayerStats({ memberSince, buildsCount = 0, votesGiven = 0, savedBuilds
       {/* Grid layout for better alignment */}
       <div className="grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-2 items-center">
         {stats.map(({ icon: Icon, label, value, color }) => (
-          <React.Fragment key={label}>
+          <div key={label} className="contents">
             <Icon className={`w-5 h-5 ${color}`} />
             <span className="font-handwriting text-black/70">{label}</span>
             <span className="font-pixel text-sm text-black text-right tabular-nums">{value}</span>
-          </React.Fragment>
+          </div>
         ))}
       </div>
       
@@ -312,6 +312,13 @@ export default function Account() {
   // Tab State
   const [activeTab, setActiveTab] = useState('profile');
 
+  // User Stats
+  const [userStats, setUserStats] = useState({
+    buildsCount: 0,
+    votesGiven: 0,
+    savedBuilds: 0,
+  });
+
   // Initial Fetch
   useEffect(() => {
     let ignore = false;
@@ -340,6 +347,48 @@ export default function Account() {
     }
 
     getProfile();
+    return () => { ignore = true; };
+  }, [session]);
+
+  // Fetch User Stats
+  useEffect(() => {
+    let ignore = false;
+    async function getUserStats() {
+      const { user } = session || {};
+      if (!user) return;
+
+      try {
+        // Get builds count
+        const { count: buildsCount } = await supabase
+          .from('build_posts')
+          .select('*', { count: 'exact', head: true })
+          .eq('author_id', user.id);
+
+        // Get votes given count
+        const { count: votesGiven } = await supabase
+          .from('build_votes')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+
+        // Get saved builds count
+        const { count: savedBuilds } = await supabase
+          .from('build_saves')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+
+        if (!ignore) {
+          setUserStats({
+            buildsCount: buildsCount || 0,
+            votesGiven: votesGiven || 0,
+            savedBuilds: savedBuilds || 0,
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching user stats:', err);
+      }
+    }
+
+    getUserStats();
     return () => { ignore = true; };
   }, [session]);
 
@@ -493,9 +542,9 @@ export default function Account() {
                   <div className="hidden lg:block w-full">
                     <PlayerStats 
                       memberSince={memberSince || '???'}
-                      buildsCount={0}
-                      votesGiven={0}
-                      savedBuilds={0}
+                      buildsCount={userStats.buildsCount}
+                      votesGiven={userStats.votesGiven}
+                      savedBuilds={userStats.savedBuilds}
                     />
                   </div>
                 </div>
@@ -534,9 +583,9 @@ export default function Account() {
               <div className="lg:hidden mt-8">
                 <PlayerStats 
                   memberSince={memberSince || '???'}
-                  buildsCount={0}
-                  votesGiven={0}
-                  savedBuilds={0}
+                  buildsCount={userStats.buildsCount}
+                  votesGiven={userStats.votesGiven}
+                  savedBuilds={userStats.savedBuilds}
                 />
               </div>
             </motion.div>

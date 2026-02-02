@@ -101,10 +101,14 @@ export function BuildCard({
           {/* Meta info */}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-text-dim font-handwriting">
             {/* Author */}
-            <span className="flex items-center gap-1">
+            <Link 
+              to={`/profile/${build.author_id}`}
+              className="flex items-center gap-1 hover:text-accent-blood transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
               <FaUser className="w-3 h-3" />
-              {build.author_username || 'Anonymous'}
-            </span>
+              {build.author?.username || 'Anonymous'}
+            </Link>
             
             {/* Character */}
             {character && (

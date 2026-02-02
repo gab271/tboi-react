@@ -2,7 +2,7 @@
  * BuildsPage Component
  * Main feed page for community builds
  */
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -35,16 +35,36 @@ export function BuildsPage() {
     tags: [],
     search: '',
   });
+  
+  // Debounced search filter
+  const [debouncedFilters, setDebouncedFilters] = useState(filters);
+  const isFirstLoad = useRef(true);
+  
+  // Debounce search input
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedFilters(filters);
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [filters]);
 
-  // Queries
+  // Queries - use debounced filters
   const {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     isLoading,
+    isFetching,
     isError,
-  } = useBuildsFeed(filters);
+  } = useBuildsFeed(debouncedFilters);
+  
+  // Track first load
+  useEffect(() => {
+    if (!isLoading && isFirstLoad.current) {
+      isFirstLoad.current = false;
+    }
+  }, [isLoading]);
 
   // Mutations
   const voteMutation = useToggleVote();
@@ -74,8 +94,8 @@ export function BuildsPage() {
     navigate('/builds/new');
   };
 
-  // Loading state
-  if (isLoading) {
+  // Loading state - only show full loading on first load
+  if (isLoading && isFirstLoad.current) {
     return <NightmareLoading />;
   }
 
@@ -171,6 +191,14 @@ export function BuildsPage() {
         {/* Main Content */}
         <main className="flex-1 w-full min-w-0">
           
+          {/* Filtering indicator */}
+          {isFetching && !isFetchingNextPage && (
+            <div className="flex items-center justify-center gap-2 py-4 text-text-dim">
+              <FaSpinner className="animate-spin" />
+              <span className="font-handwriting">Filtering...</span>
+            </div>
+          )}
+
           {/* Error State */}
           {isError && (
             <div className="text-center py-12">
@@ -184,7 +212,7 @@ export function BuildsPage() {
           )}
 
           {/* Empty State */}
-          {!isLoading && !isError && builds.length === 0 && (
+          {!isFetching && !isError && builds.length === 0 && (
             <div className="text-center py-16 px-4">
               <div className="text-6xl mb-4">📝</div>
               <h2 className="font-heading text-2xl text-text-heading mb-2">

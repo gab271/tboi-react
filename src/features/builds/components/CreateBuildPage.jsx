@@ -285,6 +285,7 @@ export function CreateBuildPage() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const createBuildMutation = useCreateBuild();
+  const uploadMutation = useUploadMedia();
   const { data: popularTags = [] } = usePopularTags();
 
   // Form state
@@ -367,8 +368,23 @@ export function CreateBuildPage() {
         items,
       });
 
-      // TODO: Upload media files after post creation
-      // For now, redirect to the new build
+      // Upload media files after post creation
+      if (media.length > 0) {
+        for (const mediaItem of media) {
+          if (mediaItem.file) {
+            try {
+              await uploadMutation.mutateAsync({
+                postId: post.id,
+                file: mediaItem.file,
+              });
+            } catch (mediaError) {
+              console.error('Error uploading media:', mediaError);
+              // Continue with other uploads even if one fails
+            }
+          }
+        }
+      }
+
       navigate(`/builds/${post.id}`);
     } catch (error) {
       setErrors({ submit: error.message || 'Failed to create build' });

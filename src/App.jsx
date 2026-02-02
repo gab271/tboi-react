@@ -13,6 +13,7 @@ import { BuildsPage, BuildDetailPage, CreateBuildPage } from './features/builds'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
 import Account from './pages/account/Account'
+import PublicProfile from './pages/profile/PublicProfile'
 import AdminRoute from './components/layout/AdminRoute'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminItems from './pages/admin/items/AdminItems'
@@ -42,6 +43,9 @@ function App() {
           {/* Builds - Public feed */}
           <Route path="builds" element={<BuildsPage />} />
           <Route path="builds/:id" element={<BuildDetailPage />} />
+          
+          {/* Public Profile */}
+          <Route path="profile/:userId" element={<PublicProfile />} />
           
           {/* Builds - Protected create */}
           <Route path="builds/new" element={

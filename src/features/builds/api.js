@@ -24,6 +24,11 @@ export const fetchBuildsFeed = async ({
   cursorScore = null,
   limit = 20,
 }) => {
+  console.log('[fetchBuildsFeed] Starting with params:', { sort, character, gameVersion, search });
+  
+  // Skip RPC for now - go directly to fallback query
+  // This helps debug if the issue is with the RPC function
+  /*
   // Try RPC first
   try {
     const { data, error } = await supabase.rpc('get_builds_feed', {
@@ -40,18 +45,21 @@ export const fetchBuildsFeed = async ({
     });
 
     if (!error && data) {
+      console.log('[fetchBuildsFeed] RPC success, got', data.length, 'builds');
       return data;
     }
+    console.log('[fetchBuildsFeed] RPC returned error or no data:', error);
   } catch (rpcError) {
     console.warn('RPC get_builds_feed not available, using fallback:', rpcError);
   }
+  */
+  console.log('[fetchBuildsFeed] Using direct query (RPC skipped)');
 
   // Fallback: Direct query
   let query = supabase
     .from('build_posts')
     .select('*')
-    .eq('status', 'published')
-    .eq('is_hidden', false);
+    .eq('status', 'published');
 
   // Apply filters
   if (character) {
@@ -90,16 +98,18 @@ export const fetchBuildsFeed = async ({
 
   query = query.limit(limit);
 
+  console.log('[fetchBuildsFeed] Executing fallback query...');
   const { data: posts, error: postsError } = await query;
 
+  console.log('[fetchBuildsFeed] Fallback result:', { posts: posts?.length, error: postsError });
   if (postsError) throw postsError;
   if (!posts || posts.length === 0) return [];
 
   // Fetch author profiles
   const authorIds = [...new Set(posts.map(p => p.author_id))];
   const { data: profiles } = await supabase
-    .from('user_profiles')
-    .select('id, username, display_name, avatar_url')
+    .from('profiles')
+    .select('id, username, avatar_url')
     .in('id', authorIds);
 
   const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
@@ -148,25 +158,39 @@ export const fetchBuildsFeed = async ({
   let userSaves = new Set();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (user) {
-    const { data: votes } = await supabase
-      .from('build_votes')
-      .select('post_id, value')
-      .in('post_id', postIds)
-      .eq('user_id', user.id);
-    userVotes = new Map(votes?.map(v => [v.post_id, v.value]) || []);
+  if (user && postIds.length > 0) {
+    try {
+      const { data: votes, error: votesError } = await supabase
+        .from('build_votes')
+        .select('post_id, value')
+        .in('post_id', postIds)
+        .eq('user_id', user.id);
+      
+      if (!votesError && votes) {
+        userVotes = new Map(votes.map(v => [v.post_id, v.value]));
+      }
+    } catch (e) {
+      console.warn('Error fetching votes:', e);
+    }
 
-    const { data: saves } = await supabase
-      .from('build_saves')
-      .select('post_id')
-      .in('post_id', postIds)
-      .eq('user_id', user.id);
-    userSaves = new Set(saves?.map(s => s.post_id) || []);
+    try {
+      const { data: saves, error: savesError } = await supabase
+        .from('build_saves')
+        .select('post_id')
+        .in('post_id', postIds)
+        .eq('user_id', user.id);
+      
+      if (!savesError && saves) {
+        userSaves = new Set(saves.map(s => s.post_id));
+      }
+    } catch (e) {
+      console.warn('Error fetching saves:', e);
+    }
   }
 
   return filteredPosts.map(post => ({
     ...post,
-    author: profileMap.get(post.author_id) || { username: 'Anonymous', display_name: 'Anonymous', avatar_url: null },
+    author: profileMap.get(post.author_id) || { id: post.author_id, username: 'Anonymous', avatar_url: null },
     tags: tagsMap.get(post.id) || [],
     thumbnail_url: mediaMap.get(post.id) || null,
     user_vote: userVotes.get(post.id) || null,
@@ -205,8 +229,8 @@ export const fetchBuildDetail = async (buildId) => {
 
   // Fetch author profile
   const { data: authorProfile } = await supabase
-    .from('user_profiles')
-    .select('id, username, display_name, avatar_url')
+    .from('profiles')
+    .select('id, username, avatar_url')
     .eq('id', post.author_id)
     .single();
 
@@ -259,26 +283,34 @@ export const fetchBuildDetail = async (buildId) => {
   const { data: { user } } = await supabase.auth.getUser();
   
   if (user) {
-    const { data: voteData } = await supabase
-      .from('build_votes')
-      .select('value')
-      .eq('post_id', buildId)
-      .eq('user_id', user.id)
-      .single();
-    userVote = voteData?.value || null;
+    try {
+      const { data: voteData } = await supabase
+        .from('build_votes')
+        .select('value')
+        .eq('post_id', buildId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+      userVote = voteData?.value || null;
+    } catch (e) {
+      console.warn('Error fetching vote:', e);
+    }
 
-    const { data: saveData } = await supabase
-      .from('build_saves')
-      .select('id')
-      .eq('post_id', buildId)
-      .eq('user_id', user.id)
-      .single();
-    userSaved = !!saveData;
+    try {
+      const { data: saveData } = await supabase
+        .from('build_saves')
+        .select('id')
+        .eq('post_id', buildId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+      userSaved = !!saveData;
+    } catch (e) {
+      console.warn('Error fetching save:', e);
+    }
   }
 
   return {
     ...post,
-    author: authorProfile || { username: 'Anonymous', display_name: 'Anonymous', avatar_url: null },
+    author: authorProfile || { id: post.author_id, username: 'Anonymous', avatar_url: null },
     tags: tags?.map(t => t.tag) || [],
     items: itemsWithDetails,
     media: processedMedia,
@@ -388,8 +420,8 @@ export const fetchBuildComments = async (buildId) => {
   if (data && data.length > 0) {
     const authorIds = [...new Set(data.map(c => c.author_id))];
     const { data: profiles } = await supabase
-      .from('user_profiles')
-      .select('id, username, display_name, avatar_url')
+      .from('profiles')
+      .select('id, username, avatar_url')
       .in('id', authorIds);
     
     const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
@@ -398,7 +430,6 @@ export const fetchBuildComments = async (buildId) => {
       ...comment,
       author: profileMap.get(comment.author_id) || {
         username: 'Anonymous',
-        display_name: 'Anonymous',
         avatar_url: null,
       },
     }));
@@ -616,7 +647,7 @@ export const toggleBuildVote = async (postId, value = 1) => {
     .select('id, value')
     .eq('post_id', postId)
     .eq('user_id', user.id)
-    .single();
+    .maybeSingle();
 
   let scoreChange = 0;
 
@@ -678,7 +709,7 @@ export const toggleBuildSave = async (postId) => {
     .select('id')
     .eq('post_id', postId)
     .eq('user_id', user.id)
-    .single();
+    .maybeSingle();
 
   let savesChange = 0;
 

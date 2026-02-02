@@ -181,10 +181,13 @@ export function BuildDetailPage() {
 
               {/* Meta */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-text-dim font-handwriting">
-                <span className="flex items-center gap-2">
+                <Link 
+                  to={`/profile/${build.author_id}`}
+                  className="flex items-center gap-2 hover:text-accent-blood transition-colors"
+                >
                   <FaUser className="w-4 h-4" />
-                  {build.author_username || 'Anonymous'}
-                </span>
+                  {build.author?.username || 'Anonymous'}
+                </Link>
                 <span className="flex items-center gap-2">
                   <FaClock className="w-4 h-4" />
                   {formatDate(build.created_at)}
@@ -398,11 +401,14 @@ export function BuildDetailPage() {
               {/* Author Info */}
               <div className="bg-bg-paper border-2 border-text-ink/40 p-4">
                 <h3 className="font-heading text-sm text-text-dim mb-3">POSTED BY</h3>
-                <div className="flex items-center gap-3">
-                  {build.author_avatar ? (
+                <Link 
+                  to={`/profile/${build.author_id}`}
+                  className="flex items-center gap-3 group hover:opacity-80 transition-opacity"
+                >
+                  {build.author?.avatar_url ? (
                     <img
-                      src={build.author_avatar}
-                      alt={build.author_username}
+                      src={build.author.avatar_url}
+                      alt={build.author?.username || 'User'}
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   ) : (
@@ -411,11 +417,12 @@ export function BuildDetailPage() {
                     </div>
                   )}
                   <div>
-                    <p className="font-pixel text-sm text-text-heading">
-                      {build.author_username || 'Anonymous'}
+                    <p className="font-pixel text-sm text-text-heading group-hover:text-accent-blood transition-colors">
+                      {build.author?.username || 'Anonymous'}
                     </p>
+                    <p className="text-xs text-text-dim font-handwriting">Ver perfil →</p>
                   </div>
-                </div>
+                </Link>
                 
                 {!isAuthor && user && (
                   <button
