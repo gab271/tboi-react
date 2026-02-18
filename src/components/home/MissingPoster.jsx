@@ -54,16 +54,20 @@ export const MissingPoster = () => {
                     
                     {/* Image Placeholder Box */}
                     <div className="w-full aspect-[4/3] bg-black/5 my-6 flex items-center justify-center border-hand-drawn border-black/10 overflow-hidden relative">
-                         {/* Inner darker box */}
-                        <div className="w-32 h-32 rounded-full bg-black flex items-center justify-center relative z-10">
-                            <span className="text-4xl text-white font-heading">?</span>
+                         {/* Blue Baby (???) image */}
+                        <div className="w-40 h-40 flex items-center justify-center relative z-10">
+                            <img 
+                                src="/sprites/0_Characters/0_Vanilla/Blue Baby.png" 
+                                alt="???" 
+                                className="w-full h-full object-contain pixelated drop-shadow-lg"
+                            />
                         </div>
                         {/* Grunge scratch overlay on image area */}
                         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/scratches.png')] mix-blend-multiply"></div>
                     </div>
 
                     <p className="text-2xl font-heading font-black text-black mb-1 uppercase">
-                        Have you seen this way out?
+                        ???
                     </p>
                     
                     <p className="font-handwriting text-xl text-black/70 mb-8 leading-tight">
