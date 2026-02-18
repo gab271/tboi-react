@@ -45,7 +45,7 @@ export const CharacterWheel = ({ characters, isTainted, onSelect }) => {
     const visibleItems = getVisibleIndices();
 
     return (
-        <div className="relative w-full h-[400px] md:h-[600px] flex items-center justify-center perspective-[1000px] overflow-visible mt-4 md:mt-8">
+        <div className="relative w-full h-[60vh] min-h-[280px] max-h-[600px] flex items-center justify-center perspective-[1000px] overflow-visible">
             
             {/* Background Atmosphere Circle */}
             <div className={cn(
@@ -84,7 +84,7 @@ export const CharacterWheel = ({ characters, isTainted, onSelect }) => {
                         const xPos = offset * spacing; // Tight Spacing on mobile
                         const zPos = isCenter ? 0 : -300 - Math.abs(offset) * 100; // Deep Z
                         const yPos = isCenter ? 0 : -50 + Math.abs(offset) * 20; // Slight curve up/down
-                        const scale = isCenter ? (typeof window !== 'undefined' && window.innerWidth < 768 ? 1.0 : 1.3) : 0.6; // Smaller center on mobile
+                        const scale = isCenter ? 1 : 0.4; // No extra scaling for center
                         const opacity = isCenter ? 1 : 0.6 - Math.abs(offset) * 0.1;
                         const rotateY = offset * 15; // Face inwards slightly
 
@@ -123,14 +123,12 @@ export const CharacterWheel = ({ characters, isTainted, onSelect }) => {
                             >
                                 <div className={cn("relative transition-all duration-300")}>
                                     {isCenter ? (
-                                        <div className="transform scale-125">
-                                            <CharacterCard 
-                                                character={char} 
-                                                isActive={true} 
-                                                isTainted={isTainted}
-                                                onSelect={() => onSelect && onSelect(char)}
-                                            />
-                                        </div>
+                                        <CharacterCard 
+                                            character={char} 
+                                            isActive={true} 
+                                            isTainted={isTainted}
+                                            onSelect={() => onSelect && onSelect(char)}
+                                        />
                                     ) : (
                                         /* Side Characters: Just Sprites/Heads */
                                         <div className="w-24 h-24 flex items-center justify-center filter drop-shadow-xl">

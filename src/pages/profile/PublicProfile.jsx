@@ -12,11 +12,12 @@ import {
   FaTrophy,
   FaCalendarAlt,
   FaArrowLeft,
-  FaUser
+  FaUser,
+  FaUsers
 } from 'react-icons/fa';
 import { supabase } from '../../lib/supabaseClient';
 import { NightmareLoading } from '../../components/ui/NightmareLoading';
-import { BuildCard } from '../../features/builds/components/BuildCard';
+import { cn } from '../../lib/utils';
 
 // Avatar component for profile
 function ProfileAvatar({ url, username, size = 120 }) {
@@ -88,8 +89,11 @@ export default function PublicProfile() {
     votesGiven: 0,
     savedBuilds: 0,
     totalScore: 0,
+    savesReceived: 0,
   });
   const [builds, setBuilds] = useState([]);
+  const [savedBuilds, setSavedBuilds] = useState([]);
+  const [activeTab, setActiveTab] = useState('created'); // 'created' or 'saved'
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -147,6 +151,7 @@ export default function PublicProfile() {
         // Calculate stats
         const buildsCount = buildsData?.length || 0;
         const totalScore = buildsData?.reduce((acc, b) => acc + (b.score || 0), 0) || 0;
+        const savesReceived = buildsData?.reduce((acc, b) => acc + (b.saves_count || 0), 0) || 0;
 
         // Count votes given by user
         const { count: votesCount } = await supabase
@@ -160,11 +165,67 @@ export default function PublicProfile() {
           .select('*', { count: 'exact', head: true })
           .eq('user_id', userId);
 
+        // Fetch saved builds with their details
+        const { data: savedBuildsData } = await supabase
+          .from('build_saves')
+          .select('post_id, created_at')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
+
+        if (savedBuildsData && savedBuildsData.length > 0) {
+          const savedPostIds = savedBuildsData.map(s => s.post_id);
+          
+          // Fetch the actual build posts
+          const { data: savedPostsData } = await supabase
+            .from('build_posts')
+            .select('*')
+            .in('id', savedPostIds)
+            .eq('status', 'published');
+
+          if (savedPostsData) {
+            // Get author profiles for saved builds
+            const savedAuthorIds = [...new Set(savedPostsData.map(p => p.author_id))];
+            const { data: savedAuthors } = await supabase
+              .from('profiles')
+              .select('id, username, avatar_url')
+              .in('id', savedAuthorIds);
+
+            const savedAuthorsMap = new Map(savedAuthors?.map(a => [a.id, a]) || []);
+
+            // Get tags for saved builds
+            const { data: savedTags } = await supabase
+              .from('build_post_tags')
+              .select('post_id, tag')
+              .in('post_id', savedPostIds);
+
+            const savedTagsMap = new Map();
+            (savedTags || []).forEach(t => {
+              if (!savedTagsMap.has(t.post_id)) {
+                savedTagsMap.set(t.post_id, []);
+              }
+              savedTagsMap.get(t.post_id).push(t.tag);
+            });
+
+            // Maintain the order from build_saves (most recently saved first)
+            const orderedSavedBuilds = savedPostIds
+              .map(id => savedPostsData.find(p => p.id === id))
+              .filter(Boolean)
+              .map(build => ({
+                ...build,
+                tags: savedTagsMap.get(build.id) || [],
+                author: savedAuthorsMap.get(build.author_id) || { username: 'Anonymous' },
+              }));
+
+            setSavedBuilds(orderedSavedBuilds);
+          }
+        }
+
         setStats({
           buildsCount,
           votesGiven: votesCount || 0,
           savedBuilds: savesCount || 0,
           totalScore,
+          savesReceived,
         });
 
       } catch (err) {
@@ -272,16 +333,16 @@ export default function PublicProfile() {
               color="text-yellow-500"
             />
             <StatCard 
+              icon={FaUsers} 
+              label="Guardados por otros" 
+              value={stats.savesReceived} 
+              color="text-green-500"
+            />
+            <StatCard 
               icon={FaHeart} 
               label="Votos dados" 
               value={stats.votesGiven} 
               color="text-red-500"
-            />
-            <StatCard 
-              icon={FaBookmark} 
-              label="Builds guardadas" 
-              value={stats.savedBuilds} 
-              color="text-blue-500"
             />
             <StatCard 
               icon={FaStar} 
@@ -292,54 +353,133 @@ export default function PublicProfile() {
           </div>
         </motion.div>
 
-        {/* User's Builds Section */}
+        {/* Tabs for Builds */}
+        <div className="flex gap-2 mb-4">
+          <button
+            onClick={() => setActiveTab('created')}
+            className={cn(
+              "px-4 py-2 font-heading text-sm uppercase border-2 border-black transition-all",
+              activeTab === 'created'
+                ? "bg-[#fdfbf7] text-black shadow-[3px_3px_0_rgba(0,0,0,0.5)]"
+                : "bg-transparent text-stone-400 border-stone-600 hover:text-white hover:border-stone-400"
+            )}
+          >
+            <FaTrophy className="inline mr-2" />
+            Builds creadas ({stats.buildsCount})
+          </button>
+          <button
+            onClick={() => setActiveTab('saved')}
+            className={cn(
+              "px-4 py-2 font-heading text-sm uppercase border-2 border-black transition-all",
+              activeTab === 'saved'
+                ? "bg-[#fdfbf7] text-black shadow-[3px_3px_0_rgba(0,0,0,0.5)]"
+                : "bg-transparent text-stone-400 border-stone-600 hover:text-white hover:border-stone-400"
+            )}
+          >
+            <FaBookmark className="inline mr-2" />
+            Builds guardadas ({stats.savedBuilds})
+          </button>
+        </div>
+
+        {/* Builds Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
+          key={activeTab}
         >
-          <h2 className="text-2xl font-heading uppercase text-stone-200 mb-4 border-b-2 border-dashed border-stone-600 pb-2">
-            Builds de {profile.username || 'este usuario'}
-          </h2>
-
-          {builds.length === 0 ? (
-            <div className="bg-[#fdfbf7] border-2 border-black p-8 text-center shadow-[4px_4px_0_rgba(0,0,0,0.3)]">
-              <p className="font-handwriting text-xl text-black/60">
-                Este usuario aún no ha compartido ninguna build.
-              </p>
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              {builds.map((build) => (
-                <Link key={build.id} to={`/builds/${build.id}`}>
-                  <div className="bg-[#fdfbf7] border-2 border-black p-4 shadow-[4px_4px_0_rgba(0,0,0,0.3)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.3)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all cursor-pointer">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <h3 className="font-heading text-lg text-black uppercase">{build.title}</h3>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          <span className="px-2 py-0.5 bg-accent-blood text-white text-xs font-pixel">
-                            {build.build_type}
-                          </span>
-                          <span className="px-2 py-0.5 bg-stone-200 text-black text-xs font-pixel">
-                            {build.character_slug}
-                          </span>
-                          {build.tags?.slice(0, 3).map(tag => (
-                            <span key={tag} className="px-2 py-0.5 bg-stone-100 text-black/70 text-xs font-pixel">
-                              #{tag}
+          {activeTab === 'created' ? (
+            // User's Created Builds
+            <>
+              {builds.length === 0 ? (
+                <div className="bg-[#fdfbf7] border-2 border-black p-8 text-center shadow-[4px_4px_0_rgba(0,0,0,0.3)]">
+                  <p className="font-handwriting text-xl text-black/60">
+                    Este usuario aún no ha compartido ninguna build.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {builds.map((build) => (
+                    <Link key={build.id} to={`/builds/${build.id}`}>
+                      <div className="bg-[#fdfbf7] border-2 border-black p-4 shadow-[4px_4px_0_rgba(0,0,0,0.3)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.3)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all cursor-pointer">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <h3 className="font-heading text-lg text-black uppercase">{build.title}</h3>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              <span className="px-2 py-0.5 bg-accent-blood text-white text-xs font-pixel">
+                                {build.build_type}
+                              </span>
+                              <span className="px-2 py-0.5 bg-stone-200 text-black text-xs font-pixel">
+                                {build.character_slug}
+                              </span>
+                              {build.tags?.slice(0, 3).map(tag => (
+                                <span key={tag} className="px-2 py-0.5 bg-stone-100 text-black/70 text-xs font-pixel">
+                                  #{tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 text-black/60">
+                            <span className="flex items-center gap-1 font-pixel text-sm">
+                              <FaStar className="text-yellow-500" /> {build.score || 0}
                             </span>
-                          ))}
+                            <span className="flex items-center gap-1 font-pixel text-sm">
+                              <FaBookmark className="text-blue-500" /> {build.saves_count || 0}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 text-black/60">
-                        <span className="flex items-center gap-1 font-pixel text-sm">
-                          <FaStar className="text-yellow-500" /> {build.score || 0}
-                        </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            // User's Saved Builds
+            <>
+              {savedBuilds.length === 0 ? (
+                <div className="bg-[#fdfbf7] border-2 border-black p-8 text-center shadow-[4px_4px_0_rgba(0,0,0,0.3)]">
+                  <p className="font-handwriting text-xl text-black/60">
+                    Este usuario aún no ha guardado ninguna build.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {savedBuilds.map((build) => (
+                    <Link key={build.id} to={`/builds/${build.id}`}>
+                      <div className="bg-[#fdfbf7] border-2 border-black p-4 shadow-[4px_4px_0_rgba(0,0,0,0.3)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.3)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all cursor-pointer">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <h3 className="font-heading text-lg text-black uppercase">{build.title}</h3>
+                            <p className="font-handwriting text-sm text-black/50 mt-1">
+                              por {build.author?.username || 'Anonymous'}
+                            </p>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              <span className="px-2 py-0.5 bg-accent-blood text-white text-xs font-pixel">
+                                {build.build_type}
+                              </span>
+                              <span className="px-2 py-0.5 bg-stone-200 text-black text-xs font-pixel">
+                                {build.character_slug}
+                              </span>
+                              {build.tags?.slice(0, 3).map(tag => (
+                                <span key={tag} className="px-2 py-0.5 bg-stone-100 text-black/70 text-xs font-pixel">
+                                  #{tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 text-black/60">
+                            <span className="flex items-center gap-1 font-pixel text-sm">
+                              <FaStar className="text-yellow-500" /> {build.score || 0}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </motion.div>
       </div>

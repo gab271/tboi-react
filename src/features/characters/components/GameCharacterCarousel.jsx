@@ -49,16 +49,16 @@ export const GameCharacterCarousel = ({ characters, onSelect }) => {
     if (!currentChar) return null;
 
     return (
-        <div className="relative w-full max-w-5xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="relative w-full max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-4 md:py-8">
             
             {/* Main Title - "WHO AM I?" style like the game */}
-            <div className="text-center mb-4 sm:mb-8">
+            <div className="text-center mb-2 sm:mb-4 md:mb-8">
                 <div className="inline-block relative">
                     {/* Paper note effect */}
-                    <div className="relative bg-[#f4e4bc] px-6 sm:px-10 py-3 sm:py-4 shadow-lg transform -rotate-1 border-2 border-black/10">
+                    <div className="relative bg-[#f4e4bc] px-4 sm:px-6 md:px-10 py-2 sm:py-3 md:py-4 shadow-lg transform -rotate-1 border-2 border-black/10">
                         {/* Pin */}
-                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-red-700 rounded-full border-2 border-red-900 shadow-md z-10" />
-                        <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-black tracking-wider">
+                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 sm:w-4 sm:h-4 bg-red-700 rounded-full border-2 border-red-900 shadow-md z-10" />
+                        <h2 className="font-heading text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-black tracking-wider">
                             WHO AM I ?
                         </h2>
                     </div>
@@ -66,7 +66,7 @@ export const GameCharacterCarousel = ({ characters, onSelect }) => {
             </div>
 
             {/* Carousel Container */}
-            <div className="relative flex items-center justify-center min-h-[300px] sm:min-h-[400px] md:min-h-[480px]">
+            <div className="relative flex items-center justify-center min-h-[220px] sm:min-h-[280px] md:min-h-[380px] lg:min-h-[450px]">
                 
                 {/* Left Navigation Arrow */}
                 <button 
@@ -146,7 +146,7 @@ export const GameCharacterCarousel = ({ characters, onSelect }) => {
                                         <div className="relative">
                                             {/* The Paper Sheet - Game Style */}
                                             <div 
-                                                className="relative w-[200px] sm:w-[260px] md:w-[300px] bg-[#f4e4bc] shadow-xl p-3 sm:p-4 md:p-6"
+                                                className="relative w-[160px] sm:w-[200px] md:w-[260px] lg:w-[300px] bg-[#f4e4bc] shadow-xl p-2 sm:p-3 md:p-4 lg:p-6"
                                                 style={{
                                                     clipPath: `polygon(
                                                         2% 0%, 98% 0%, 100% 2%, 99% 98%, 
@@ -160,9 +160,9 @@ export const GameCharacterCarousel = ({ characters, onSelect }) => {
                                                 <div className="absolute inset-0 bg-noise opacity-10 pointer-events-none" />
                                                 
                                                 {/* Character sprite */}
-                                                <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto mb-2 sm:mb-4">
+                                                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 mx-auto mb-1 sm:mb-2 md:mb-4">
                                                     {/* Shadow under sprite */}
-                                                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 sm:w-20 h-3 sm:h-4 bg-black/20 blur-md rounded-[100%]" />
+                                                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 sm:w-16 md:w-20 h-2 sm:h-3 md:h-4 bg-black/20 blur-md rounded-[100%]" />
                                                     
                                                     {char.image ? (
                                                         <motion.img 

@@ -230,29 +230,60 @@ export function useToggleSave() {
   return useMutation({
     mutationFn: buildsApi.toggleBuildSave,
     onMutate: async (postId) => {
+      // Cancel queries
       await queryClient.cancelQueries({ queryKey: BUILDS_KEYS.detail(postId) });
+      await queryClient.cancelQueries({ queryKey: BUILDS_KEYS.feed({}) });
       
+      // Save previous states
       const previousDetail = queryClient.getQueryData(BUILDS_KEYS.detail(postId));
+      const previousFeedQueries = queryClient.getQueriesData({ queryKey: ['builds', 'feed'] });
       
+      // Optimistic update for detail page
       if (previousDetail) {
         queryClient.setQueryData(BUILDS_KEYS.detail(postId), {
           ...previousDetail,
           user_saved: !previousDetail.user_saved,
           saves_count: previousDetail.user_saved 
-            ? previousDetail.saves_count - 1 
-            : previousDetail.saves_count + 1,
+            ? (previousDetail.saves_count || 1) - 1 
+            : (previousDetail.saves_count || 0) + 1,
         });
       }
       
-      return { previousDetail };
+      // Optimistic update for all feed queries
+      previousFeedQueries.forEach(([queryKey, data]) => {
+        if (data?.pages) {
+          const newPages = data.pages.map(page => 
+            page.map(build => 
+              build.id === postId 
+                ? { 
+                    ...build, 
+                    user_saved: !build.user_saved,
+                    saves_count: build.user_saved 
+                      ? (build.saves_count || 1) - 1 
+                      : (build.saves_count || 0) + 1,
+                  }
+                : build
+            )
+          );
+          queryClient.setQueryData(queryKey, { ...data, pages: newPages });
+        }
+      });
+      
+      return { previousDetail, previousFeedQueries };
     },
     onError: (err, postId, context) => {
+      // Rollback on error
       if (context?.previousDetail) {
         queryClient.setQueryData(BUILDS_KEYS.detail(postId), context.previousDetail);
       }
+      // Rollback feed queries
+      context?.previousFeedQueries?.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
     },
     onSettled: (_, __, postId) => {
       queryClient.invalidateQueries({ queryKey: BUILDS_KEYS.detail(postId) });
+      // Don't invalidate feed immediately to avoid flicker, rely on optimistic update
     },
   });
 }
