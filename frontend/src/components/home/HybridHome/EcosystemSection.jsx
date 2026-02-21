@@ -8,52 +8,52 @@ const TOOLS = [
     {
         id: 'wiki',
         icon: FaSearch,
-        title: 'Wiki Completa',
-        benefit: 'Nunca más te preguntes qué hace un ítem',
+        title: 'Nunca más te preguntes qué hace un ítem',
+        subtitle: 'Wiki de Ítems',
         description: 'Todos los ítems, trinkets, píldoras y cartas de Repentance con stats y efectos detallados.',
         stats: '637 ítems',
-        cta: 'Explorar',
+        cta: 'Explorar ítems',
         link: '/items',
         color: 'accent-blood',
     },
     {
-        id: 'synergies',
+        id: 'bosses',
         icon: FaBolt,
-        title: 'Analizador de Sinergias',
-        benefit: 'Descubre combos que no conocías',
-        description: 'Introduce tus ítems y descubre sinergias tier S, combinaciones peligrosas y efectos ocultos.',
-        stats: '627 sinergias',
-        cta: 'Analizar',
-        link: '/synergies',
+        title: 'Conoce a tu enemigo antes de enfrentarlo',
+        subtitle: 'Wiki de Jefes',
+        description: 'Guías de todos los jefes, patrones de ataque, estrategias y requisitos de desbloqueo.',
+        stats: '108 jefes',
+        cta: 'Estudiar jefes',
+        link: '/bosses',
         color: 'accent-gold',
     },
     {
         id: 'builds',
         icon: FaUsers,
-        title: 'Builds de la Comunidad',
-        benefit: 'Roba las mejores builds de otros jugadores',
+        title: 'Roba las mejores builds de otros jugadores',
+        subtitle: 'Comunidad',
         description: 'Miles de builds votadas por la comunidad. Filtra por personaje, boss o ítems clave.',
         stats: '12.453 builds',
-        cta: 'Ver top',
+        cta: 'Ver top builds',
         link: '/builds',
         color: 'green-500',
     },
     {
         id: 'tracker',
         icon: FaChartLine,
-        title: 'Progress Tracker',
-        benefit: 'Sabe exactamente qué te falta para Dead God',
+        title: 'Sabe exactamente qué te falta para Dead God',
+        subtitle: 'Progress Tracker',
         description: 'Análisis de save file con completion marks, ítems faltantes y estimación de tiempo.',
         stats: '3.247 usuarios',
-        cta: 'Trackear',
-        link: '#hero',
+        cta: 'Analizar mi save',
+        link: '#upload-zone',
         color: 'blue-500',
     },
 ];
 
 const GLOBAL_STATS = [
     { value: '637', label: 'ítems documentados' },
-    { value: '627', label: 'sinergias analizadas' },
+    { value: '108', label: 'jefes detallados' },
     { value: '12.453', label: 'builds compartidas' },
     { value: '3.247', label: 'usuarios activos' },
 ];
@@ -63,8 +63,16 @@ export function EcosystemSection() {
 
     const handleToolClick = (link) => {
         if (link.startsWith('#')) {
-            const element = document.getElementById(link.slice(1));
-            element?.scrollIntoView({ behavior: 'smooth' });
+            const elementId = link.slice(1);
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Add highlight effect
+                element.classList.add('ring-4', 'ring-accent-gold', 'ring-offset-4');
+                setTimeout(() => {
+                    element.classList.remove('ring-4', 'ring-accent-gold', 'ring-offset-4');
+                }, 2000);
+            }
         } else {
             navigate(link);
         }
@@ -193,15 +201,14 @@ function ToolCard({ tool, index, onClick }) {
             </div>
 
             {/* Content */}
-            <h3 className="font-heading text-xl text-text-heading uppercase mb-2">
+            <p className="text-xs text-text-dim font-handwriting uppercase tracking-wider mb-1">
+                {tool.subtitle}
+            </p>
+            <h3 className="font-heading text-lg text-text-heading mb-3">
                 {tool.title}
             </h3>
             
-            <p className="font-handwriting text-lg text-text-ink mb-2">
-                "{tool.benefit}"
-            </p>
-            
-            <p className="text-sm text-text-dim mb-4">
+            <p className="text-sm text-text-dim mb-4 line-clamp-2">
                 {tool.description}
             </p>
 

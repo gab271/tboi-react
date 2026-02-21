@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "seed:items": "node scripts/seedItems.js"
+    "seed:items": "node scripts/seedItems.js",
+    "test": "jest --verbose",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",
@@ -21,6 +23,7 @@
     "sharp": "^0.34.5"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.11"
   }
 }

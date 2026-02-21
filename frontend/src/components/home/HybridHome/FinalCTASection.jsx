@@ -5,10 +5,10 @@ import { FaEnvelope, FaDiscord, FaCheck } from 'react-icons/fa';
 import { useAuth } from '../../../hooks/useAuth';
 
 const BENEFITS = [
-    'Guarda tu progreso para siempre',
-    'Comparte builds con la comunidad',
-    'Recibe notificaciones de logros',
-    'Compara tu progreso con amigos',
+    'Trackea tu camino a Dead God',
+    'Comparte tus mejores builds',
+    'Celebra cada logro conseguido',
+    'Únete a 3,247 jugadores activos',
 ];
 
 export function FinalCTASection() {
@@ -52,13 +52,17 @@ export function FinalCTASection() {
                                 className="text-center mb-8"
                             >
                                 <h2 className="font-heading text-3xl md:text-4xl text-white uppercase tracking-tight mb-4">
-                                    Tu progreso no debería
+                                    Empieza hoy.
                                     <br />
-                                    <span className="text-accent-blood">perderse en el Void</span>
+                                    <span className="text-accent-gold">Mañana sabrás qué te falta.</span>
                                 </h2>
 
-                                <p className="font-handwriting text-lg md:text-xl text-white/70 max-w-lg mx-auto">
-                                    Crea tu cuenta y guarda progreso, builds y logros para siempre.
+                                <p className="font-handwriting text-lg md:text-xl text-white/70 max-w-lg mx-auto mb-4">
+                                    Tu camino a Dead God comienza con un paso.
+                                </p>
+
+                                <p className="font-handwriting text-base text-white/50 max-w-md mx-auto">
+                                    Guarda progreso, builds y logros para siempre.
                                     <span className="text-accent-gold font-bold"> Es gratis.</span>
                                 </p>
                             </motion.div>
@@ -95,7 +99,7 @@ export function FinalCTASection() {
                                     className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-accent-blood text-white font-heading text-lg border-2 border-white/20 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] hover:bg-white hover:text-accent-blood hover:shadow-[6px_6px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all"
                                 >
                                     <FaEnvelope className="w-5 h-5" />
-                                    Registrarme con email
+                                    Crear mi cuenta gratis
                                 </button>
                                 <button
                                     onClick={() => navigate('/auth/discord')}

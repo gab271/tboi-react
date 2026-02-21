@@ -2,9 +2,10 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { FaUpload, FaQuestionCircle, FaUsers, FaSpinner, FaCheck } from 'react-icons/fa';
+import { FaUpload, FaQuestionCircle, FaUsers, FaSpinner, FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 import { useDropzone } from 'react-dropzone';
 import { cn } from '../../lib/utils';
+import { analyzeSaveFile } from '../../lib/api';
 
 // Mock community stats
 const COMMUNITY_STATS = {
@@ -16,33 +17,56 @@ export function NewHero() {
     const navigate = useNavigate();
     const [uploadState, setUploadState] = useState('idle'); // idle | uploading | success | error
     const [progress, setProgress] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
     const [showHelpModal, setShowHelpModal] = useState(false);
 
-    const onDrop = useCallback((acceptedFiles) => {
+    const onDrop = useCallback(async (acceptedFiles) => {
         const file = acceptedFiles[0];
         if (!file) return;
 
         // Validate file name
         if (!file.name.includes('rep_') && !file.name.includes('persistentgamedata')) {
             setUploadState('error');
+            setErrorMessage('El archivo no parece ser un save de Isaac. Busca "rep_persistentgamedata1.dat"');
             return;
         }
 
         setUploadState('uploading');
+        setErrorMessage('');
 
-        // Simulate analysis (in production: actual API call)
-        setTimeout(() => {
+        try {
+            // REAL API CALL
+            const result = await analyzeSaveFile(file);
+            
+            if (result.source !== 'real') {
+                setUploadState('error');
+                setErrorMessage('No se pudo analizar el archivo. Por favor intenta de nuevo.');
+                return;
+            }
+            
             setUploadState('success');
             setProgress({
-                percentage: 67,
-                topPercentile: 23,
-                blockerCharacter: 'Tainted Lazarus',
-                blockerMarks: 14,
-                mostDeaths: { boss: 'Delirium', count: 47 },
-                hoursRemaining: 23,
-                nextObjective: 'Completar Mother con Tainted Lazarus',
+                source: result.source,
+                percentage: result.metrics.deadGodPercentage,
+                topPercentile: result.metrics.topPercentile,
+                blockerCharacter: result.parsed.blockerCharacter,
+                blockerMarks: result.parsed.blockerMarks,
+                hoursRemaining: result.metrics.estimatedHoursRemaining,
+                nextObjective: result.parsed.nextObjective,
+                completionMarks: result.parsed.completionMarks,
+                totalMarks: result.parsed.totalMarks,
+                achievementsUnlocked: result.parsed.achievementsUnlocked,
+                totalAchievements: result.parsed.totalAchievements,
             });
-        }, 2500);
+        } catch (error) {
+            console.error('[NewHero] Upload error:', error);
+            setUploadState('error');
+            setErrorMessage(
+                error.response?.error_message || 
+                error.message || 
+                'Error al analizar el archivo.'
+            );
+        }
     }, []);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -57,6 +81,7 @@ export function NewHero() {
     const resetUpload = () => {
         setUploadState('idle');
         setProgress(null);
+        setErrorMessage('');
     };
 
     return (
@@ -352,54 +377,58 @@ function HelpModal({ onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            className="fixed inset-0 z-50 overflow-y-auto bg-black/50"
             onClick={onClose}
         >
-            <motion.div
-                initial={{ scale: 0.95, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.95, y: 20 }}
-                className="w-full max-w-md bg-bg-paper border-3 border-black shadow-[6px_6px_0px_#000] p-6"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <h3 className="font-heading text-xl text-text-heading mb-4">
-                    ¿Dónde está mi save file?
-                </h3>
-
-                <div className="space-y-4 text-sm">
-                    <div>
-                        <p className="font-heading text-accent-blood mb-1">Windows:</p>
-                        <code className="block p-2 bg-black/5 text-xs break-all">
-                            C:\Users\TU_USUARIO\Documents\My Games\Binding of Isaac Repentance\
-                        </code>
-                    </div>
-
-                    <div>
-                        <p className="font-heading text-accent-blood mb-1">Mac:</p>
-                        <code className="block p-2 bg-black/5 text-xs break-all">
-                            ~/Library/Application Support/Binding of Isaac Repentance/
-                        </code>
-                    </div>
-
-                    <div>
-                        <p className="font-heading text-accent-blood mb-1">Linux:</p>
-                        <code className="block p-2 bg-black/5 text-xs break-all">
-                            ~/.local/share/binding of isaac repentance/
-                        </code>
-                    </div>
-
-                    <p className="text-text-dim font-handwriting">
-                        Busca el archivo <strong>rep_persistentgamedata1.dat</strong>
-                    </p>
-                </div>
-
-                <button
-                    onClick={onClose}
-                    className="mt-6 w-full py-3 bg-black text-white font-heading"
+            {/* Centering container that accounts for scroll */}
+            <div className="min-h-full flex items-center justify-center p-4">
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.95, opacity: 0 }}
+                    transition={{ type: "spring", duration: 0.3 }}
+                    className="relative w-full max-w-md bg-bg-paper border-3 border-black shadow-[6px_6px_0px_#000] p-6"
+                    onClick={(e) => e.stopPropagation()}
                 >
-                    Entendido
-                </button>
-            </motion.div>
+                    <h3 className="font-heading text-xl text-text-heading mb-4">
+                        ¿Dónde está mi save file?
+                    </h3>
+
+                    <div className="space-y-4 text-sm">
+                        <div>
+                            <p className="font-heading text-accent-blood mb-1">Windows:</p>
+                            <code className="block p-2 bg-black/5 text-xs break-all">
+                                C:\Users\TU_USUARIO\Documents\My Games\Binding of Isaac Repentance\
+                            </code>
+                        </div>
+
+                        <div>
+                            <p className="font-heading text-accent-blood mb-1">Mac:</p>
+                            <code className="block p-2 bg-black/5 text-xs break-all">
+                                ~/Library/Application Support/Binding of Isaac Repentance/
+                            </code>
+                        </div>
+
+                        <div>
+                            <p className="font-heading text-accent-blood mb-1">Linux:</p>
+                            <code className="block p-2 bg-black/5 text-xs break-all">
+                                ~/.local/share/binding of isaac repentance/
+                            </code>
+                        </div>
+
+                        <p className="text-text-dim font-handwriting">
+                            Busca el archivo <strong>rep_persistentgamedata1.dat</strong>
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={onClose}
+                        className="mt-6 w-full py-3 bg-black text-white font-heading"
+                    >
+                        Entendido
+                    </button>
+                </motion.div>
+            </div>
         </motion.div>
     );
 }

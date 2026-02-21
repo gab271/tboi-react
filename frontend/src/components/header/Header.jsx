@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
-import { FaSearch, FaUserCircle, FaSignOutAlt, FaHeart, FaBars, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaUserCircle, FaSignOutAlt, FaHeart, FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 import { CommandPalette } from '../layout/CommandPalette';
 import { useAuth } from '../../hooks/useAuth';
 import { 
@@ -87,22 +87,54 @@ function Header() {
             </div>
 
             {/* Center: Navigation - Desktop */}
-            <nav className="hidden lg:flex items-center justify-center gap-8 xl:gap-16">
-                <NavItem to="/items" label={t('nav.items')} />
-                <NavItem to="/bosses" label={t('nav.bosses')} />
-                <NavItem to="/characters" label={t('nav.characters')} />
-                <NavItem to="/builds" label={t('nav.builds')} />
+            <nav className="hidden lg:flex items-center justify-center gap-6 xl:gap-12">
+                <NavItem to="/" label={t('nav.myProgress')} />
+                <NavItem to="/synergies" label={t('nav.synergies')} />
+                
+                {/* Wiki Dropdown */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button className="flex items-center gap-1 font-pixel text-base xl:text-lg text-text-heading hover:text-accent-blood transition-colors">
+                            {t('nav.wiki')}
+                            <FaChevronDown className="w-3 h-3" />
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="center" className="bg-bg-paper border-2 border-black shadow-brutal min-w-[140px]">
+                        <DropdownMenuItem asChild>
+                            <NavLink to="/items" className="font-pixel text-sm px-3 py-2 hover:bg-accent-blood/10 cursor-pointer">
+                                {t('nav.items')}
+                            </NavLink>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <NavLink to="/bosses" className="font-pixel text-sm px-3 py-2 hover:bg-accent-blood/10 cursor-pointer">
+                                {t('nav.bosses')}
+                            </NavLink>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <NavLink to="/characters" className="font-pixel text-sm px-3 py-2 hover:bg-accent-blood/10 cursor-pointer">
+                                {t('nav.characters')}
+                            </NavLink>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                
+                <NavItem to="/builds" label={t('nav.community')} />
             </nav>
 
             {/* Right: Tools (Search, Favs, Login) - Desktop */}
             <div className="hidden lg:flex items-center justify-end gap-4 xl:gap-6 pr-4">
-                {/* Search Bar (Game Input Style) */}
+                {/* Search Bar (Game Input Style) with Ctrl+K hint */}
                 <div 
-                    className="cursor-pointer group relative flex items-center bg-black border-[3px] border-white/90 rounded-none px-3 py-2 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] rotate-1 hover:rotate-0 transition-all hover:scale-105 w-auto xl:w-48 justify-between"
+                    className="cursor-pointer group relative flex items-center bg-black border-[3px] border-white/90 rounded-none px-3 py-2 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] rotate-1 hover:rotate-0 transition-all hover:scale-105 w-auto xl:w-52 justify-between gap-3"
                     onClick={() => setShowCmd(true)}
                 >
                     <span className="font-pixel text-white text-lg xl:text-xl tracking-wider opacity-90 hidden xl:block">SEARCH</span>
-                    <FaSearch className="text-white w-4 h-4 group-hover:text-accent-blood transition-colors" />
+                    <div className="flex items-center gap-2">
+                        <kbd className="hidden xl:inline-flex items-center gap-1 px-1.5 py-0.5 text-xs font-pixel text-white/70 bg-white/10 rounded border border-white/20">
+                            {t('nav.searchHint')}
+                        </kbd>
+                        <FaSearch className="text-white w-4 h-4 group-hover:text-accent-blood transition-colors" />
+                    </div>
                 </div>
 
                 {/* Favorites */}
@@ -151,7 +183,7 @@ function Header() {
                             borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px' // Hand-drawn border radius
                         }}
                     >
-                        {t('nav.login')}
+                        {t('nav.createProfile')}
                     </Button>
                 )}
             </div>
@@ -199,10 +231,20 @@ function Header() {
             <div className="flex flex-col h-full pt-20 pb-8 px-6">
                 {/* Mobile Navigation */}
                 <nav className="flex flex-col gap-6 mb-8">
-                    <NavItem to="/items" label={t('nav.items')} onClick={() => setMobileMenuOpen(false)} />
-                    <NavItem to="/bosses" label={t('nav.bosses')} onClick={() => setMobileMenuOpen(false)} />
-                    <NavItem to="/characters" label={t('nav.characters')} onClick={() => setMobileMenuOpen(false)} />
-                    <NavItem to="/builds" label={t('nav.builds')} onClick={() => setMobileMenuOpen(false)} />
+                    <NavItem to="/" label={t('nav.myProgress')} onClick={() => setMobileMenuOpen(false)} />
+                    <NavItem to="/synergies" label={t('nav.synergies')} onClick={() => setMobileMenuOpen(false)} />
+                    
+                    {/* Wiki section */}
+                    <div className="flex flex-col gap-2">
+                        <span className="font-pixel text-xs text-text-muted uppercase tracking-wider">{t('nav.wiki')}</span>
+                        <div className="flex flex-col gap-4 pl-3 border-l-2 border-black/20">
+                            <NavItem to="/items" label={t('nav.items')} onClick={() => setMobileMenuOpen(false)} />
+                            <NavItem to="/bosses" label={t('nav.bosses')} onClick={() => setMobileMenuOpen(false)} />
+                            <NavItem to="/characters" label={t('nav.characters')} onClick={() => setMobileMenuOpen(false)} />
+                        </div>
+                    </div>
+                    
+                    <NavItem to="/builds" label={t('nav.community')} onClick={() => setMobileMenuOpen(false)} />
                 </nav>
 
                 <div className="h-px w-full bg-black/20 my-4" />
@@ -255,7 +297,7 @@ function Header() {
                                 borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px'
                             }}
                         >
-                            {t('nav.login')}
+                            {t('nav.createProfile')}
                         </Button>
                     )}
                 </div>

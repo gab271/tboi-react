@@ -7,11 +7,11 @@ import { cn } from '../../../lib/utils';
 
 // Mock data - en producción vendría de la API
 const LIVE_ACTIVITIES = [
-    { id: 1, user: 'EdmundFan', action: 'subió build', target: '"Brimstone Machine"', time: '3 min', type: 'build' },
-    { id: 2, user: 'NorthernLion', action: 'alcanzó', target: 'Dead God', time: '12 min', type: 'achievement' },
-    { id: 3, user: 'SinVicta', action: 'completó', target: 'Tainted Lost', time: '28 min', type: 'character' },
-    { id: 4, user: 'Hutts', action: 'subió build', target: '"Tech X Chaos"', time: '34 min', type: 'build' },
-    { id: 5, user: 'LavolpeTV', action: 'consiguió', target: 'Guppy transformation', time: '45 min', type: 'achievement' },
+    { id: 1, user: 'EdmundFan', action: 'subió build', target: '"Brimstone Machine"', time: 'hace 3 min', type: 'build' },
+    { id: 2, user: 'NorthernLion', action: 'alcanzó', target: 'Dead God', time: 'hace 12 min', type: 'achievement' },
+    { id: 3, user: 'SinVicta', action: 'completó', target: 'Tainted Lost', time: 'hace 28 min', type: 'character' },
+    { id: 4, user: 'Hutts', action: 'subió build', target: '"Tech X Chaos"', time: 'hace 34 min', type: 'build' },
+    { id: 5, user: 'LavolpeTV', action: 'consiguió', target: 'Guppy transformation', time: 'hace 45 min', type: 'achievement' },
 ];
 
 const TOP_BUILDS = [
@@ -99,7 +99,12 @@ export function LiveActivitySection() {
                 >
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2 px-3 py-1 bg-accent-blood text-white font-heading text-xs uppercase shrink-0">
-                            <FaBolt className="w-3 h-3" />
+                            <motion.span
+                                animate={{ opacity: [1, 0.5, 1] }}
+                                transition={{ duration: 1, repeat: Infinity }}
+                            >
+                                <FaBolt className="w-3 h-3" />
+                            </motion.span>
                             EN VIVO
                         </div>
                         
@@ -134,7 +139,19 @@ export function LiveActivitySection() {
                     <div className="lg:col-span-2">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="font-heading text-lg text-text-heading uppercase flex items-center gap-2">
-                                <FaFire className="text-accent-blood" />
+                                <motion.span
+                                    animate={{ 
+                                        scale: [1, 1.2, 1],
+                                        rotate: [0, -5, 5, 0]
+                                    }}
+                                    transition={{ 
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        repeatDelay: 1
+                                    }}
+                                >
+                                    <FaFire className="text-accent-blood" />
+                                </motion.span>
                                 Builds Populares
                             </h3>
                             <button 
@@ -155,7 +172,18 @@ export function LiveActivitySection() {
                     {/* Today's Stats */}
                     <div>
                         <h3 className="font-heading text-lg text-text-heading uppercase flex items-center gap-2 mb-4">
-                            <FaTrophy className="text-accent-gold" />
+                            <motion.span
+                                animate={{ 
+                                    y: [0, -3, 0],
+                                }}
+                                transition={{ 
+                                    duration: 1.5,
+                                    repeat: Infinity,
+                                    repeatDelay: 2
+                                }}
+                            >
+                                <FaTrophy className="text-accent-gold" />
+                            </motion.span>
                             Logros de hoy
                         </h3>
 
@@ -211,20 +239,25 @@ function BuildCard({ build, index }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.1 }}
-            whileHover={{ y: -4, boxShadow: '6px 6px 0px #000' }}
+            whileHover={{ 
+                y: -4, 
+                boxShadow: '6px 6px 0px #000',
+                backgroundColor: 'rgba(var(--color-accent-gold-rgb), 0.05)'
+            }}
             onClick={() => navigate(`/builds/${build.id}`)}
-            className="bg-bg-paper border-[3px] border-black shadow-[4px_4px_0px_#000] cursor-pointer transition-all"
+            className="bg-bg-paper border-[3px] border-black shadow-[4px_4px_0px_#000] cursor-pointer transition-all group"
         >
             {/* Header with character */}
-            <div className="flex items-center gap-3 p-3 border-b-2 border-black/10">
-                <img 
+            <div className="flex items-center gap-3 p-3 border-b-2 border-black/10 group-hover:border-accent-gold/30 transition-colors">
+                <motion.img 
                     src={build.character.sprite}
                     alt={build.character.name}
                     className="w-10 h-10 pixelated"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
                     onError={(e) => { e.target.src = '/sprites/placeholder.png'; }}
                 />
                 <div className="flex-1 min-w-0">
-                    <h4 className="font-heading text-sm text-text-heading truncate">
+                    <h4 className="font-heading text-sm text-text-heading truncate group-hover:text-accent-blood transition-colors">
                         {build.title}
                     </h4>
                     <p className="text-xs text-text-dim font-handwriting">
@@ -237,12 +270,13 @@ function BuildCard({ build, index }) {
             <div className="p-3">
                 <div className="flex gap-2 mb-3">
                     {build.keyItems.map((item, i) => (
-                        <img 
+                        <motion.img 
                             key={i}
                             src={item.sprite}
                             alt={item.name}
                             title={item.name}
-                            className="w-8 h-8 pixelated bg-black/5 p-1"
+                            className="w-8 h-8 pixelated bg-black/5 p-1 group-hover:bg-accent-gold/10 transition-colors"
+                            whileHover={{ scale: 1.15 }}
                             onError={(e) => { e.target.src = '/sprites/placeholder.png'; }}
                         />
                     ))}
@@ -250,7 +284,7 @@ function BuildCard({ build, index }) {
 
                 {/* Stats */}
                 <div className="flex items-center justify-between text-xs text-text-dim">
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center gap-1 group-hover:text-accent-gold transition-colors">
                         <FaStar className="text-accent-gold" />
                         {build.votes}
                     </span>

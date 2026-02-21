@@ -1,6 +1,47 @@
 // PreviewSection.jsx - Muestra resultado ficticio para generar deseo
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { FaTrophy, FaSkull, FaClock, FaChevronRight } from 'react-icons/fa';
+
+// Hook for animated counting numbers
+function useCountUp(end, duration = 1500, delay = 0, start = 0) {
+    const [count, setCount] = useState(start);
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true });
+    const hasAnimated = useRef(false);
+
+    useEffect(() => {
+        if (!isInView || hasAnimated.current) return;
+        
+        const startTime = Date.now() + delay;
+        hasAnimated.current = true;
+
+        const animate = () => {
+            const now = Date.now();
+            if (now < startTime) {
+                requestAnimationFrame(animate);
+                return;
+            }
+
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function (easeOutQuart)
+            const eased = 1 - Math.pow(1 - progress, 4);
+            const currentValue = Math.round(start + (end - start) * eased);
+            
+            setCount(currentValue);
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+        
+        requestAnimationFrame(animate);
+    }, [isInView, end, duration, delay, start]);
+
+    return { count, ref };
+}
 
 // Datos de ejemplo para mostrar antes del registro
 const PREVIEW_DATA = {
@@ -15,8 +56,10 @@ const PREVIEW_DATA = {
 };
 
 export function PreviewSection({ onCTAClick }) {
+    const { count: animatedPercentage, ref: percentRef } = useCountUp(PREVIEW_DATA.percentage, 2000, 300);
+    
     return (
-        <section id="preview-section" className="relative w-full px-4 md:px-8 py-16 bg-gradient-to-b from-transparent via-black/5 to-transparent">
+        <section id="preview-section" className="relative w-full px-4 md:px-8 py-20 md:py-24 bg-gradient-to-b from-transparent via-black/5 to-transparent">
             <div className="max-w-4xl mx-auto">
                 {/* Section header */}
                 <motion.div
@@ -47,7 +90,7 @@ export function PreviewSection({ onCTAClick }) {
                     />
 
                     {/* Main percentage */}
-                    <div className="bg-black text-white p-8 text-center">
+                    <div className="bg-black text-white p-8 text-center" ref={percentRef}>
                         <motion.div
                             initial={{ scale: 0.5, opacity: 0 }}
                             whileInView={{ scale: 1, opacity: 1 }}
@@ -55,8 +98,8 @@ export function PreviewSection({ onCTAClick }) {
                             transition={{ type: 'spring', delay: 0.3 }}
                             className="mb-2"
                         >
-                            <span className="text-6xl md:text-8xl font-heading text-accent-gold">
-                                {PREVIEW_DATA.percentage}%
+                            <span className="text-6xl md:text-8xl font-heading text-accent-gold tabular-nums">
+                                {animatedPercentage}%
                             </span>
                         </motion.div>
                         <p className="font-handwriting text-xl text-white/80">
@@ -182,9 +225,11 @@ export function PreviewSection({ onCTAClick }) {
 
 function StatBox({ label, current, total, delay }) {
     const percentage = Math.round((current / total) * 100);
+    const { count: animatedCurrent, ref } = useCountUp(current, 1200, delay * 1000);
     
     return (
         <motion.div
+            ref={ref}
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -193,7 +238,8 @@ function StatBox({ label, current, total, delay }) {
         >
             <p className="text-xs text-text-dim font-handwriting mb-1">{label}</p>
             <p className="font-heading text-2xl text-text-heading">
-                {current}<span className="text-text-dim">/{total}</span>
+                <span className="tabular-nums">{animatedCurrent}</span>
+                <span className="text-text-dim">/{total}</span>
             </p>
             <div className="mt-2 h-1.5 bg-black/10 rounded-full overflow-hidden">
                 <motion.div

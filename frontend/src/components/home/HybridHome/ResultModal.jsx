@@ -1,25 +1,60 @@
 // ResultModal.jsx - Modal con resultado del análisis del save file
 import { motion } from 'framer-motion';
-import { FaTrophy, FaSkull, FaClock, FaTimes, FaChevronRight } from 'react-icons/fa';
+import { FaTrophy, FaSkull, FaClock, FaTimes, FaChevronRight, FaExclamationTriangle } from 'react-icons/fa';
 
 export function ResultModal({ result, onClose, onRegister }) {
     if (!result) return null;
+    
+    // CRITICAL: Check if this is demo data
+    const isDemo = result.source === 'demo' || result.isDemo === true;
+    
+    // Safe defaults for optional fields
+    const {
+        percentage = 0,
+        charactersUnlocked = 0,
+        totalCharacters = 34,
+        itemsFound = 0,
+        totalItems = 733,
+        completionMarks = 0,
+        totalMarks = 408,
+        endingsSeen = 0,
+        totalEndings = 17,
+        topPercentile = 50,
+        blockerCharacter = 'No detectado',
+        blockerMarks = '?',
+        hoursRemaining = '?',
+        mostDeaths = { count: '?', boss: 'Desconocido' },
+        nextObjective = 'Continúa explorando el juego'
+    } = result || {};
 
     return (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm"
             onClick={onClose}
         >
-            <motion.div
-                initial={{ scale: 0.9, y: 40 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 40 }}
-                className="relative w-full max-w-2xl max-h-[90vh] overflow-auto bg-bg-paper border-[3px] border-black shadow-[8px_8px_0px_#000]"
-                onClick={(e) => e.stopPropagation()}
-            >
+            <div className="min-h-full flex items-center justify-center p-4">
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    transition={{ type: "spring", duration: 0.3 }}
+                    className="relative w-full max-w-2xl max-h-[90vh] overflow-auto bg-bg-paper border-[3px] border-black shadow-[8px_8px_0px_#000]"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                {/* Demo warning banner - should never appear with real data */}
+                {isDemo && (
+                    <div className="bg-accent-gold/20 border-b-2 border-accent-gold px-4 py-3 flex items-center gap-3">
+                        <FaExclamationTriangle className="w-5 h-5 text-accent-gold flex-shrink-0" />
+                        <div>
+                            <p className="font-heading text-sm text-accent-gold">Datos de ejemplo</p>
+                            <p className="text-xs text-text-dim">Sube tu save file real para ver tu progreso</p>
+                        </div>
+                    </div>
+                )}
+                
                 {/* Close button */}
                 <button
                     onClick={onClose}
@@ -37,7 +72,7 @@ export function ResultModal({ result, onClose, onRegister }) {
                         className="mb-2"
                     >
                         <span className="text-7xl md:text-8xl font-heading text-accent-gold">
-                            {result.percentage}%
+                            {percentage}%
                         </span>
                     </motion.div>
                     <p className="font-handwriting text-xl text-white/80">
@@ -49,7 +84,7 @@ export function ResultModal({ result, onClose, onRegister }) {
                         <div className="h-4 bg-white/10 rounded-full overflow-hidden">
                             <motion.div
                                 initial={{ width: 0 }}
-                                animate={{ width: `${result.percentage}%` }}
+                                animate={{ width: `${percentage}%` }}
                                 transition={{ duration: 1.5, ease: 'easeOut', delay: 0.4 }}
                                 className="h-full bg-gradient-to-r from-accent-gold to-accent-blood rounded-full"
                             />
@@ -63,23 +98,23 @@ export function ResultModal({ result, onClose, onRegister }) {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <StatBox 
                             label="Personajes" 
-                            current={result.charactersUnlocked} 
-                            total={result.totalCharacters}
+                            current={charactersUnlocked} 
+                            total={totalCharacters}
                         />
                         <StatBox 
                             label="Ítems" 
-                            current={result.itemsFound} 
-                            total={result.totalItems}
+                            current={itemsFound} 
+                            total={totalItems}
                         />
                         <StatBox 
                             label="Completion Marks" 
-                            current={result.completionMarks} 
-                            total={result.totalMarks}
+                            current={completionMarks} 
+                            total={totalMarks}
                         />
                         <StatBox 
                             label="Endings" 
-                            current={result.endingsSeen} 
-                            total={result.totalEndings}
+                            current={endingsSeen} 
+                            total={totalEndings}
                         />
                     </div>
 
@@ -95,10 +130,10 @@ export function ResultModal({ result, onClose, onRegister }) {
                             <FaTrophy className="w-6 h-6 text-accent-gold flex-shrink-0" />
                             <div>
                                 <p className="font-heading text-lg text-text-heading">
-                                    Top {result.topPercentile}% de jugadores
+                                    Top {topPercentile}% de jugadores
                                 </p>
                                 <p className="text-sm text-text-dim font-handwriting">
-                                    Estás por encima del {100 - result.topPercentile}% de la comunidad
+                                    Estás por encima del {100 - topPercentile}% de la comunidad
                                 </p>
                             </div>
                         </motion.div>
@@ -113,10 +148,10 @@ export function ResultModal({ result, onClose, onRegister }) {
                             <FaSkull className="w-6 h-6 text-accent-blood flex-shrink-0" />
                             <div>
                                 <p className="font-heading text-lg text-text-heading">
-                                    {result.blockerCharacter}
+                                    {blockerCharacter}
                                 </p>
                                 <p className="text-sm text-text-dim font-handwriting">
-                                    te está costando {result.blockerMarks} completion marks
+                                    te está costando {blockerMarks} completion marks
                                 </p>
                             </div>
                         </motion.div>
@@ -131,7 +166,7 @@ export function ResultModal({ result, onClose, onRegister }) {
                             <FaClock className="w-6 h-6 text-green-500 flex-shrink-0" />
                             <div>
                                 <p className="font-heading text-lg text-text-heading">
-                                    ~{result.hoursRemaining} horas restantes
+                                    ~{hoursRemaining} horas restantes
                                 </p>
                                 <p className="text-sm text-text-dim font-handwriting">
                                     estimación hasta Dead God
@@ -147,7 +182,7 @@ export function ResultModal({ result, onClose, onRegister }) {
                                 <span className="text-xl">💀</span>
                                 <div>
                                     <p className="font-heading text-text-heading">
-                                        {result.mostDeaths.count} muertes contra {result.mostDeaths.boss}
+                                        {mostDeaths?.count || '?'} muertes contra {mostDeaths?.boss || 'Desconocido'}
                                     </p>
                                     <p className="text-sm text-text-dim">Tu boss más difícil</p>
                                 </div>
@@ -179,7 +214,7 @@ export function ResultModal({ result, onClose, onRegister }) {
                             Próximo objetivo
                         </p>
                         <p className="font-handwriting text-lg text-text-heading">
-                            {result.nextObjective}
+                            {nextObjective}
                         </p>
                     </motion.div>
 
@@ -205,13 +240,14 @@ export function ResultModal({ result, onClose, onRegister }) {
                         </button>
                     </motion.div>
                 </div>
-            </motion.div>
+                </motion.div>
+            </div>
         </motion.div>
     );
 }
 
 function StatBox({ label, current, total }) {
-    const percentage = Math.round((current / total) * 100);
+    const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
     
     return (
         <div className="p-3 bg-white/50 border-2 border-black/10 text-center">

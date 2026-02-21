@@ -1,10 +1,16 @@
 {
   "nav": {
+    "myProgress": "My Progress",
+    "synergies": "Synergies",
+    "wiki": "Wiki",
+    "community": "Community",
+    "createProfile": "Create profile",
     "items": "Items",
     "bosses": "Bosses",
     "characters": "Characters",
     "builds": "Builds",
     "search": "Search...",
+    "searchHint": "Ctrl+K",
     "favorites": "Favorites",
     "settings": "Settings",
     "profile": "Profile",

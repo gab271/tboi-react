@@ -12,6 +12,8 @@ const bossesRoutes = require('./routes/bosses');
 const searchRoutes = require('./routes/search');
 const authAdminRoutes = require('./routes/auth-admin');
 const adminItemsRoutes = require('./routes/admin-items');
+const saveRoutes = require('./routes/save');
+const { router: statsRoutes } = require('./routes/stats');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -44,6 +46,8 @@ app.get('/health', (req, res) => {
 app.use('/api/items', itemsRoutes);
 app.use('/api/bosses', bossesRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/save', saveRoutes);
+app.use('/api/stats', statsRoutes);
 // Mount specific admin sub-routes first
 app.use('/api/admin/items', adminItemsRoutes);
 // Mount general admin routes (stats, users, promote)

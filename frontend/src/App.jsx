@@ -5,6 +5,7 @@ import { ItemsList } from './pages/items/ItemsList'
 import { ItemDetail } from './pages/items/ItemDetail'
 import { BossesList } from './pages/bosses/BossesList'
 import { CharactersList } from './pages/characters/CharactersList'
+import { SynergiesPage } from './pages/synergies/SynergiesPage'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import FavoritesPage from './pages/favorites/FavoritesPage'
@@ -39,6 +40,7 @@ function App() {
           
           <Route path="bosses" element={<BossesList />} />
           <Route path="characters" element={<CharactersList />} />
+          <Route path="synergies" element={<SynergiesPage />} />
           
           {/* Builds - Public feed */}
           <Route path="builds" element={<BuildsPage />} />

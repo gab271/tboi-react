@@ -63,6 +63,73 @@ export const fetchRandomItems = async (n = 5) => {
   return data;
 };
 
+/**
+ * Analyzes an Isaac Repentance save file
+ * @param {File} file - The save file to analyze
+ * @returns {Promise<SaveAnalysisResult>} The parsed save data
+ * 
+ * Response structure:
+ * {
+ *   ok: boolean,
+ *   source: 'real' | 'demo' | 'error',
+ *   error_code: string | null,
+ *   error_message: string | null,
+ *   parsed: { ... } | null,
+ *   metrics: { ... } | null
+ * }
+ */
+export const analyzeSaveFile = async (file) => {
+  const formData = new FormData();
+  formData.append('saveFile', file);
+  
+  // Use fetch directly to avoid axios cache issues
+  const response = await fetch(`${BACKEND_URL}/api/save/analyze`, {
+    method: 'POST',
+    body: formData,
+    // DON'T set Content-Type - browser will set multipart boundary automatically
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    },
+    credentials: 'include',
+    cache: 'no-store' // Prevent fetch caching
+  });
+  
+  const data = await response.json();
+  
+  // Validate response structure
+  if (!data || typeof data.ok === 'undefined') {
+    throw new Error('Invalid response from server');
+  }
+  
+  // If not ok, throw with the error message
+  if (!data.ok) {
+    const error = new Error(data.error_message || 'Unknown error');
+    error.code = data.error_code;
+    error.response = data;
+    throw error;
+  }
+  
+  return data;
+};
+
+/**
+ * Gets demo/example data for UI preview
+ * This should never be shown as real user data
+ */
+export const fetchDemoSaveData = async () => {
+  const { data } = await api.get('/api/save/demo');
+  return data;
+};
+
+/**
+ * Gets daily statistics for live counter
+ */
+export const fetchDailyStats = async () => {
+  const { data } = await api.get('/api/stats/today');
+  return data;
+};
+
 export default api;
 
 

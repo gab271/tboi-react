@@ -7,9 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import { HeroSection } from './HeroSection';
 import { PreviewSection } from './PreviewSection';
 import { LiveActivitySection } from './LiveActivitySection';
+import { SynergyAnalyzerMini } from './SynergyAnalyzerMini';
 import { EcosystemSection } from './EcosystemSection';
 import { FinalCTASection } from './FinalCTASection';
-import { MinimalFooter } from '../MinimalFooter';
 import { MobileStickyCTA } from '../MobileStickyCTA';
 import { ResultModal } from './ResultModal';
 
@@ -50,6 +50,12 @@ export function HybridHome() {
                 Usuario siente: "La gente lo usa de verdad" */}
             <LiveActivitySection />
 
+            {/* 3.5. SYNERGY ANALYZER MINI (40vh)
+                Objetivo: Gratificación inmediata sin compromiso
+                Usuario siente: "Puedo probar esto ahora mismo"
+                JERARQUÍA: Secundaria al tracker - es un "bonus", no el protagonista */}
+            <SynergyAnalyzerMini />
+
             {/* 4. ECOSYSTEM TOOLS (70vh)
                 Objetivo: Percepción de profundidad
                 Usuario siente: "Hay mucho más aquí" */}
@@ -60,10 +66,7 @@ export function HybridHome() {
                 Usuario siente: "Necesito registrarme" */}
             <FinalCTASection />
 
-            {/* 6. MINI FOOTER (20vh)
-                Objetivo: Profesionalismo
-                Usuario siente: "Es serio y confiable" */}
-            <MinimalFooter />
+            {/* Footer is handled by AppLayout */}
 
             {/* Mobile Sticky CTA - Solo móvil después de scroll */}
             <MobileStickyCTA />
