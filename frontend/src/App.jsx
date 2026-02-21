@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from './components/layout/AppLayout'
-import { Home } from './pages/home/Home'
+import { Home } from './pages/home/HomeV2'
 import { ItemsList } from './pages/items/ItemsList'
 import { ItemDetail } from './pages/items/ItemDetail'
 import { BossesList } from './pages/bosses/BossesList'
