@@ -266,3 +266,18 @@ html, body {
 .preserve-3d {
   transform-style: preserve-3d;
 }
+
+/* Radial gradient background */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+/* Safe area for mobile devices */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Tabular numbers for consistent width */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

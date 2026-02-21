@@ -1,42 +1,48 @@
-// Home.jsx - Main Landing Page
-import { HeroSection } from '../../components/home/HeroSection';
-import { MissingPosterSection } from '../../components/home/MissingPosterSection';
-import { NavigationCards } from '../../components/home/NavigationCards';
+// Home.jsx - Redesigned Landing Page (Companion App Focus)
+import { HeroRedesign } from '../../components/home/HeroRedesign';
+import { ItemAnalyzerBar } from '../../components/home/ItemAnalyzerBar';
+import { SocialProofBar } from '../../components/home/SocialProofBar';
+import { ProgressTracker } from '../../components/home/ProgressTracker';
+import { ActivityFeed } from '../../components/home/ActivityFeed';
+import { BenefitsSection } from '../../components/home/BenefitsSection';
+import { PremiumTeaser } from '../../components/home/PremiumTeaser';
+import { FinalCTA } from '../../components/home/FinalCTA';
+import { MinimalFooter } from '../../components/home/MinimalFooter';
+import { MobileStickyCTA } from '../../components/home/MobileStickyCTA';
 
 export function Home() {
   return (
-    <div className="flex flex-col gap-10 md:gap-16 pb-20 relative">
+    <div className="flex flex-col relative">
       
-      {/* Hero Section - Map & Welcome */}
-      <HeroSection />
+      {/* 1. Hero - Clear value proposition */}
+      <HeroRedesign />
 
-      {/* Exploration Grid */}
-      <section className="px-4 md:px-0 relative z-10">
-          <div className="flex items-center gap-4 mb-12">
-             <div className="h-0 flex-1 border-t-2 border-dashed border-black/20"></div>
-             <h3 className="font-heading text-3xl md:text-4xl text-text-ink uppercase tracking-widest text-center">Explore the Depths</h3>
-             <div className="h-0 flex-1 border-t-2 border-dashed border-black/20"></div>
-          </div>
+      {/* 2. Tool Bar - Instant value demonstration */}
+      <ItemAnalyzerBar />
 
-          <NavigationCards />
-      </section>
+      {/* 3. Social Proof - Community stats */}
+      <SocialProofBar />
 
-      {/* Visual Connector Line (Absolute behind content) */}
-      <div className="absolute top-[800px] left-1/2 -translate-x-1/2 w-[2px] h-[500px] hidden lg:block -z-10">
-          <svg className="h-full w-20 overflow-visible">
-            <path 
-                d="M 10 0 Q 60 250 10 500" 
-                fill="none" 
-                stroke="#000" 
-                strokeWidth="2" 
-                strokeDasharray="8 8" 
-                opacity="0.1" 
-            />
-          </svg>
-      </div>
+      {/* 4. Progress Tracker (Missing Poster redesigned) */}
+      <ProgressTracker />
 
-      {/* Missing Poster (Login CTA) with Decorations */}
-      <MissingPosterSection />
+      {/* 5. Activity Feed - Live community */}
+      <ActivityFeed />
+
+      {/* 6. Benefits - Clear value cards */}
+      <BenefitsSection />
+
+      {/* 7. Premium Teaser - Subtle upsell */}
+      <PremiumTeaser />
+
+      {/* 8. Final CTA - Registration push */}
+      <FinalCTA />
+
+      {/* 9. Minimal Footer */}
+      <MinimalFooter />
+
+      {/* Mobile Sticky CTA */}
+      <MobileStickyCTA />
     </div>
   );
 }
