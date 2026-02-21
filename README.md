@@ -1,98 +1,178 @@
-# The Binding of Isaac React Project
+# 🎮 TBOI Codex
 
-![Project Logo](public/images/logo.gif)
+> **The Binding of Isaac** fan-made item encyclopedia and codex.
 
-## About The Project
+A modern web application for exploring items, characters, bosses, and builds from The Binding of Isaac.
 
-This project is a web application that showcases information about The Binding of Isaac game, including characters, items, and locations. Built with React, it provides an interactive interface to explore the game's content.
+## 📋 Table of Contents
 
-### Built With
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Prerequisites](#-prerequisites)
+- [Getting Started](#-getting-started)
+- [Project Structure](#-project-structure)
+- [Available Scripts](#-available-scripts)
+- [Environment Variables](#-environment-variables)
+- [Contributing](#-contributing)
 
-* [![React][React.js]][React-url]
-* [![Vite][Vite.js]][Vite-url]
-* [![Leaflet][Leaflet.js]][Leaflet-url]
+## ✨ Features
 
-## Features
+- 📖 **Complete Item Codex** - Browse 700+ items with detailed descriptions, quality ratings, and synergies
+- 👾 **Characters** - Explore all playable characters with game-style carousel
+- 👹 **Bosses** - Boss information and strategies
+- 🔧 **Builds** - Community build sharing
+- ⭐ **Favorites** - Save your favorite items
+- 🌐 **Multi-language** - i18n support
+- 📱 **Responsive Design** - Mobile-first with torn paper visual theme
 
-* Interactive character cards with detailed information
-* Comprehensive item database
-* Dynamic map integration using Leaflet
-* Responsive design for all devices
-* Steam API integration for game data
+## 🛠️ Tech Stack
 
-## RSS Feed Example
+### Frontend
+- **React 19** + **Vite 6**
+- **Tailwind CSS** with custom design tokens
+- **React Query** (TanStack Query) for server state
+- **Framer Motion** for animations
+- **React Router DOM** for routing
+- **i18next** for internationalization
 
-The project includes an RSS feed for game updates. Here's a preview of how it looks:
+### Backend
+- **Express.js** REST API
+- **Supabase** (PostgreSQL + Auth + Storage)
+- **Rate Limiting** and **JWT Authentication**
 
-![RSS Feed Preview](/public/rssfeed.jpg)
+## 📦 Prerequisites
 
-The RSS feed provides:
-* Latest game updates
-* Community news
-* Patch notes
-* Feature announcements
+- Node.js 18+
+- npm 9+
+- Supabase account (for database)
 
-You can access the RSS feed at `/news-rss.xml` or view it in the Updates section of the website.
+## 🚀 Getting Started
 
-## Third-Party Components
-
-* [Leaflet](https://leafletjs.com/) - Used for interactive maps
-* [React Router](https://reactrouter.com/) - For navigation
-* [React Icons](https://react-icons.github.io/react-icons/) - For UI icons
-
-## Getting Started
-
-### Prerequisites
-
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-1. Clone the repo
-   ```sh
-   git clone https://github.com/yourusername/tboi-react.git
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/tboi-codex.git
+   cd tboi-codex
    ```
-2. Install NPM packages
-   ```sh
+
+2. **Install dependencies**
+   ```bash
    npm install
    ```
-3. Start the development server
-   ```sh
+
+3. **Configure environment variables**
+   
+   Copy the example files and fill in your values:
+   
+   ```bash
+   cp backend/.env.example backend/.env
+   cp frontend/.env.example frontend/.env
+   ```
+
+4. **Start development servers**
+   ```bash
    npm run dev
    ```
 
-## Helpful Resources & Tutorials
+   This starts both frontend (http://localhost:5173) and backend (http://localhost:3000).
 
-* [React Documentation](https://reactjs.org/)
-* [Leaflet React Tutorial](https://react-leaflet.js.org/docs/start-introduction/)
-* [Best README Template](https://github.com/othneildrew/Best-README-Template)
-* [The Binding of Isaac Wiki](https://bindingofisaacrebirth.fandom.com/)
+## 📁 Project Structure
 
-## Contributing
+```
+tboi-codex/
+├── frontend/           # React + Vite application
+│   ├── src/
+│   │   ├── components/ # Reusable UI components
+│   │   ├── contexts/   # React Context providers
+│   │   ├── features/   # Feature-specific hooks
+│   │   ├── hooks/      # Global custom hooks
+│   │   ├── lib/        # Utilities and clients
+│   │   ├── pages/      # Route page components
+│   │   ├── services/   # Data services
+│   │   └── styles/     # Global CSS & tokens
+│   └── public/         # Static assets
+├── backend/            # Express.js API
+│   ├── src/
+│   │   ├── lib/        # Supabase client
+│   │   ├── middleware/ # Auth & rate limiting
+│   │   └── routes/     # API routes
+│   └── data/           # Seed data
+├── sprites/            # Game sprite assets
+├── docs/               # Documentation
+└── supabase/           # Edge functions
+```
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+## 📜 Available Scripts
+
+### Root (Monorepo)
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start both frontend and backend |
+| `npm run dev:frontend` | Start frontend only |
+| `npm run dev:backend` | Start backend only |
+| `npm run build` | Build frontend for production |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format code with Prettier |
+
+### Frontend
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Vite dev server |
+| `npm run build` | Production build |
+| `npm run preview` | Preview build |
+
+## 🔐 Environment Variables
+
+### Backend (`backend/.env`)
+```env
+SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+PORT=3000
+FRONTEND_ORIGIN=http://localhost:5173
+```
+
+### Frontend (`frontend/.env`)
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+VITE_BACKEND_URL=http://localhost:3000
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
+## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project is for educational and fan-community purposes. The Binding of Isaac is © Edmund McMillen.
 
-## Author
+---
 
-Your Name - [Gabriel](https://youtube.com/gab1962?si=eW3FZ2s2MLzjwAEr)
+Made with ❤️ for the TBOI community
 
-Project Link: [https://github.com/gab271/tboi-react](https://github.com/yourusername/tboi-react)
 
-<!-- MARKDOWN LINKS & IMAGES -->
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vite.js]: https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white
-[Vite-url]: https://vitejs.dev/
-[Leaflet.js]: https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=Leaflet&logoColor=white
-[Leaflet-url]: https://leafletjs.com/
+- Frontend: [http://localhost:5173](http://localhost:5173)
+- Backend: [http://localhost:3000](http://localhost:3000)
+
+## Features
+
+- **Auth**: Register, Login, Protected Routes (Supabase Auth).
+- **Data Proxy**: Backend proxies requests to generic Isaac APIs, handling caching and rate limiting.
+- **Favorites**: Mark items/bosses/characters as favorites (stored in Supabase).
+- **Builds**: (UI Stub) Create and share builds.
+- **Search**: Multi-source search via Backend.
+
+## Testing Flows
+
+1.  **Register**: Go to `/register`, create an account. Check `profiles` table in Supabase.
+2.  **Login**: Login with the new account.
+3.  **Favorites**: Go to Items/Bosses (once lists are integrated with `FavoriteButton`), click heart. Check `favorites` table or `/favorites` page.
+4.  **Backend**: Visit `http://localhost:3000/health` or `http://localhost:3000/api/isaac/bosses`.
+
+## Security
+
+- **RLS**: Row Level Security is enabled on all tables. Users can only edit their own data.
+- **Backend Security**: Rate Limiting, CORS restricted to frontend origin.

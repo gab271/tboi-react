@@ -1,0 +1,1713 @@
+[
+    {
+        "name": "Monstro",
+        "image": "/sprites/4_Bosses/Monstro.png",
+        "health": 250,
+        "location": "Basement",
+        "difficulty": 1,
+        "description": "A large, cleft-lipped biological mishap that attacks by leaping and vomiting blood.",
+        "attack_patterns": [
+            "Leaps high into the air and lands on the player's position",
+            "Vomits a large cluster of blood projectiles",
+            "Performs short hops towards the player"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Duke of Flies",
+        "image": "/sprites/4_Bosses/The Duke of Flies.png",
+        "health": 110,
+        "location": "Basement",
+        "difficulty": 1,
+        "description": "A bloated, floating corpse infested with flies that it spawns defensively.",
+        "attack_patterns": [
+            "Spawns Attack Flies",
+            "Spawns Moter Flies (larger flies)",
+            "Coughing motion that pushes flies outwards"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Gemini",
+        "image": "/sprites/4_Bosses/Gemini.png",
+        "health": 280,
+        "location": "Basement",
+        "difficulty": 1,
+        "description": "Two conjoined fetuses; one large (Suture) and one small (Contusion), tethered by an umbilical cord.",
+        "attack_patterns": [
+            "Large twin chases the player slowly",
+            "Small twin shoots spectral tears",
+            "If the large twin dies, the small one enrages and charges rapidly"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Larry Jr.",
+        "image": "/sprites/4_Bosses/Larry Jr..png",
+        "health": 220,
+        "location": "Basement",
+        "difficulty": 1,
+        "description": "A segmented worm-like boss that moves erratically and can defecate poop obstacles.",
+        "attack_patterns": [
+            "Moves rapidly in straight lines, turning upon hitting walls",
+            "Segments can be destroyed individually",
+            "Spawns poop pickups when destroying poop obstacles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Famine",
+        "image": "/sprites/4_Bosses/Famine.png",
+        "health": 240,
+        "location": "Basement",
+        "difficulty": 2,
+        "description": "One of the Four Horsemen of the Apocalypse. Withers and decays.",
+        "attack_patterns": [
+            "Charges off-screen and spawns Pooters",
+            "Triple shot attack",
+            "Phase 2: Head detaches and shoots triple shots while body attacks"
+        ],
+        "drops": [
+            "Ball of Bandages",
+            "Cube of Meat"
+        ]
+    },
+    {
+        "name": "Steven",
+        "image": "/sprites/4_Bosses/Steven.png",
+        "health": 300,
+        "location": "Basement",
+        "difficulty": 2,
+        "description": "A variant of Gemini, darker in color with a more aggressive small twin.",
+        "attack_patterns": [
+            "Little Steven detaches immediately to hunt the player",
+            "Steven chases the player",
+            "Little Steven shoots homing shots"
+        ],
+        "drops": [
+            "Little Steven",
+            "Steven"
+        ]
+    },
+    {
+        "name": "Baby Plum",
+        "image": "/sprites/4_Bosses/Baby Plum.png",
+        "health": 400,
+        "location": "Basement",
+        "difficulty": 2,
+        "description": "A cute but deadly bouncing plum-like creature.",
+        "attack_patterns": [
+            "Rapidly bounces diagonally around the room",
+            "Spins creating a ring of projectiles",
+            "Leaves damaging creep"
+        ],
+        "drops": [
+            "Plum Flute",
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Little Horn",
+        "image": "/sprites/4_Bosses/Little Horn.png",
+        "health": 400,
+        "location": "Basement",
+        "difficulty": 2,
+        "description": "A small demon that uses magical troll bombs and teleportation holes.",
+        "attack_patterns": [
+            "Shoots a ball of dark energy (instakill projectile for enemies)",
+            "Spawns troll bombs",
+            "Jumps into holes to teleport"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Pin",
+        "image": "/sprites/4_Bosses/Pin.png",
+        "health": 300,
+        "location": "Cellar",
+        "difficulty": 1,
+        "description": "A segmented worm that burrows into the ground and leaps out.",
+        "attack_patterns": [
+            "Burrows and leaps out at player location",
+            "Shoots 4 projectiles in cardinal directions upon surfacing",
+            "Spawns explosive projectiles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Widow",
+        "image": "/sprites/4_Bosses/Widow.png",
+        "health": 230,
+        "location": "Cellar",
+        "difficulty": 2,
+        "description": "A large spider that jumps and spawns spider enemies.",
+        "attack_patterns": [
+            "Leaps onto the player",
+            "Spawns White Spiders or Sacks",
+            "Leaves white creep"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Haunt",
+        "image": "/sprites/4_Bosses/The Haunt.png",
+        "health": 200,
+        "location": "Cellar",
+        "difficulty": 3,
+        "description": "A ghostly face attached to the back wall, protected by Lil' Haunts.",
+        "attack_patterns": [
+            "Phase 1: Three invulnerable Lil' Haunts attack",
+            "Phase 2: Brimstone laser beam",
+            "Phase 2: Spread shot of projectiles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Dingle",
+        "image": "/sprites/4_Bosses/Dingle.png",
+        "health": 300,
+        "location": "Basement",
+        "difficulty": 1,
+        "description": "A poop monster that whistles and dashes.",
+        "attack_patterns": [
+            "Whistles to summon Dips (poop enemies)",
+            "Shoots triple spread shot",
+            "Dashes rapidly three times"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Gurdy",
+        "image": "/sprites/4_Bosses/Gurdy.png",
+        "health": 590,
+        "location": "Caves",
+        "difficulty": 2,
+        "description": "A stationary pile of guts that spawns enemies and shoots.",
+        "attack_patterns": [
+            "Spawns Flies or Pooters",
+            "Shoots 5-projectile spread",
+            "Spawns creep around itself"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Mega Fatty",
+        "image": "/sprites/4_Bosses/Mega Fatty.png",
+        "health": 600,
+        "location": "Caves",
+        "difficulty": 2,
+        "description": "A massive, extremely obese version of a Fatty.",
+        "attack_patterns": [
+            "Quick leap slams causing rock waves",
+            "Sucks player in with vacuum breath",
+            "Farts, pushing player away and dealing damage"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Peep",
+        "image": "/sprites/4_Bosses/Peep.png",
+        "health": 450,
+        "location": "Caves",
+        "difficulty": 2,
+        "description": "A bloated yellow monster whose eyes pop out to float around the room.",
+        "attack_patterns": [
+            "Jumps and spawns creep + projectiles",
+            "Eyes detach and bounce around the room (invincible)",
+            "Shoots yellow projectiles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Chub",
+        "image": "/sprites/4_Bosses/Chub.png",
+        "health": 350,
+        "location": "Caves",
+        "difficulty": 2,
+        "description": "A large maggot that charges horizontally.",
+        "attack_patterns": [
+            "Charges when player aligns horizontally",
+            "Spawns Chargers (maggots)",
+            "Can eat bombs thrown in its path"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Bumbino",
+        "image": "/sprites/4_Bosses/Bumbino.png",
+        "health": 500,
+        "location": "Caves",
+        "difficulty": 3,
+        "description": "A giant Bum Friend that wants coins.",
+        "attack_patterns": [
+            "Swipes with giant hands",
+            "Slams ground creating rock waves",
+            "Will prioritize picking up coins over attacking"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Stain",
+        "image": "/sprites/4_Bosses/The Stain.png",
+        "health": 400,
+        "location": "Caves",
+        "difficulty": 3,
+        "description": "A skinned version of Polycephalus.",
+        "attack_patterns": [
+            "Burrows and pops up with tentacles",
+            "Bullet hell spiral shot",
+            "Whips tentacles around"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Forsaken",
+        "image": "/sprites/4_Bosses/The Forsaken.png",
+        "health": 350,
+        "location": "Mausoleum",
+        "difficulty": 3,
+        "description": "A black skeletal bony boss.",
+        "attack_patterns": [
+            "Rotates while shooting brimstone beams",
+            "Spawns Bonies",
+            "Turns invisible"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Frail",
+        "image": "/sprites/4_Bosses/The Frail.png",
+        "health": 500,
+        "location": "Caves",
+        "difficulty": 3,
+        "description": "A skeletal version of Pin, with a second phase.",
+        "attack_patterns": [
+            "Phase 1: Burrows and shoots like Pin",
+            "Phase 2: Hangs from ceiling and shoots Brimstone lasers",
+            "Leaves slippery creep"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Husk",
+        "image": "/sprites/4_Bosses/The Husk.png",
+        "health": 150,
+        "location": "Caves",
+        "difficulty": 2,
+        "description": "A dead Duke of Flies, filled with spiders.",
+        "attack_patterns": [
+            "Passive movement",
+            "Spawns spiders continually",
+            "Shoots 8-way shots periodically"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Mom",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Mom.png",
+        "health": 645,
+        "location": "Depths II",
+        "difficulty": 3,
+        "description": "Isaac's mother. Only her foot and organs are visible from above.",
+        "attack_patterns": [
+            "Foot stomp from above (telegraphed by shadow)",
+            "Hand slaps from doors",
+            "Spawns enemies from opened doors"
+        ],
+        "drops": [
+            "The Polaroid",
+            "The Negative"
+        ]
+    },
+    {
+        "name": "The Bloat",
+        "image": "/sprites/4_Bosses/The Bloat.png",
+        "health": 450,
+        "location": "Depths",
+        "difficulty": 5,
+        "description": "A more horrifying version of Peep. Widely hated.",
+        "attack_patterns": [
+            "Instant dual Brimstone lasers (side and downwards)",
+            "Floating eyes bounce around room",
+            "Jumps and leaves large creep puddles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Mask of Infamy",
+        "image": "/sprites/4_Bosses/Mask of Infamy.png",
+        "health": 500,
+        "location": "Necropolis",
+        "difficulty": 3,
+        "description": "A giant heart protected by an invulnerable mask.",
+        "attack_patterns": [
+            "Mask charges the player aggressively",
+            "Heart shoots projectiles (Phase 1)",
+            "Must damage the heart from behind (Phase 2)"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Loki",
+        "image": "/sprites/4_Bosses/Loki.png",
+        "health": 350,
+        "location": "Depths",
+        "difficulty": 2,
+        "description": "A red demon baby.",
+        "attack_patterns": [
+            "Teleports frequently",
+            "Shoots 4-way cardinal shots",
+            "Spawns Boom Flies"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Cage",
+        "image": "/sprites/4_Bosses/The Cage.png",
+        "health": 800,
+        "location": "Depths",
+        "difficulty": 4,
+        "description": "A posthumous version of Mega Fatty, dried and rolling.",
+        "attack_patterns": [
+            "Rolls repeatedly towards the player",
+            "Slams ground creating rock Shockwaves",
+            "Spawns Vis enemies"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Adversary",
+        "image": "/sprites/4_Bosses/The Adversary.png",
+        "health": 570,
+        "location": "Depths",
+        "difficulty": 4,
+        "description": "A posthumous version of Dark One wrapped in bandages.",
+        "attack_patterns": [
+            "Homing Brimstone lasers",
+            "Spawns Spiders",
+            "Jumps and creates shockwaves"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Carrion Queen",
+        "image": "/sprites/4_Bosses/Carrion Queen.png",
+        "health": 400,
+        "location": "Necropolis",
+        "difficulty": 3,
+        "description": "A pink, more difficult version of Chub.",
+        "attack_patterns": [
+            "Charges swiftly",
+            "Spawns red poop (damages on touch and regenerates)",
+            "Shoots 8-way projectiles upon taking damage"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Matriarch",
+        "image": "/sprites/4_Bosses/The Matriarch.png",
+        "health": 1200,
+        "location": "Womb",
+        "difficulty": 5,
+        "description": "A Chub stuffed with a Fistula stuffed with various other bosses. Chaos.",
+        "attack_patterns": [
+            "Segments contain Fistula balls",
+            "Spawns Chargers and Leeches",
+            "Spits exploding projectiles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Mom's Heart",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Mom's Heart.png",
+        "health": 950,
+        "location": "Womb II",
+        "difficulty": 3,
+        "description": "The heart of Mom. Beat it to progress.",
+        "attack_patterns": [
+            "Rotational Brimstone beams",
+            "Summons minions based on health",
+            "Panic phase: rapid high-arc projectiles"
+        ],
+        "drops": []
+    },
+    {
+        "name": "It Lives",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/It Lives.png",
+        "health": 950,
+        "location": "Womb II",
+        "difficulty": 3,
+        "description": "The fetus version of Mom's Heart. Replaces Heart after 11 kills.",
+        "attack_patterns": [
+            "Summons bosses (Monstro, Larry Jr, etc.)",
+            "Rotational Brimstone lasers",
+            "Bullet hell bursts"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Isaac",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Isaac.png",
+        "health": 2000,
+        "location": "Cathedral",
+        "difficulty": 4,
+        "description": "Isaac himself, crying in the holy light.",
+        "attack_patterns": [
+            "Retaliation shots when damaged",
+            "Phase 2: Light beams from sky (Holy Light)",
+            "Phase 3: Crack the Sky light beams across room"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Satan",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Satan.png",
+        "health": 600,
+        "location": "Sheol",
+        "difficulty": 4,
+        "description": "The lord of darkness.",
+        "attack_patterns": [
+            "Phase 1: The Fallen attacks",
+            "Phase 2: Statue shoots cardinal brimstone and bullet hell",
+            "Phase 3: Stomping hooves from above (legs only)"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Blue Baby",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Blue Baby.png",
+        "health": 2000,
+        "location": "Chest",
+        "difficulty": 4,
+        "description": "The suffocated version of Isaac (???).",
+        "attack_patterns": [
+            "Homing shots",
+            "Spawns flies",
+            "Teleports rapidly"
+        ],
+        "drops": []
+    },
+    {
+        "name": "The Lamb",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/The Lamb.png",
+        "health": 2200,
+        "location": "Dark Room",
+        "difficulty": 4,
+        "description": "A skeletal demon lamb.",
+        "attack_patterns": [
+            "Explosive scatter shots",
+            "Spinning purple flame charge",
+            "Detaches body from head in Phase 2"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Mega Satan",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Mega Satan.png",
+        "health": 5000,
+        "location": "Dark Room/Chest",
+        "difficulty": 5,
+        "description": "The ultimate evil behind the golden door.",
+        "attack_patterns": [
+            "Summons Harbinger bosses and Super Sins",
+            "Giant Brimstone hand slam",
+            "Bullet hell waves"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Hush",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Hush.png",
+        "health": 6666,
+        "location": "Blue Womb",
+        "difficulty": 5,
+        "description": "A massive suffocated face in the ground.",
+        "attack_patterns": [
+            "Damage scaling (armor)",
+            "Continuum shots (loop through walls)",
+            "Tornado chasing beams",
+            "Spawns Gapers"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Delirium",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Delirium (telefraggy boi).png",
+        "health": 10000,
+        "location": "The Void",
+        "difficulty": 5,
+        "description": "The hallucination of a dying mind. Transforming chaos.",
+        "attack_patterns": [
+            "Transforms into any boss encountered in the run",
+            "Teleports erratically (telefragging)",
+            "Speed increases as health drops",
+            "Bullet hell explosions"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Mother",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Mother.png",
+        "health": 4200,
+        "location": "Corpse II",
+        "difficulty": 5,
+        "description": "The reanimated corpse of Mom. The final boss of the Alt Path.",
+        "attack_patterns": [
+            "Knife throw and retrieval",
+            "Fistula ball tennis",
+            "Giant sucking attack",
+            "Grid of tears"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Dogma",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Dogma.png",
+        "health": 2800,
+        "location": "Home",
+        "difficulty": 5,
+        "description": "Christian broadcast static manifesting as a fetus attached to a TV.",
+        "attack_patterns": [
+            "Brimstone laser tether",
+            "Static feathers projectiles",
+            "Beyblade spin attack",
+            "Angel transformation"
+        ],
+        "drops": [
+            "Dogma Item"
+        ]
+    },
+    {
+        "name": "The Beast",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/The Beast.png",
+        "health": 10000,
+        "location": "Home",
+        "difficulty": 5,
+        "description": "The final boss of Repentance. A massive demon rising from lava.",
+        "attack_patterns": [
+            "Chases player in side-scrolling sequence",
+            "Sucks in magna/fire rings",
+            "Giant Brimstone laser beam",
+            "Spawns Ultra Spikes"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Ultra Famine",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Ultra Famine (The Beast).png",
+        "health": 2000,
+        "location": "Home",
+        "difficulty": 4,
+        "description": "The first Ultra Horseman.",
+        "attack_patterns": [
+            "Flies up and down shooting flies",
+            "Spawns water projectiles",
+            "Dashes"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Ultra Pestilence",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Ultra Pestilence (The Beast).png",
+        "health": 2000,
+        "location": "Home",
+        "difficulty": 4,
+        "description": "The second Ultra Horseman.",
+        "attack_patterns": [
+            "Spits massive poison clouds",
+            "Summons maggots",
+            "Throws fly bombs"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Ultra War",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Ultra War (The Beast).png",
+        "health": 2000,
+        "location": "Home",
+        "difficulty": 4,
+        "description": "The third Ultra Horseman.",
+        "attack_patterns": [
+            "Giant bombs everywhere",
+            "Chases with knife",
+            "Line bomb explosions"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Ultra Death",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Ultra Death (The Beast).png",
+        "health": 2000,
+        "location": "Home",
+        "difficulty": 4,
+        "description": "The fourth Ultra Horseman.",
+        "attack_patterns": [
+            "Scythe boomerangs",
+            "Giant skull crushing attacks",
+            "Soul ghosts"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Rotgut",
+        "image": "/sprites/4_Bosses/Rotgut.png",
+        "health": 800,
+        "location": "Corpse",
+        "difficulty": 4,
+        "description": "A massive creature embedded in the wall.",
+        "attack_patterns": [
+            "Inhales player",
+            "Spits massive projectiles",
+            "Spawns maggots"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Siren",
+        "image": "/sprites/4_Bosses/The Siren.png",
+        "health": 550,
+        "location": "Mausoleum",
+        "difficulty": 3,
+        "description": "A singing demoness who can steal your familiars.",
+        "attack_patterns": [
+            "Charms familiars to fight for her",
+            "Screams causing musical note AoE",
+            "Spawns minions"
+        ],
+        "drops": [
+            "The Note"
+        ]
+    },
+    {
+        "name": "Heretic",
+        "image": "/sprites/4_Bosses/The Heretic.png",
+        "health": 566,
+        "location": "Mausoleum",
+        "difficulty": 4,
+        "description": "A demonic summoner using pentagrams.",
+        "attack_patterns": [
+            "Lighting pentagrams on floor",
+            "Brimstone from fireplaces",
+            "Teleport slams"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Rag Man",
+        "image": "/sprites/4_Bosses/Rag Man.png",
+        "health": 250,
+        "location": "Basement",
+        "difficulty": 2,
+        "description": "A mummy that heals and summons ragheads.",
+        "attack_patterns": [
+            "Throws head (which turns into spider)",
+            "Resurrects dead spiders",
+            "Homing purple shots"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Krampus",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Krampus.png",
+        "health": 400,
+        "location": "Devil Room",
+        "difficulty": 3,
+        "description": "Devil room punisher.",
+        "attack_patterns": [
+            "Shoots 4-way brimstone laser",
+            "Rotates lasers",
+            "Shoots tear burst"
+        ],
+        "drops": [
+            "A Lump of Coal",
+            "Krampus' Head"
+        ]
+    },
+    {
+        "name": "The Fallen",
+        "image": "/sprites/4_Bosses/The Fallen.png",
+        "health": 220,
+        "location": "Caves",
+        "difficulty": 2,
+        "description": "A demon servant of Satan.",
+        "attack_patterns": [
+            "Splits into two smaller Fallens on death",
+            "Chases player",
+            "Cardinal shots"
+        ],
+        "drops": [
+            "Devil Pool Item"
+        ]
+    },
+    {
+        "name": "Rainmaker",
+        "image": "/sprites/4_Bosses/The Rainmaker.png",
+        "health": 400,
+        "location": "Downpour",
+        "difficulty": 2,
+        "description": "A tall, dancing fly-like boss that controls water.",
+        "attack_patterns": [
+            "Dances and summons rings of tears",
+            "Pushes player away with wind",
+            "Teleports and creates shockwaves"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Lil' Blub",
+        "image": "/sprites/4_Bosses/Lil Blub.png",
+        "health": 350,
+        "location": "Downpour",
+        "difficulty": 2,
+        "description": "A white leech creature that interacts with water bubbles.",
+        "attack_patterns": [
+            "Charges at the player",
+            "Eats bubbles to heal",
+            "Spits water projectiles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Wormwood",
+        "image": "/sprites/4_Bosses/Wormwood.png",
+        "health": 400,
+        "location": "Downpour",
+        "difficulty": 3,
+        "description": "A giant leech that bursts from the walls and floor.",
+        "attack_patterns": [
+            "Lunges from holes in the floor",
+            "Chases player while destroying the ground",
+            "Spits clusters of tears"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Colostomia",
+        "image": "/sprites/4_Bosses/Colostomia.png",
+        "health": 450,
+        "location": "Dross",
+        "difficulty": 2,
+        "description": "A bag of gas and poop held hostage by a small creature.",
+        "attack_patterns": [
+            "Throws explosive poop bags",
+            "Releases clouds of damaging gas",
+            "Dashes frantically when bag bursts"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Great Gideon",
+        "image": "/sprites/4_Bosses/Great Gideon.png",
+        "health": 1200,
+        "location": "Mines",
+        "difficulty": 3,
+        "description": "An invincible rock face that summons waves of enemies.",
+        "attack_patterns": [
+            "Summons waves of enemies",
+            "Sucks player towards mouth",
+            "Shoots rock patterns"
+        ],
+        "drops": [
+            "Boss Pool Item",
+            "Trapdoor to next floor"
+        ]
+    },
+    {
+        "name": "Reap Creep",
+        "image": "/sprites/4_Bosses/Reap Creep.png",
+        "health": 550,
+        "location": "Mines",
+        "difficulty": 3,
+        "description": "A wall-crawling spider with three faces.",
+        "attack_patterns": [
+            "Shoots brimstone lasers from eyes",
+            "Spawns spiders",
+            "Crawls on walls and lunges"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Pile",
+        "image": "/sprites/4_Bosses/The Pile.png",
+        "health": 600,
+        "location": "Ashpit",
+        "difficulty": 3,
+        "description": "A skeleton burrowing in a pile of bones.",
+        "attack_patterns": [
+            "Burrows and leaps out",
+            "Summons Bonies",
+            "Shoots bone projectiles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Hornfel",
+        "image": "/sprites/4_Bosses/Hornfel.png",
+        "health": 400,
+        "location": "Mines",
+        "difficulty": 3,
+        "description": "A small creature riding a minecart.",
+        "attack_patterns": [
+            "Rides minecart on tracks shooting at player",
+            "Throws bombs",
+            "Spawns minions from doors"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Singe",
+        "image": "/sprites/4_Bosses/Singe.png",
+        "health": 450,
+        "location": "Ashpit",
+        "difficulty": 3,
+        "description": "A spiked ball monster.",
+        "attack_patterns": [
+            "Charges rapidly",
+            "Slams ground creating fire waves",
+            "Turns into a spiked ball"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Visage",
+        "image": "/sprites/4_Bosses/The Visage.png",
+        "health": 600,
+        "location": "Gehenna",
+        "difficulty": 4,
+        "description": "A giant heart tethered to a stone mask.",
+        "attack_patterns": [
+            "Mask pulls heart around room",
+            "Brimstone beams from mask",
+            "Spawns minions"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Horny Boys",
+        "image": "/sprites/4_Bosses/The Horny Boys.png",
+        "health": 550,
+        "location": "Gehenna",
+        "difficulty": 3,
+        "description": "A duo of horned demons attacking together.",
+        "attack_patterns": [
+            "Throw bombs at each other/player",
+            "Charge attacks",
+            "Spawn poop obstacles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Scourge",
+        "image": "/sprites/4_Bosses/The Scourge.png",
+        "health": 650,
+        "location": "Mausoleum",
+        "difficulty": 4,
+        "description": "A chaotic demon with whipping arms.",
+        "attack_patterns": [
+            "Whips arms covering large area",
+            "Spins and chases player",
+            "Shoots homing shots"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Chimera",
+        "image": "/sprites/4_Bosses/Chimera.png",
+        "health": 600,
+        "location": "Mausoleum",
+        "difficulty": 4,
+        "description": "A patchwork monster of different boss parts.",
+        "attack_patterns": [
+            "Charges like monstrosity",
+            "Shoots various projectile types",
+            "Flies with wings"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Siren",
+        "image": "/sprites/4_Bosses/The Siren.png",
+        "health": 550,
+        "location": "Mausoleum",
+        "difficulty": 3,
+        "description": "A siren that can charm the player's familiars.",
+        "attack_patterns": [
+            "Steals player's familiars",
+            "Screams causing area damage",
+            "Summons music note projectiles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Tuff Twins",
+        "image": "/sprites/4_Bosses/Tuff Twins.png",
+        "health": 500,
+        "location": "Ashpit",
+        "difficulty": 3,
+        "description": "Two rock statues that must be destroyed with bombs.",
+        "attack_patterns": [
+            "Charge in cardinal directions",
+            "Must be hit by explosions to take damage",
+            "Create rock debris"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Gurglings",
+        "image": "/sprites/4_Bosses/Gurglings.png",
+        "health": 240,
+        "location": "Basement",
+        "difficulty": 1,
+        "description": "Two small charging monsters that leave red creep.",
+        "attack_patterns": [
+            "Charge blindly",
+            "Spawn flies",
+            "Leave red creep trail"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Turdlings",
+        "image": "/sprites/4_Bosses/Turdlings.png",
+        "health": 240,
+        "location": "Basement",
+        "difficulty": 1,
+        "description": "Poop version of Gurglings.",
+        "attack_patterns": [
+            "Charge blindly",
+            "Leave slippery brown creep",
+            "Spawn dips"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Dark One",
+        "image": "/sprites/4_Bosses/Dark One.png",
+        "health": 300,
+        "location": "Depths",
+        "difficulty": 2,
+        "description": "A black demon that darkens the room.",
+        "attack_patterns": [
+            "Charges rapidy",
+            "Shoots brimstone laser",
+            "Darkens room (obscures vision)"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Polycephalus",
+        "image": "/sprites/4_Bosses/Polycephalus.png",
+        "health": 300,
+        "location": "Catacombs",
+        "difficulty": 2,
+        "description": "A multi-headed worm burrowing boss.",
+        "attack_patterns": [
+            "Burrows and pops up",
+            "Spawns Nulls",
+            "Shoots tears from multiple heads"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Big Horn",
+        "image": "/sprites/4_Bosses/Big Horn.png",
+        "health": 400,
+        "location": "Caves",
+        "difficulty": 3,
+        "description": "A giant fat demon that attacks from holes.",
+        "attack_patterns": [
+            "Slams hands onto player",
+            "Spits troll bombs",
+            "Spits Little Horns"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Rag Mega",
+        "image": "/sprites/4_Bosses/Rag Mega.png",
+        "health": 400,
+        "location": "Caves",
+        "difficulty": 3,
+        "description": "A larger version of Rag Man.",
+        "attack_patterns": [
+            "Invulnerable while hiding in rags",
+            "Shoots purple homing tears",
+            "Summons raglings"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Sisters Vis",
+        "image": "/sprites/4_Bosses/Sisters Vis.png",
+        "health": 500,
+        "location": "Depths",
+        "difficulty": 3,
+        "description": "Two tall, bandaged monstrosities.",
+        "attack_patterns": [
+            "Charge rapidy",
+            "Shoot brimstone lasers from chest",
+            "Roll into balls"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Gish",
+        "image": "/sprites/4_Bosses/Gish.png",
+        "health": 400,
+        "location": "Depths",
+        "difficulty": 2,
+        "description": "A tar monster based on the game Gish.",
+        "attack_patterns": [
+            "Shoots tar balls that slow player",
+            "Spawns Clots",
+            "Leaps"
+        ],
+        "drops": [
+            "Little Gish"
+        ]
+    },
+    {
+        "name": "Teratoma",
+        "image": "/sprites/4_Bosses/Teratoma.png",
+        "health": 300,
+        "location": "Womb",
+        "difficulty": 2,
+        "description": "A floating ball of flesh and bone.",
+        "attack_patterns": [
+            "Splits into smaller chunks upon damage",
+            "Spawns spiders",
+            "Passive movement"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Scolex",
+        "image": "/sprites/4_Bosses/Scolex.png",
+        "health": 300,
+        "location": "Womb",
+        "difficulty": 3,
+        "description": "A large worm that leaps out of the ground.",
+        "attack_patterns": [
+            "Leaps in high arcs",
+            "Only tail is vulnerable",
+            "Spits explosive shots"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Mr. Fred",
+        "image": "/sprites/4_Bosses/Mr. Fred.png",
+        "health": 500,
+        "location": "Womb",
+        "difficulty": 3,
+        "description": "A giant face in the floor.",
+        "attack_patterns": [
+            "Spits homing shots",
+            "Summons minions",
+            "Shoots in 4 directions"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Blastocyst",
+        "image": "/sprites/4_Bosses/Blastocyst.png",
+        "health": 300,
+        "location": "Womb",
+        "difficulty": 2,
+        "description": "A very large Embryo.",
+        "attack_patterns": [
+            "Splits into smaller Blastocysts",
+            "Leaps and shoots tears",
+            "Spawns creep"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Mama Gurdy",
+        "image": "/sprites/4_Bosses/Mama Gurdy.png",
+        "health": 750,
+        "location": "Womb",
+        "difficulty": 3,
+        "description": "The enormous mother of Gurds.",
+        "attack_patterns": [
+            "Spikes burst from floor",
+            "Vomits heaps of tears",
+            "Spawns minions"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Daddy Long Legs",
+        "image": "/sprites/4_Bosses/Daddy Long Legs.png",
+        "health": 500,
+        "location": "Womb",
+        "difficulty": 3,
+        "description": "Unknown spider creature that attacks from above.",
+        "attack_patterns": [
+            "Stomps with random legs",
+            "Head descends to cough up spiders",
+            "Tricky rhythm"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Triachnid",
+        "image": "/sprites/4_Bosses/Triachnid.png",
+        "health": 500,
+        "location": "Womb",
+        "difficulty": 3,
+        "description": "A variant of Daddy Long Legs.",
+        "attack_patterns": [
+            "Stomps legs from above",
+            "Spawns Trites",
+            "Leaves white creep"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Gate",
+        "image": "/sprites/4_Bosses/The Gate.png",
+        "health": 550,
+        "location": "Depths",
+        "difficulty": 3,
+        "description": "A skull version of Mega Maw.",
+        "attack_patterns": [
+            "Shoots brimstone laser",
+            "Spawns Leapers",
+            "Bullet hell rings"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Brownie",
+        "image": "/sprites/4_Bosses/Brownie.png",
+        "health": 400,
+        "location": "Depths",
+        "difficulty": 3,
+        "description": "A poop version of Dingle but much worse.",
+        "attack_patterns": [
+            "Spins filling room with poop",
+            "Converts into Dangles on death",
+            "Spawns Corn Dips"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Lokii",
+        "image": "/sprites/4_Bosses/Lokii (Split Loki).png",
+        "health": 350,
+        "location": "Womb",
+        "difficulty": 2,
+        "description": "Loki split into two halves.",
+        "attack_patterns": [
+            "Two independent entities",
+            "Teleportation",
+            "Cardinal shots"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Wretched",
+        "image": "/sprites/4_Bosses/The Wretched.png",
+        "health": 230,
+        "location": "Caves",
+        "difficulty": 2,
+        "description": "A white variant of Widow.",
+        "attack_patterns": [
+            "Spawns spiders rapidly",
+            "Leaps on player",
+            "Leaves slowing white creep"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Fistula",
+        "image": "/sprites/4_Bosses/Fistula.png",
+        "health": 300,
+        "location": "Caves",
+        "difficulty": 2,
+        "description": "A large ball of flesh.",
+        "attack_patterns": [
+            "Splits into 2 then 4 then 8 pieces",
+            "Pieces transform into Chargers",
+            "Passive movement"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Blighted Ovum",
+        "image": "/sprites/4_Bosses/Blighted Ovum.png",
+        "health": 300,
+        "location": "Cellar",
+        "difficulty": 2,
+        "description": "A ghostly version of Gemini.",
+        "attack_patterns": [
+            "Small ghost shoots brimstone",
+            "Charges across screen",
+            "Leaves red creep"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Clutch",
+        "image": "/sprites/4_Bosses/Clutch.png",
+        "health": 600,
+        "location": "Ashpit",
+        "difficulty": 3,
+        "description": "A ghost possessing skeletons.",
+        "attack_patterns": [
+            "Possesses bone piles to animate them",
+            "Throws bones",
+            "Teleports"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Shell",
+        "image": "/sprites/4_Bosses/The Shell.png",
+        "health": 600,
+        "location": "Dross",
+        "difficulty": 3,
+        "description": "A giant explosive beetle.",
+        "attack_patterns": [
+            "Armor breaks off in stages",
+            "Shoots explosive shots",
+            "Charges"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "The Heretic",
+        "image": "/sprites/4_Bosses/The Heretic.png",
+        "health": 700,
+        "location": "Mausoleum",
+        "difficulty": 4,
+        "description": "A dark warlock summoning pentagrams.",
+        "attack_patterns": [
+            "Pentagram lightning attack",
+            "Charges",
+            "Summons minions"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Clog",
+        "image": "/sprites/4_Bosses/Clog.png",
+        "health": 450,
+        "location": "Dross",
+        "difficulty": 3,
+        "description": "A giant poop ball with eyes.",
+        "attack_patterns": [
+            "Clogs up pipes and shoots water",
+            "Spins around",
+            "Shoots corn projectiles"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Turdlet",
+        "image": "/sprites/4_Bosses/Turdlet.png",
+        "health": 250,
+        "location": "Dross",
+        "difficulty": 2,
+        "description": "Small poop boss.",
+        "attack_patterns": [
+            "Charges",
+            "Leaves creep",
+            "Spawns Dips"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "Min-Min",
+        "image": "/sprites/4_Bosses/Min-Min.png",
+        "health": 350,
+        "location": "Downpour",
+        "difficulty": 2,
+        "description": "A Willo-wisp fly mother.",
+        "attack_patterns": [
+            "Surrounded by protective flies",
+            "Shoot streams of shots",
+            "Spawns various fly types"
+        ],
+        "drops": [
+            "Boss Pool Item"
+        ]
+    },
+    {
+        "name": "War",
+        "image": "/sprites/4_Bosses/War.png",
+        "health": 430,
+        "location": "Depths",
+        "difficulty": 3,
+        "description": "Horseman of War. Fiery and aggressive.",
+        "attack_patterns": [
+            "Charges rapidly across screen",
+            "Supplies Troll Bombs",
+            "Phase 2: Chases on foot"
+        ],
+        "drops": [
+            "Ball of Bandages",
+            "Cube of Meat"
+        ]
+    },
+    {
+        "name": "Death",
+        "image": "/sprites/4_Bosses/Death.png",
+        "health": 450,
+        "location": "Womb",
+        "difficulty": 3,
+        "description": "Horseman of Death. Uses scythes.",
+        "attack_patterns": [
+            "Summons scythes that spiral in",
+            "Spawns Globlins",
+            "Slows time"
+        ],
+        "drops": [
+            "Ball of Bandages",
+            "Cube of Meat"
+        ]
+    },
+    {
+        "name": "Pestilence",
+        "image": "/sprites/4_Bosses/Pestilence.png",
+        "health": 350,
+        "location": "Caves",
+        "difficulty": 2,
+        "description": "Horseman of Pestilence. Poisonous.",
+        "attack_patterns": [
+            "Shoots explosive poisonous shots",
+            "Spawns Chargers/Flies",
+            "Leaves green creep"
+        ],
+        "drops": [
+            "Ball of Bandages",
+            "Cube of Meat"
+        ]
+    },
+    {
+        "name": "Headless Horseman",
+        "image": "/sprites/4_Bosses/The Headless Horseman.png",
+        "health": 400,
+        "location": "Any",
+        "difficulty": 3,
+        "description": "A horseman without a head.",
+        "attack_patterns": [
+            "Head acts as separate entity shooting tears",
+            "Body charges",
+            "Shoots red blood"
+        ],
+        "drops": [
+            "A Pony"
+        ]
+    },
+    {
+        "name": "Conquest",
+        "image": "/sprites/4_Bosses/Conquest.png",
+        "health": 450,
+        "location": "Womb",
+        "difficulty": 3,
+        "description": "A holy version of War? Forgotten horseman.",
+        "attack_patterns": [
+            "Charges with clones",
+            "Sky beam attacks",
+            "Homing shots"
+        ],
+        "drops": [
+            "White Pony"
+        ]
+    },
+    {
+        "name": "Uriel",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Uriel.png",
+        "health": 400,
+        "location": "Angel Room",
+        "difficulty": 3,
+        "description": "Angel statue protector.",
+        "attack_patterns": [
+            "Shoots X pattern blood shots",
+            "Beams of light from heaven",
+            "Teleports"
+        ],
+        "drops": [
+            "Key Piece 1"
+        ]
+    },
+    {
+        "name": "Gabriel",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Gabriel.png",
+        "health": 660,
+        "location": "Angel Room",
+        "difficulty": 4,
+        "description": "High angel protector.",
+        "attack_patterns": [
+            "Diagonal light beams",
+            "Summons Angels",
+            "X-pattern bullets"
+        ],
+        "drops": [
+            "Key Piece 2"
+        ]
+    },
+    {
+        "name": "Ultra Greed",
+        "image": "/sprites/4_Bosses/0_Completion Mark Bosses/Ultra Greed.png",
+        "health": 3500,
+        "location": "Greed Mode",
+        "difficulty": 5,
+        "description": "Final boss of Greed Mode.",
+        "attack_patterns": [
+            "Spins gold coins",
+            "Summons Keepers",
+            "Turns statues to gold"
+        ],
+        "drops": []
+    },
+    {
+        "name": "Envy",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Envy.png",
+        "health": 100,
+        "location": "Any",
+        "difficulty": 1,
+        "description": "One of the Seven Deadly Sins.",
+        "attack_patterns": [
+            "Splits into smaller Envies endlessly",
+            "Passive floating",
+            "Contact damage"
+        ],
+        "drops": [
+            "Shoop da Whoop!"
+        ]
+    },
+    {
+        "name": "Lust",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Lust.png",
+        "health": 200,
+        "location": "Any",
+        "difficulty": 1,
+        "description": "One of the Seven Deadly Sins.",
+        "attack_patterns": [
+            "Chases player relentlessly",
+            "Speeds up over time",
+            "Contact damage"
+        ],
+        "drops": [
+            "The Virus"
+        ]
+    },
+    {
+        "name": "Wrath",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Wrath.png",
+        "health": 200,
+        "location": "Any",
+        "difficulty": 1,
+        "description": "One of the Seven Deadly Sins.",
+        "attack_patterns": [
+            "Throws bombs",
+            "Shoots explosive shots",
+            "Destroys environment"
+        ],
+        "drops": [
+            "Mr. Boom"
+        ]
+    },
+    {
+        "name": "Gluttony",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Gluttony.png",
+        "health": 250,
+        "location": "Any",
+        "difficulty": 1,
+        "description": "One of the Seven Deadly Sins.",
+        "attack_patterns": [
+            "Shoots Brimstone laser",
+            "Static movement",
+            "Shoots 4-way tears"
+        ],
+        "drops": [
+            "<3"
+        ]
+    },
+    {
+        "name": "Greed",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Greed.png",
+        "health": 200,
+        "location": "Any",
+        "difficulty": 1,
+        "description": "One of the Seven Deadly Sins. Steals money.",
+        "attack_patterns": [
+            "Shoots triple shot",
+            "Steals coins on hit",
+            "Summons Hoppers"
+        ],
+        "drops": [
+            "Steam Sale",
+            "Quarter"
+        ]
+    },
+    {
+        "name": "Pride",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Pride.png",
+        "health": 200,
+        "location": "Any",
+        "difficulty": 1,
+        "description": "One of the Seven Deadly Sins.",
+        "attack_patterns": [
+            "X-pattern diagonal lasers",
+            "Spawns bombs",
+            "Walking movement"
+        ],
+        "drops": [
+            "Anarchist Cookbook"
+        ]
+    },
+    {
+        "name": "Sloth",
+        "image": "https://bindingofisaacrebirth.fandom.com/wiki/Special:FilePath/Boss_Sloth.png",
+        "health": 200,
+        "location": "Any",
+        "difficulty": 1,
+        "description": "One of the Seven Deadly Sins.",
+        "attack_patterns": [
+            "Shoots Ipecac (explosive poison)",
+            "Spawns Chargers",
+            "Slow movement"
+        ],
+        "drops": [
+            "Bob's Rotten Head"
+        ]
+    }
+]
