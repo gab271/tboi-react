@@ -14,9 +14,10 @@ import {
 } from '../ui/DropdownMenu';
 import { supabase } from '../../lib/supabaseClient';
 import { useIsAdmin } from '../../hooks/useAdmin';
+import LanguageSwitcher from './LanguageSwitcher';
 
 function Header() {
-  const { t: _t } = useTranslation();
+  const { t } = useTranslation();
   const [showCmd, setShowCmd] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -87,10 +88,10 @@ function Header() {
 
             {/* Center: Navigation - Desktop */}
             <nav className="hidden lg:flex items-center justify-center gap-8 xl:gap-16">
-                <NavItem to="/items" label="Items" />
-                <NavItem to="/bosses" label="Bosses" />
-                <NavItem to="/characters" label="Characters" />
-                <NavItem to="/builds" label="Builds" />
+                <NavItem to="/items" label={t('nav.items')} />
+                <NavItem to="/bosses" label={t('nav.bosses')} />
+                <NavItem to="/characters" label={t('nav.characters')} />
+                <NavItem to="/builds" label={t('nav.builds')} />
             </nav>
 
             {/* Right: Tools (Search, Favs, Login) - Desktop */}
@@ -113,6 +114,9 @@ function Header() {
                     </NavLink>
                 )}
 
+                {/* Language Switcher */}
+                <LanguageSwitcher />
+
                 {/* Login / Profile */}
                 {user ? (
                     <DropdownMenu>
@@ -128,14 +132,14 @@ function Header() {
                        <DropdownMenuContent align="end" className="bg-bg-paper border-2 border-black font-handwriting min-w-[200px]">
                            {isAdmin && (
                                <DropdownMenuItem onClick={() => navigate('/admin')}>
-                                   Admin Dashboard
+                                   {t('nav.admin')}
                                </DropdownMenuItem>
                            )}
                            <DropdownMenuItem onClick={() => navigate('/account')}>
-                               Account
+                               {t('nav.account')}
                            </DropdownMenuItem>
                            <DropdownMenuItem onClick={handleLogout} className="text-accent-blood font-bold">
-                               <FaSignOutAlt className="mr-2" /> Logout
+                               <FaSignOutAlt className="mr-2" /> {t('nav.logout')}
                            </DropdownMenuItem>
                        </DropdownMenuContent>
                     </DropdownMenu>
@@ -147,7 +151,7 @@ function Header() {
                             borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px' // Hand-drawn border radius
                         }}
                     >
-                        Login
+                        {t('nav.login')}
                     </Button>
                 )}
             </div>
@@ -162,6 +166,9 @@ function Header() {
                     <FaSearch className="w-5 h-5" />
                 </button>
                 
+                {/* Language Switcher - Mobile */}
+                <LanguageSwitcher />
+
                 {/* Mobile Hamburger Menu */}
                 <button 
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -192,10 +199,10 @@ function Header() {
             <div className="flex flex-col h-full pt-20 pb-8 px-6">
                 {/* Mobile Navigation */}
                 <nav className="flex flex-col gap-6 mb-8">
-                    <NavItem to="/items" label="Items" onClick={() => setMobileMenuOpen(false)} />
-                    <NavItem to="/bosses" label="Bosses" onClick={() => setMobileMenuOpen(false)} />
-                    <NavItem to="/characters" label="Characters" onClick={() => setMobileMenuOpen(false)} />
-                    <NavItem to="/builds" label="Builds" onClick={() => setMobileMenuOpen(false)} />
+                    <NavItem to="/items" label={t('nav.items')} onClick={() => setMobileMenuOpen(false)} />
+                    <NavItem to="/bosses" label={t('nav.bosses')} onClick={() => setMobileMenuOpen(false)} />
+                    <NavItem to="/characters" label={t('nav.characters')} onClick={() => setMobileMenuOpen(false)} />
+                    <NavItem to="/builds" label={t('nav.builds')} onClick={() => setMobileMenuOpen(false)} />
                 </nav>
 
                 <div className="h-px w-full bg-black/20 my-4" />
@@ -209,7 +216,7 @@ function Header() {
                             className="flex items-center gap-3 font-pixel text-lg text-text-heading hover:text-accent-blood transition-colors"
                         >
                             <FaHeart className="w-5 h-5" />
-                            Favorites
+                            {t('nav.favorites')}
                         </NavLink>
                     )}
                     
@@ -221,7 +228,7 @@ function Header() {
                                 className="flex items-center gap-3 font-pixel text-lg text-text-heading hover:text-accent-blood transition-colors"
                             >
                                 <FaUserCircle className="w-5 h-5" />
-                                Account
+                                {t('nav.account')}
                             </NavLink>
                             {isAdmin && (
                                 <NavLink 
@@ -229,7 +236,7 @@ function Header() {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className="flex items-center gap-3 font-pixel text-lg text-text-heading hover:text-accent-blood transition-colors"
                                 >
-                                    Admin
+                                    {t('nav.admin')}
                                 </NavLink>
                             )}
                             <button 
@@ -237,7 +244,7 @@ function Header() {
                                 className="flex items-center gap-3 font-pixel text-lg text-accent-blood hover:text-red-800 transition-colors"
                             >
                                 <FaSignOutAlt className="w-5 h-5" />
-                                Logout
+                                {t('nav.logout')}
                             </button>
                         </>
                     ) : (
@@ -248,7 +255,7 @@ function Header() {
                                 borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px'
                             }}
                         >
-                            Login
+                            {t('nav.login')}
                         </Button>
                     )}
                 </div>

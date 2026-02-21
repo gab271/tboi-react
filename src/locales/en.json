@@ -12,7 +12,14 @@
     "join": "Join",
     "logout": "Sign Out",
     "accountable": "Account Settings",
-    "subtitle": "Repentance"
+    "subtitle": "Repentance",
+    "admin": "Admin Dashboard",
+    "account": "Account"
+  },
+  "language": {
+    "title": "Language",
+    "en": "English",
+    "es": "Spanish"
   },
   "common": {
     "loading": "Loading...",

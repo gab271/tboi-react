@@ -12,7 +12,14 @@
     "join": "Unirse",
     "logout": "Cerrar Sesión",
     "accountable": "Configurar Cuenta",
-    "subtitle": "Repentance"
+    "subtitle": "Repentance",
+    "admin": "Panel de Admin",
+    "account": "Cuenta"
+  },
+  "language": {
+    "title": "Idioma",
+    "en": "Inglés",
+    "es": "Español"
   },
   "common": {
     "loading": "Cargando...",
