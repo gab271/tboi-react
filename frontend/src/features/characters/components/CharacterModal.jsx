@@ -1,29 +1,35 @@
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaHeart, FaGamepad, FaCoins, FaBomb, FaKey } from 'react-icons/fa';
-
-// Symbols for marks to display (read-only in modal)
-const COMPLETION_MARKS = [
-  { id: 'heart', name: "Mom's Heart", symbol: "❤️" },
-  { id: 'isaac', name: "Isaac", symbol: "✝" },
-  { id: 'boss_rush', name: "Boss Rush", symbol: "★" },
-  { id: 'satan', name: "Satan", symbol: "⛧" },
-  { id: 'blue_baby', name: "??? (Blue Baby)", symbol: "P" },
-  { id: 'lamb', name: "The Lamb", symbol: "N" },
-  { id: 'mega_satan', name: "Mega Satan", symbol: "∞" },
-  { id: 'greed', name: "Greed Mode", symbol: "¢" }, 
-  { id: 'hush', name: "Hush", symbol: "H" },
-  { id: 'delirium', name: "Delirium", symbol: "D" },
-  { id: 'mother', name: "Mother", symbol: "M" },
-  { id: 'beast', name: "The beast", symbol: "B" }
-];
+import { CompletionMarksGrid } from './CompletionMarksGrid';
+import { ConflictResolutionModal } from './ConflictResolutionModal';
+import { useCompletionMarks } from '../hooks/useCompletionMarks';
+import { useAuth } from '../../../hooks/useAuth';
 
 export function CharacterModal({ character, onClose, _isTainted }) {
+  const [showConflictModal, setShowConflictModal] = useState(false);
+  const { user } = useAuth();
+  
+  const {
+    marks,
+    completion,
+    isLoading,
+    pendingConflict,
+    toggleMark,
+    saveMarks,
+    resolveConflict,
+  } = useCompletionMarks(character?.id, user?.id);
+  
   if (!character) return null;
 
-  // Retrieve progress from localStorage just for display
-  const savedProgress = localStorage.getItem(`tboi_tracker_${character.id}`);
-  const progress = savedProgress ? JSON.parse(savedProgress) : {};
+  const handleSaveMarks = async (newMarks) => {
+    await saveMarks({
+      ...marks,
+      marks: newMarks,
+      lastUpdated: new Date().toISOString(),
+    });
+  };
 
   return createPortal(
     <AnimatePresence>
@@ -69,34 +75,17 @@ export function CharacterModal({ character, onClose, _isTainted }) {
                         </div>
                     </div>
 
-                    {/* Completion Marks Grid (New Addition) */}
+                    {/* Completion Marks Grid - Nuevo Sistema */}
                     <div className="mt-8 w-full max-w-[280px]">
-                        <h4 className="font-handwriting text-center text-lg mb-2 font-bold underline decoration-wavy decoration-red-500/30">Completion Marks</h4>
-                        <div className="grid grid-cols-4 gap-2 p-2 bg-white/50 border border-black/10 rounded-sm">
-                            {COMPLETION_MARKS.map(mark => {
-                                const isCompleted = !!progress[mark.id];
-                                return (
-                                    <div 
-                                        key={mark.id} 
-                                        className={`
-                                            aspect-square flex items-center justify-center text-lg font-bold border rounded-sm transition-all
-                                            ${isCompleted 
-                                                ? 'border-red-800 text-red-700 bg-red-100/20 shadow-sm' 
-                                                : 'border-black/10 text-black/20 bg-black/5 grayscale opacity-50'
-                                            }
-                                        `}
-                                        title={mark.name}
-                                    >
-                                        {/* Use sprite if available or symbol */}
-                                        {isCompleted ? (
-                                             <span className="drop-shadow-sm">{mark.symbol}</span>
-                                        ) : (
-                                            <span className="text-xs">{mark.symbol}</span>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
+                        <CompletionMarksGrid
+                          characterId={character.id}
+                          marks={marks?.marks || {}}
+                          completion={completion}
+                          isLoading={isLoading}
+                          onToggle={toggleMark}
+                          onSave={handleSaveMarks}
+                          editable={!!user}
+                        />
                     </div>
                 </div>
 
@@ -149,6 +138,14 @@ export function CharacterModal({ character, onClose, _isTainted }) {
                 </div>
             </div>
         </motion.div>
+        
+        {/* Conflict Resolution Modal */}
+        <ConflictResolutionModal
+          isOpen={showConflictModal || !!pendingConflict}
+          onClose={() => setShowConflictModal(false)}
+          conflict={pendingConflict}
+          onResolve={resolveConflict}
+        />
       </div>
     </AnimatePresence>,
     document.body

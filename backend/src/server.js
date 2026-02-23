@@ -16,6 +16,7 @@ const saveRoutes = require('./routes/save');
 const { router: statsRoutes } = require('./routes/stats');
 const synergiesRoutes = require('./routes/synergies');
 const activityRoutes = require('./routes/activity');
+const marksRoutes = require('./routes/marks');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -52,6 +53,7 @@ app.use('/api/save', saveRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/synergies', synergiesRoutes);
 app.use('/api/activity', activityRoutes);
+app.use('/api/users', marksRoutes);
 // Mount specific admin sub-routes first
 app.use('/api/admin/items', adminItemsRoutes);
 // Mount general admin routes (stats, users, promote)

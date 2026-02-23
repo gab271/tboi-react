@@ -45,6 +45,41 @@
     "welcome": "Bienvenido a TBOI Codex",
     "description": "Tu guía definitiva para The Binding of Isaac"
   },
+  "characters": {
+    "completionMarks": "Marcas de Completación",
+    "edit": "Editar",
+    "editing": "Editando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "progress": "Progreso",
+    "locked": "No completado",
+    "normal": "Completado Normal",
+    "hard": "Completado Hard",
+    "clickToToggle": "Click para cambiar",
+    "loginToEdit": "Inicia sesión para editar",
+    "conflict": {
+      "title": "Conflicto detectado",
+      "description": "Tus marcas manuales difieren del save importado",
+      "manual": "Marcas manuales",
+      "save": "Desde save",
+      "options": {
+        "replace": {
+          "title": "Usar save",
+          "description": "Reemplazar marcas con datos del archivo de guardado"
+        },
+        "keep": {
+          "title": "Mantener manual",
+          "description": "Conservar tus marcas manuales actuales"
+        },
+        "merge": {
+          "title": "Mezclar",
+          "description": "Combinar conservando el mayor progreso de cada marca"
+        }
+      },
+      "apply": "Aplicar",
+      "recommended": "Recomendado"
+    }
+  },
   "builds": {
     "title": "Builds de la Comunidad",
     "subtitle": "Descubre y comparte sinergias poderosas",
