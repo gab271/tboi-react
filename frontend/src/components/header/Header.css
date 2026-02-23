@@ -3,6 +3,18 @@
    Diseño: 3 bloques con jerarquía visual clara
    ============================================ */
 
+/* Anti-scroll-jump: prevenir que Radix modifique el body */
+html {
+  overflow-y: scroll; /* Siempre mostrar scrollbar para evitar layout shift */
+}
+
+body[data-scroll-locked] {
+  /* Override Radix scroll lock - no queremos esto en dropdowns */
+  overflow: auto !important;
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
 /* Container principal - NUNCA overflow */
 .header {
   position: relative;

@@ -221,9 +221,10 @@ function ExploreDropdown({ t }) {
   const isExploreActive = explorePaths.some(path => location.pathname.startsWith(path));
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button 
+          type="button"
           className={cn(
             "nav-secondary font-heading",
             isExploreActive && "text-accent-blood font-semibold"
@@ -236,7 +237,8 @@ function ExploreDropdown({ t }) {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
-        align="start" 
+        align="start"
+        sideOffset={8}
         className="dropdown-content bg-bg-paper border-2 border-border min-w-[200px] shadow-lg p-1"
       >
         {/* Wiki Section */}
@@ -282,9 +284,9 @@ function ExploreDropdown({ t }) {
 // User Menu (logged in)
 function UserMenu({ user, profile, isPro, isSupporter, isAdmin, navigate, handleLogout, t }) {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <button className="avatar-trigger">
+        <button type="button" className="avatar-trigger">
           <div className="avatar-img">
             {profile?.avatarUrl ? (
               <img src={profile.avatarUrl} alt={profile.username} className="w-full h-full object-cover" />

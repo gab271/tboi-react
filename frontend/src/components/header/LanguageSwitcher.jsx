@@ -21,9 +21,10 @@ function LanguageSwitcher() {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button 
+          type="button"
           className="icon-btn"
           aria-label="Change language"
         >
