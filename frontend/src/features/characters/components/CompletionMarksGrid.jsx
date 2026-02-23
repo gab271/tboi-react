@@ -10,7 +10,7 @@
  * - Soporte para datos de save file o edición manual
  */
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../../lib/utils';
 import { 
@@ -219,6 +219,14 @@ export function CompletionMarksGrid({
   );
   const [isEditing, setIsEditing] = useState(false);
   const [originalMarks, setOriginalMarks] = useState(marks);
+  
+  // Sync when initialMarks changes (e.g., after loading from server)
+  useEffect(() => {
+    if (initialMarks?.marks) {
+      setMarks(initialMarks.marks);
+      setOriginalMarks(initialMarks.marks);
+    }
+  }, [initialMarks]);
   
   // Calcular progreso
   const completion = useMemo(() => {

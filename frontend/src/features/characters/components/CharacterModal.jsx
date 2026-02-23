@@ -23,12 +23,9 @@ export function CharacterModal({ character, onClose, _isTainted }) {
   
   if (!character) return null;
 
-  const handleSaveMarks = async (newMarks) => {
-    await saveMarks({
-      ...marks,
-      marks: newMarks,
-      lastUpdated: new Date().toISOString(),
-    });
+  const handleSaveMarks = async (marksData) => {
+    // CompletionMarksGrid passes { characterId, marks, source, lastUpdated, saveFileHash }
+    await saveMarks(marksData);
   };
 
   return createPortal(
@@ -79,12 +76,12 @@ export function CharacterModal({ character, onClose, _isTainted }) {
                     <div className="mt-8 w-full max-w-[280px]">
                         <CompletionMarksGrid
                           characterId={character.id}
-                          marks={marks?.marks || {}}
-                          completion={completion}
-                          isLoading={isLoading}
-                          onToggle={toggleMark}
-                          onSave={handleSaveMarks}
+                          characterName={character.name}
+                          isTainted={character.isTainted}
+                          initialMarks={marks}
+                          source={marks?.source}
                           editable={!!user}
+                          onSave={handleSaveMarks}
                         />
                     </div>
                 </div>

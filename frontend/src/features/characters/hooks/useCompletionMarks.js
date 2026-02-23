@@ -357,9 +357,27 @@ function clearPendingConflict(characterId) {
 // HELPERS - SERVER API
 // ============================================
 
+async function getAuthToken() {
+  try {
+    // Dynamic import to avoid circular dependencies
+    const { supabase } = await import('../../../lib/supabaseClient');
+    const { data } = await supabase.auth.getSession();
+    return data?.session?.access_token || null;
+  } catch {
+    return null;
+  }
+}
+
 async function fetchMarksFromServer(characterId, userId) {
   try {
-    const response = await fetch(`/api/users/${userId}/marks/${characterId}`);
+    const token = await getAuthToken();
+    if (!token) return null;
+    
+    const response = await fetch(`/api/users/${userId}/marks/${characterId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       if (response.status === 404) return null;
       throw new Error('Failed to fetch marks');
@@ -373,9 +391,17 @@ async function fetchMarksFromServer(characterId, userId) {
 
 async function saveMarksToServer(characterId, userId, data) {
   try {
+    const token = await getAuthToken();
+    if (!token) {
+      throw new Error('Not authenticated');
+    }
+    
     const response = await fetch(`/api/users/${userId}/marks/${characterId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       body: JSON.stringify(data),
     });
     

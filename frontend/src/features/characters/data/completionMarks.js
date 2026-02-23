@@ -342,13 +342,23 @@ export function mergeMarks(manualData, saveData) {
  * @returns {{completed: number, total: number, hardCompleted: number, percentage: number}}
  */
 export function calculateCompletion(data) {
+  if (!data || !data.marks) {
+    return {
+      completed: 0,
+      hardCompleted: 0,
+      total: COMPLETION_MARKS.length,
+      percentage: 0,
+      isFullyHard: false,
+    };
+  }
+  
   let completed = 0;
   let hardCompleted = 0;
   const total = COMPLETION_MARKS.length;
   
   Object.values(data.marks).forEach(mark => {
-    if (mark.status >= MARK_STATUS.NORMAL) completed++;
-    if (mark.status === MARK_STATUS.HARD) hardCompleted++;
+    if (mark && mark.status >= MARK_STATUS.NORMAL) completed++;
+    if (mark && mark.status === MARK_STATUS.HARD) hardCompleted++;
   });
   
   return {
