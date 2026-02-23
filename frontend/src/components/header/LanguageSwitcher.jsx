@@ -6,7 +6,6 @@ import {
   DropdownMenuContent, 
   DropdownMenuItem 
 } from '../ui/DropdownMenu';
-import { Button } from '../ui/Button';
 
 const languages = [
   { code: 'en', label: 'English', flag: '🇺🇸' },
@@ -24,26 +23,27 @@ function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
-          className="p-2 group hover:scale-110 transition-transform"
+        <button 
+          className="icon-btn"
           aria-label="Change language"
         >
-          <FaGlobe className="w-6 h-6 xl:w-7 xl:h-7 text-black drop-shadow-sm group-hover:text-accent-blood transition-colors" />
-        </Button>
+          <FaGlobe className="w-[18px] h-[18px]" />
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end" 
-        className="bg-bg-paper border-2 border-black font-handwriting min-w-[140px]"
+        className="dropdown-content bg-bg-paper border-2 border-border min-w-[130px] shadow-lg p-1"
       >
         {languages.map((lang) => (
           <DropdownMenuItem 
             key={lang.code}
             onClick={() => changeLanguage(lang.code)}
-            className={currentLang.code === lang.code ? 'text-accent-blood font-bold' : ''}
+            className={`flex items-center gap-2 px-3 py-2 rounded cursor-pointer text-[13px] hover:bg-bg-paper-dark ${
+              currentLang.code === lang.code ? 'text-accent-blood font-semibold' : 'text-text-secondary'
+            }`}
           >
-            <span className="mr-2">{lang.flag}</span>
-            {lang.label}
+            <span>{lang.flag}</span>
+            <span className="font-heading">{lang.label}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

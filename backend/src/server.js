@@ -14,6 +14,8 @@ const authAdminRoutes = require('./routes/auth-admin');
 const adminItemsRoutes = require('./routes/admin-items');
 const saveRoutes = require('./routes/save');
 const { router: statsRoutes } = require('./routes/stats');
+const synergiesRoutes = require('./routes/synergies');
+const activityRoutes = require('./routes/activity');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -48,11 +50,37 @@ app.use('/api/bosses', bossesRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/save', saveRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/synergies', synergiesRoutes);
+app.use('/api/activity', activityRoutes);
 // Mount specific admin sub-routes first
 app.use('/api/admin/items', adminItemsRoutes);
 // Mount general admin routes (stats, users, promote)
 app.use('/api/admin', authAdminRoutes);
 
-app.listen(PORT, () => {
+// Start server
+const server = app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use. Kill existing process with:`);
+    console.error(`  Windows: taskkill /IM node.exe /F`);
+    console.error(`  Mac/Linux: pkill -f node`);
+    process.exit(1);
+  } else {
+    console.error('Server error:', err);
+    process.exit(1);
+  }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down...');
+  server.close(() => process.exit(0));
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down...');
+  server.close(() => process.exit(0));
 });

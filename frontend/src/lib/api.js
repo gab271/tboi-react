@@ -130,6 +130,59 @@ export const fetchDailyStats = async () => {
   return data;
 };
 
+/**
+ * Gets live activity stats for homepage
+ */
+export const fetchLiveActivity = async () => {
+  const { data } = await api.get('/api/activity/live');
+  return data;
+};
+
+/**
+ * Sends heartbeat to track active users
+ */
+export const sendHeartbeat = async () => {
+  const { data } = await api.post('/api/activity/heartbeat');
+  return data;
+};
+
+/**
+ * Gets activity feed
+ */
+export const fetchActivityFeed = async (limit = 5) => {
+  const { data } = await api.get(`/api/activity/feed?limit=${limit}`);
+  return data;
+};
+
+/**
+ * Analyzes synergies for a build
+ * @param {number[]} itemIds - Array of item IDs
+ * @param {Object} options - Optional character, previous items, etc.
+ */
+export const analyzeSynergies = async (itemIds, options = {}) => {
+  const { data } = await api.post('/api/synergies/analyze', {
+    items: itemIds,
+    ...options
+  });
+  return data;
+};
+
+/**
+ * Gets items with effects data for synergy engine
+ */
+export const fetchSynergyItems = async () => {
+  const { data } = await api.get('/api/synergies/items');
+  return data;
+};
+
+/**
+ * Gets popular synergies
+ */
+export const fetchPopularSynergies = async (limit = 10) => {
+  const { data } = await api.get(`/api/synergies/popular?limit=${limit}`);
+  return data;
+};
+
 export default api;
 
 

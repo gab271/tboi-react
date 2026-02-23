@@ -4,17 +4,19 @@
     "synergies": "Sinergias",
     "wiki": "Wiki",
     "community": "Comunidad",
+    "explore": "Explorar",
     "createProfile": "Crear perfil",
     "items": "Objetos",
     "bosses": "Jefes",
     "characters": "Personajes",
     "builds": "Builds",
     "search": "Buscar...",
+    "login": "Iniciar sesión",
+    "register": "Registro",
     "searchHint": "Ctrl+K",
     "favorites": "Favoritos",
     "settings": "Ajustes",
     "profile": "Perfil",
-    "login": "Entrar",
     "join": "Unirse",
     "logout": "Cerrar Sesión",
     "accountable": "Configurar Cuenta",
@@ -26,6 +28,9 @@
     "title": "Idioma",
     "en": "Inglés",
     "es": "Español"
+  },
+  "search": {
+    "placeholder": "Buscar..."
   },
   "common": {
     "loading": "Cargando...",

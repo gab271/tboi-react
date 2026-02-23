@@ -3,25 +3,31 @@
   
   /* Backgrounds */
   --bg-floor: #151110;  
-  --bg-paper: #E3DAC9;  
-  --bg-paper-dark: #d8cba8; 
+  --bg-paper: #F5E6D3;  /* Beige claro - fondo principal */
+  --bg-paper-dark: #E8D9C5; /* Beige más oscuro */
+  --bg-paper-darker: #D8C9B5; /* Para hovers */
 
-  /* Text */
-  --text-ink: #2c241b;     
-  --text-heading: #201c1c; 
-  --text-dim: #5c544b;     
+  /* Text - Sistema de contraste claro */
+  --text-ink: #2D2522;     /* Texto principal - contraste 10:1 */
+  --text-heading: #2D2522; /* Headings - mismo que ink */
+  --text-secondary: #5C4A42; /* Nav/secondary - contraste 6.5:1 */
+  --text-dim: #7A6B63;     /* Iconos/placeholders - contraste 4.5:1 */
+  --text-disabled: #B8A99A; /* Desactivado - contraste 2.5:1 */
 
   /* Accents */
-  --accent-blood: #a80000; 
-  --accent-gold: #d4af37; 
+  --accent-blood: #C64040; /* Rojo Isaac - acciones principales */
+  --accent-blood-dark: #A33535; /* Hover del rojo */
+  --accent-gold: #D4A024; /* Solo para badges PRO */
   --accent-blue: #1d4ed8;  
 
   /* Shadows */
   --shadow-paper: 0 10px 30px -5px rgba(0, 0, 0, 0.7);
   --shadow-float: 5px 5px 0px rgba(0, 0, 0, 0.2);
+  --shadow-header: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   /* Borders */
-  --border-ink: #2c241b;
+  --border-ink: #2D2522;
+  --border-light: #D8C9B5;
   
   /* Legacy/Mapping for existing components refactoring */
   --bg-0: var(--bg-floor);
@@ -33,5 +39,5 @@
   --border: var(--border-ink);
   --blood: var(--accent-blood);
   --gold: var(--accent-gold);
-  --ring: var(--accent-gold);
+  --ring: var(--accent-blood);
 }

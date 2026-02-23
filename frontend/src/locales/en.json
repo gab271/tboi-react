@@ -4,12 +4,14 @@
     "synergies": "Synergies",
     "wiki": "Wiki",
     "community": "Community",
+    "explore": "Explore",
     "createProfile": "Create profile",
     "items": "Items",
     "bosses": "Bosses",
     "characters": "Characters",
     "builds": "Builds",
     "search": "Search...",
+    "register": "Sign Up",
     "searchHint": "Ctrl+K",
     "favorites": "Favorites",
     "settings": "Settings",
@@ -26,6 +28,9 @@
     "title": "Language",
     "en": "English",
     "es": "Spanish"
+  },
+  "search": {
+    "placeholder": "Search..."
   },
   "common": {
     "loading": "Loading...",

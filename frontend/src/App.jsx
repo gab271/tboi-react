@@ -24,6 +24,7 @@ import AdminBossEditor from './pages/admin/bosses/AdminBossEditor'
 import AdminCharacters from './pages/admin/characters/AdminCharacters'
 import AdminCharacterEditor from './pages/admin/characters/AdminCharacterEditor'
 import AdminUsers from './pages/admin/users/AdminUsers'
+import PricingPage from './pages/pricing/PricingPage'
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="bosses" element={<BossesList />} />
           <Route path="characters" element={<CharactersList />} />
           <Route path="synergies" element={<SynergiesPage />} />
+          <Route path="pricing" element={<PricingPage />} />
           
           {/* Builds - Public feed */}
           <Route path="builds" element={<BuildsPage />} />
