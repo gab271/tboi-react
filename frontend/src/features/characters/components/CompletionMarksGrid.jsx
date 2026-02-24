@@ -219,6 +219,7 @@ export function CompletionMarksGrid({
   );
   const [isEditing, setIsEditing] = useState(false);
   const [originalMarks, setOriginalMarks] = useState(marks);
+  const [viewMode, setViewMode] = useState('all'); // 'all' | 'normal' | 'hard'
   
   // Sync when initialMarks changes (e.g., after loading from server)
   useEffect(() => {
@@ -228,10 +229,33 @@ export function CompletionMarksGrid({
     }
   }, [initialMarks]);
   
-  // Calcular progreso
+  // Calcular progreso - con filtrado por modo
   const completion = useMemo(() => {
-    return calculateCompletion({ marks });
-  }, [marks]);
+    const base = calculateCompletion({ marks });
+    
+    // Contadores filtrados
+    if (viewMode === 'normal') {
+      const normalOnly = Object.values(marks).filter(m => m?.status === MARK_STATUS.NORMAL).length;
+      return {
+        ...base,
+        filteredCompleted: normalOnly,
+        filterLabel: 'Normal'
+      };
+    } else if (viewMode === 'hard') {
+      const hardOnly = Object.values(marks).filter(m => m?.status === MARK_STATUS.HARD).length;
+      return {
+        ...base,
+        filteredCompleted: hardOnly,
+        filterLabel: 'Hard'
+      };
+    }
+    
+    return {
+      ...base,
+      filteredCompleted: base.completed,
+      filterLabel: 'All'
+    };
+  }, [marks, viewMode]);
   
   // Toggle de un mark (cicla: none -> normal -> hard -> none)
   const handleToggle = useCallback((markId) => {
@@ -302,17 +326,65 @@ export function CompletionMarksGrid({
             Completion Marks
           </h4>
           <p className="text-[11px] text-text-dim">
-            {completion.completed}/{completion.total} 
-            {completion.hardCompleted > 0 && (
-              <span className={isTainted ? "text-red-600" : "text-amber-600"}>
-                {' '}({completion.hardCompleted} hard)
-              </span>
+            {viewMode === 'all' ? (
+              <>
+                {completion.completed}/{completion.total}
+                {completion.hardCompleted > 0 && (
+                  <span className={isTainted ? "text-red-600" : "text-amber-600"}>
+                    {' '}({completion.hardCompleted} hard)
+                  </span>
+                )}
+              </>
+            ) : (
+              <>
+                {completion.filteredCompleted}/{completion.total} ({completion.filterLabel})
+              </>
             )}
           </p>
         </div>
         
-        {/* Edit controls */}
-        {editable && (
+        <div className="flex items-center gap-2">
+          {/* Mode selector - Normal/Hard toggle */}
+          {!isEditing && (
+            <div className="flex items-center bg-bg-paper-dark/50 rounded-full p-0.5">
+              <button
+                onClick={() => setViewMode('all')}
+                className={cn(
+                  "px-2 py-0.5 text-[10px] font-heading rounded-full transition-colors",
+                  viewMode === 'all' 
+                    ? "bg-white text-text-ink shadow-sm" 
+                    : "text-text-dim hover:text-text-ink"
+                )}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setViewMode('normal')}
+                className={cn(
+                  "px-2 py-0.5 text-[10px] font-heading rounded-full transition-colors",
+                  viewMode === 'normal' 
+                    ? "bg-slate-600 text-white shadow-sm" 
+                    : "text-text-dim hover:text-text-ink"
+                )}
+              >
+                Normal
+              </button>
+              <button
+                onClick={() => setViewMode('hard')}
+                className={cn(
+                  "px-2 py-0.5 text-[10px] font-heading rounded-full transition-colors",
+                  viewMode === 'hard' 
+                    ? (isTainted ? "bg-red-600 text-white" : "bg-amber-500 text-white") + " shadow-sm"
+                    : "text-text-dim hover:text-text-ink"
+                )}
+              >
+                Hard
+              </button>
+            </div>
+          )}
+          
+          {/* Edit controls */}
+          {editable && (
           <div className="flex items-center gap-1">
             {isEditing ? (
               <>
@@ -342,6 +414,7 @@ export function CompletionMarksGrid({
             )}
           </div>
         )}
+        </div>
       </div>
       
       {/* Progress bar */}

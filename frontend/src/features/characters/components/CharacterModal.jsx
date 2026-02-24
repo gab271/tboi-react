@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaHeart, FaGamepad, FaCoins, FaBomb, FaKey } from 'react-icons/fa';
+import { FaHeart, FaGamepad, FaCoins, FaBomb, FaKey, FaLightbulb, FaStar } from 'react-icons/fa';
 import { CompletionMarksGrid } from './CompletionMarksGrid';
 import { ConflictResolutionModal } from './ConflictResolutionModal';
+import { StatsPanel } from './StatBar';
+import { HeartDisplay } from './HeartDisplay';
+import { StartingItemsGrid } from './StartingItemCard';
+import { getCharacterFullData } from '../data/characterStats';
 import { useCompletionMarks } from '../hooks/useCompletionMarks';
 import { useAuth } from '../../../hooks/useAuth';
 
@@ -22,6 +26,11 @@ export function CharacterModal({ character, onClose, _isTainted }) {
   } = useCompletionMarks(character?.id, user?.id);
   
   if (!character) return null;
+
+  // Obtener datos completos del personaje (stats reales del juego)
+  const characterData = getCharacterFullData(character.id) || {};
+  const { baseStats: stats, startingHealth: health, startingItems: items, playstyle, epithet: baseEpithet } = characterData;
+  const epithet = baseEpithet || (character.isTainted ? '"The Twisted One"' : '"The Child"');
 
   const handleSaveMarks = async (marksData) => {
     // CompletionMarksGrid passes { characterId, marks, source, lastUpdated, saveFileHash }
@@ -86,52 +95,110 @@ export function CharacterModal({ character, onClose, _isTainted }) {
                     </div>
                 </div>
 
-                {/* Right: Handwritten Stats */}
-                <div className="flex-1 space-y-6">
+                {/* Right: Character Details */}
+                <div className="flex-1 space-y-5 overflow-y-auto">
+                    {/* Header: Name & Epithet */}
                     <div>
-                        <h2 className={`text-5xl font-heading mb-2 ${character.isTainted ? 'text-purple-900' : 'text-text-heading'}`}>
+                        <h2 className={`text-4xl sm:text-5xl font-heading mb-1 ${character.isTainted ? 'text-purple-900' : 'text-text-heading'}`}>
                             {character.name}
                         </h2>
-                        <p className="font-handwriting text-2xl text-text-dim italic">
-                            {character.isTainted ? '"The Twisted One"' : '"The Child"'}
+                        <p className="font-handwriting text-xl sm:text-2xl text-text-dim italic">
+                            {epithet}
                         </p>
                     </div>
 
-                    <div className="border-t-2 border-dashed border-text-ink/20 pt-4 space-y-3 font-handwriting text-xl">
-                        <div className="flex items-center justify-between">
-                            <span className="font-bold flex items-center gap-2"><FaHeart className="text-accent-blood text-sm" /> Type:</span>
-                            <span>{character.health_type || 'Standard'}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <span className="font-bold flex items-center gap-2"><FaGamepad className="text-accent-gold text-sm" /> Difficulty:</span>
-                            <span>{character.difficulty}/3</span>
-                        </div>
-                    </div>
+                    {/* Stats Panel - Real game stats */}
+                    {stats && (
+                      <div className="bg-white/50 p-4 rounded-lg border border-text-ink/10">
+                        <h3 className="font-heading text-sm mb-3 flex items-center gap-2">
+                          <FaGamepad className="text-accent-gold" /> Base Stats
+                        </h3>
+                        <StatsPanel stats={stats} isEden={character.id === 'eden' || character.id === 'tainted_eden'} />
+                      </div>
+                    )}
 
-                    {/* Starting Items sketched box */}
-                    <div className="bg-white/40 p-4 border-2 border-text-ink/10 rounded-lg -rotate-1 mt-4">
-                        <h3 className="font-heading text-sm mb-3 underline decoration-wavy decoration-accent-blood">Starting Stats:</h3>
-                        <div className="flex justify-around font-mono text-lg">
-                             <div className="flex flex-col items-center">
-                                <FaCoins className="text-yellow-600 mb-1" />
+                    {/* Health Display */}
+                    {health && (
+                      <div className="bg-white/40 p-4 rounded-lg border border-text-ink/10">
+                        <h3 className="font-heading text-sm mb-3 flex items-center gap-2">
+                          <FaHeart className="text-accent-blood" /> Starting Health
+                        </h3>
+                        <HeartDisplay health={health} />
+                      </div>
+                    )}
+
+                    {/* Starting Items */}
+                    {items && items.length > 0 && (
+                      <div className="bg-white/40 p-4 rounded-lg border border-text-ink/10 -rotate-1">
+                        <h3 className="font-heading text-sm mb-3 flex items-center gap-2">
+                          <FaStar className="text-yellow-500" /> Starting Items
+                        </h3>
+                        <StartingItemsGrid items={items} />
+                      </div>
+                    )}
+
+                    {/* Pickups (coins, bombs, keys) */}
+                    <div className="bg-white/40 p-3 rounded-lg border border-text-ink/10">
+                        <h3 className="font-heading text-xs mb-2 text-text-dim">Pickups</h3>
+                        <div className="flex justify-around font-mono text-base">
+                             <div className="flex flex-col items-center gap-1">
+                                <FaCoins className="text-yellow-600" />
                                 <span>{character.starting_stats?.coins || 0}</span>
                              </div>
-                             <div className="flex flex-col items-center">
-                                <FaBomb className="text-gray-600 mb-1" />
+                             <div className="flex flex-col items-center gap-1">
+                                <FaBomb className="text-gray-600" />
                                 <span>{character.starting_stats?.bombs || 0}</span>
                              </div>
-                             <div className="flex flex-col items-center">
-                                <FaKey className="text-gray-400 mb-1" />
+                             <div className="flex flex-col items-center gap-1">
+                                <FaKey className="text-gray-400" />
                                 <span>{character.starting_stats?.keys || 0}</span>
                              </div>
                         </div>
                     </div>
 
-                    <div className="pt-4 text-sm font-serif text-text-dim leading-relaxed">
-                        <p>
-                           {character.description || "No specific notes found for this character."}
-                        </p>
-                    </div>
+                    {/* Playstyle Tips */}
+                    {playstyle && (
+                      <div className="bg-amber-50/50 p-4 rounded-lg border border-amber-200/50">
+                        <h3 className="font-heading text-sm mb-3 flex items-center gap-2">
+                          <FaLightbulb className="text-amber-500" /> Playstyle
+                          {playstyle.difficultyLabel && (
+                            <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${
+                              playstyle.difficulty === 1 ? 'bg-green-100 text-green-700' :
+                              playstyle.difficulty === 2 ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-red-100 text-red-700'
+                            }`}>
+                              {playstyle.difficultyLabel}
+                            </span>
+                          )}
+                        </h3>
+                        <p className="text-sm text-text-dim mb-3">{playstyle.summary}</p>
+                        
+                        {playstyle.bullets?.length > 0 && (
+                          <ul className="space-y-1 mb-3">
+                            {playstyle.bullets.map((bullet, i) => (
+                              <li key={i} className="text-xs text-slate-600 flex items-start gap-2">
+                                <span className="text-amber-500 mt-0.5">•</span>
+                                <span>{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        
+                        {playstyle.tip && (
+                          <div className="mt-3 p-2 bg-amber-100/50 rounded text-xs text-amber-800 flex items-start gap-2">
+                            <span className="text-amber-600">💡</span>
+                            <span>{playstyle.tip}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Description fallback */}
+                    {character.description && !playstyle && (
+                      <div className="pt-2 text-sm font-serif text-text-dim leading-relaxed">
+                        <p>{character.description}</p>
+                      </div>
+                    )}
                 </div>
             </div>
         </motion.div>
