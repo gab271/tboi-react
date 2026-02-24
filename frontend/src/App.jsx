@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from './components/layout/AppLayout'
 import { Home } from './pages/home/HomeV2'
-import { ItemsList } from './pages/items/ItemsList'
+import { CollectionLab } from './features/collection-lab'
 import { ItemDetail } from './pages/items/ItemDetail'
 import { BossesList } from './pages/bosses/BossesList'
 import { CharactersList } from './pages/characters/CharactersList'
@@ -36,7 +36,7 @@ function App() {
         
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
-          <Route path="items" element={<ItemsList />} />
+          <Route path="items" element={<CollectionLab />} />
           <Route path="items/:id" element={<ItemDetail />} />
           
           <Route path="bosses" element={<BossesList />} />

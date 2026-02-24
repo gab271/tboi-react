@@ -8,6 +8,7 @@ import App from './App'
 import './i18n'
 import './styles/globals.css'
 import './features/builds/builds.css'
+import './features/collection-lab/styles/lab.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -26,13 +26,19 @@ export const TIER_CONFIG = {
       'save_parser_basic',
       'synergy_basic', // Ver sinergias básicas (sin explicación detallada)
       'builds_view',
-      'comments_read'
+      'comments_read',
+      // Collection Lab - Free
+      'collection_lab_view',
+      'build_lab_basic', // hasta 5 items
+      'smart_filters_basic',
+      'hover_card_basic',
     ],
     limits: {
       saveParsesPerDay: 3,
       synergyAnalysesPerDay: 5,
       favoritesCount: 20,
-      buildsCount: 3
+      buildsCount: 3,
+      buildLabItems: 5, // Límite de items en Build Lab
     },
     badge: null,
     color: '#666'
@@ -54,13 +60,21 @@ export const TIER_CONFIG = {
       'builds_unlimited',
       'favorites_unlimited',
       'export_data',
-      'no_ads'
+      'no_ads',
+      // Collection Lab - PRO
+      'build_lab_unlimited', // Sin límite de items
+      'item_compare', // Modo comparación
+      'smart_filters_full', // Todos los filtros inteligentes
+      'global_stats', // Estadísticas globales
+      'hover_card_full', // Hover card con impacto
+      'item_recommendations', // Recomendaciones inteligentes
     ],
     limits: {
       saveParsesPerDay: Infinity,
       synergyAnalysesPerDay: Infinity,
       favoritesCount: Infinity,
-      buildsCount: Infinity
+      buildsCount: Infinity,
+      buildLabItems: Infinity,
     },
     badge: {
       text: 'PRO',
