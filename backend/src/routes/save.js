@@ -6,7 +6,8 @@
 const express = require('express');
 const multer = require('multer');
 const crypto = require('crypto');
-const { parseSaveFile, detectSlot, validateSaveFile } = require('../lib/saveParser');
+// Using Parser V2 with proper bitfield decoding
+const { parseSaveFile, detectSlot, validateSaveFile } = require('../lib/saveParserV2');
 const { incrementAnalyzeCount } = require('./stats');
 
 const router = express.Router();
@@ -114,16 +115,15 @@ router.post('/analyze', upload.single('saveFile'), async (req, res) => {
             });
         }
 
-        // Parse the save file
-        const result = parseSaveFile(buffer);
+        // Parse the save file using V2 parser
+        const result = parseSaveFile(buffer, { filename: originalname });
         
         const parseTime = Date.now() - startTime;
         
-        // Add metadata to result
+        // Metadata is already included by V2 parser
         if (result.ok) {
-            result.parsed.slot = slot;
-            result.parsed.filename = originalname;
-            result.parsed.uploadedAt = new Date().toISOString();
+            result.metadata.slot = slot;
+            result.metadata.filename = originalname;
             result.parseTimeMs = parseTime;
         }
         
@@ -132,8 +132,10 @@ router.post('/analyze', upload.single('saveFile'), async (req, res) => {
             source: result.source,
             parseTimeMs: parseTime,
             deadGodPercentage: result.metrics?.deadGodPercentage,
-            completionMarks: result.parsed?.completionMarks,
-            fileHash: fileHash.substring(0, 8)
+            secretsCount: result.secrets?.count,
+            totalMarks: result.totalMarks,
+            fileHash: fileHash.substring(0, 8),
+            invariantsPassed: result.sanityChecks?.invariantsPassed
         });
 
         // Return appropriate status code
@@ -167,6 +169,7 @@ router.post('/analyze', upload.single('saveFile'), async (req, res) => {
  * GET /api/save/demo
  * Returns demo/example data - CLEARLY MARKED as demo
  * Only use this for UI preview, never for real analysis
+ * NOTE: Updated to V2 response structure
  */
 router.get('/demo', (req, res) => {
     res.set('Cache-Control', 'public, max-age=3600'); // Demo can be cached
@@ -176,34 +179,67 @@ router.get('/demo', (req, res) => {
         source: 'demo', // CRITICAL: Always marked as demo
         error_code: null,
         error_message: null,
-        parsed: {
+        metadata: {
             fileHash: 'demo0000',
             fileSize: 0,
-            version: 'demo',
             slot: 1,
-            achievementsUnlocked: 425,
-            totalAchievements: 637,
-            completionMarks: 287,
-            totalMarks: 408,
-            itemsCollected: 489,
-            totalItems: 733,
-            completedCharacters: 21,
-            totalCharacters: 34,
-            vanillaCompleted: 14,
-            taintedCompleted: 7,
-            blockerCharacter: 'Tainted Lazarus',
-            blockerMarks: 5,
-            nextObjective: 'Completar Mother con Tainted Lazarus'
+            parsedAt: new Date().toISOString(),
+            parserVersion: '2.0.0-demo'
+        },
+        secrets: {
+            count: 425,
+            total: 637,
+            unlockedIds: []
+        },
+        items: {
+            count: 489,
+            total: 733,
+            unlockedIds: []
+        },
+        trinkets: {
+            count: 89,
+            total: 189,
+            unlockedIds: []
+        },
+        endings: {
+            count: 14,
+            total: 17,
+            unlockedIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+        },
+        characters: {
+            // Simplified demo characters
+            'Isaac': { completedMarks: 24, percentage: 100, isTainted: false },
+            'Magdalene': { completedMarks: 24, percentage: 100, isTainted: false },
+            'Cain': { completedMarks: 24, percentage: 100, isTainted: false },
+            'Judas': { completedMarks: 24, percentage: 100, isTainted: false },
+            'Tainted Lazarus': { completedMarks: 5, percentage: 21, isTainted: true }
+        },
+        totalMarks: 287,
+        totalMarksExpected: 816,
+        sanityChecks: {
+            invariantsPassed: true,
+            warnings: [],
+            errors: []
         },
         metrics: {
             deadGodPercentage: 67,
             achievementPercentage: 67,
-            marksPercentage: 70,
+            marksPercentage: 35,
             itemsPercentage: 67,
             topPercentile: 23,
             estimatedHoursRemaining: 23,
             taintedCompletion: 41
         },
+        missing: {
+            secrets: 212,
+            items: 244,
+            marks: 529
+        },
+        nextSteps: [{
+            characterName: 'Tainted Lazarus',
+            description: 'Completar Mother con Tainted Lazarus',
+            missingMarks: ['Mother', 'Beast', 'Boss Rush', 'Hush', 'Delirium']
+        }],
         isDemo: true // Extra flag for safety
     });
 });

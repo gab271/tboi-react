@@ -1,10 +1,38 @@
 // ResultModal.jsx - Modal con resultado del análisis del save file
+import { useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { FaTrophy, FaSkull, FaClock, FaTimes, FaChevronRight, FaExclamationTriangle } from 'react-icons/fa';
 
 export function ResultModal({ result, onClose, onRegister }) {
     const { t } = useTranslation();
+    
+    // ESC key handler
+    const handleKeyDown = useCallback((e) => {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            onClose();
+        }
+    }, [onClose]);
+
+    // ESC listener + body scroll lock
+    useEffect(() => {
+        // Add ESC listener
+        document.addEventListener('keydown', handleKeyDown);
+        
+        // Lock body scroll (preserve scrollbar width)
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.overflow = 'hidden';
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+        
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        };
+    }, [handleKeyDown]);
+    
     if (!result) return null;
     
     // CRITICAL: Check if this is demo data
@@ -29,12 +57,14 @@ export function ResultModal({ result, onClose, onRegister }) {
         nextObjective = t('home.nextObjective')
     } = result || {};
 
-    return (
+    // Use portal to render directly to body for proper positioning
+    const modalContent = (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-[9999] overflow-y-auto bg-black/70 backdrop-blur-sm"
+            style={{ isolation: 'isolate' }}
             onClick={onClose}
         >
             <div className="min-h-full flex items-center justify-center p-4">
@@ -246,6 +276,11 @@ export function ResultModal({ result, onClose, onRegister }) {
             </div>
         </motion.div>
     );
+    
+    // Render as portal to body for proper z-index and positioning
+    return typeof document !== 'undefined' 
+        ? createPortal(modalContent, document.body)
+        : null;
 }
 
 function StatBox({ label, current, total }) {

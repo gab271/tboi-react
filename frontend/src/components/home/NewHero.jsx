@@ -37,7 +37,7 @@ export function NewHero() {
         setErrorMessage('');
 
         try {
-            // REAL API CALL
+            // REAL API CALL - V2 parser response
             const result = await analyzeSaveFile(file);
             
             if (result.source !== 'real') {
@@ -46,19 +46,27 @@ export function NewHero() {
                 return;
             }
             
+            // Transform V2 response to UI format
+            const characters = result.characters || {};
+            
             setUploadState('success');
             setProgress({
                 source: result.source,
-                percentage: result.metrics.deadGodPercentage,
-                topPercentile: result.metrics.topPercentile,
-                blockerCharacter: result.parsed.blockerCharacter,
-                blockerMarks: result.parsed.blockerMarks,
-                hoursRemaining: result.metrics.estimatedHoursRemaining,
-                nextObjective: result.parsed.nextObjective,
-                completionMarks: result.parsed.completionMarks,
-                totalMarks: result.parsed.totalMarks,
-                achievementsUnlocked: result.parsed.achievementsUnlocked,
-                totalAchievements: result.parsed.totalAchievements,
+                percentage: result.metrics?.deadGodPercentage || 0,
+                topPercentile: result.metrics?.topPercentile || null,
+                blockerCharacter: result.nextSteps?.[0]?.characterName || null,
+                blockerMarks: result.nextSteps?.[0]?.missingMarks || [],
+                hoursRemaining: result.metrics?.estimatedHoursRemaining || null,
+                nextObjective: result.nextSteps?.[0]?.description || t('home.heroKeepPlaying'),
+                completionMarks: result.totalMarks || 0,
+                totalMarks: result.totalMarksExpected || 816,
+                achievementsUnlocked: result.secrets?.count || 0,
+                totalAchievements: result.secrets?.total || 637,
+                // Additional V2 data
+                characters: characters,
+                sanityChecks: result.sanityChecks,
+                missing: result.missing,
+                nextSteps: result.nextSteps
             });
         } catch (error) {
             console.error('[NewHero] Upload error:', error);

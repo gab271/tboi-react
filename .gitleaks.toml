@@ -1,0 +1,109 @@
+title = "Gitleaks Configuration for TBOI Project"
+
+[extend]
+# Extend default gitleaks rules
+useDefault = true
+
+[allowlist]
+description = "Global allowlist"
+paths = [
+    '''\.env\.example$''',
+    '''package-lock\.json$''',
+    '''pnpm-lock\.yaml$''',
+    '''yarn\.lock$''',
+    '''\.test\.(js|ts|jsx|tsx)$''',
+    '''__tests__/''',
+    '''fixtures/'''
+]
+
+# Firebase API Key (exposed in commit ff99f2e)
+[[rules]]
+id = "firebase-api-key"
+description = "Firebase API Key"
+regex = '''AIza[0-9A-Za-z_-]{35}'''
+tags = ["firebase", "api-key", "critical"]
+
+# Supabase Anon Key (JWT format, but public by design)
+[[rules]]
+id = "supabase-anon-key"
+description = "Supabase Anon Key (public)"
+regex = '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+'''
+tags = ["supabase", "jwt"]
+# This rule is informational - anon keys are meant to be public
+# But we want to track them to ensure they're not service_role keys
+
+# Supabase Service Role Key (CRITICAL - should never be committed)
+[[rules]]
+id = "supabase-service-role"
+description = "Supabase Service Role Key"
+regex = '''service_role['":\s]*[=:]['":\s]*eyJ[A-Za-z0-9_-]+'''
+tags = ["supabase", "service-role", "critical"]
+
+# Generic Secret Assignments
+[[rules]]
+id = "generic-secret"
+description = "Generic Secret Assignment"
+regex = '''(?i)(password|secret|token|api_key|apikey|auth_token|access_token)['":\s]*[=:]['":\s]*['"][A-Za-z0-9+/=_-]{20,}['"]'''
+tags = ["generic", "secret"]
+
+# AWS Keys
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''AKIA[0-9A-Z]{16}'''
+tags = ["aws", "critical"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Access Key"
+regex = '''(?i)aws_secret_access_key['":\s]*[=:]['":\s]*[A-Za-z0-9/+=]{40}'''
+tags = ["aws", "critical"]
+
+# GitHub Tokens
+[[rules]]
+id = "github-token"
+description = "GitHub Personal Access Token"
+regex = '''ghp_[A-Za-z0-9]{36}'''
+tags = ["github", "token"]
+
+[[rules]]
+id = "github-oauth"
+description = "GitHub OAuth Token"
+regex = '''gho_[A-Za-z0-9]{36}'''
+tags = ["github", "oauth"]
+
+# Stripe Keys
+[[rules]]
+id = "stripe-key"
+description = "Stripe API Key"
+regex = '''sk_live_[0-9a-zA-Z]{24,}'''
+tags = ["stripe", "critical"]
+
+# Hardcoded Passwords
+[[rules]]
+id = "hardcoded-password"
+description = "Hardcoded Password"
+regex = '''(?i)(password|passwd|pwd)['":\s]*[=:]['":\s]*['"][^'"]{8,}['"]'''
+tags = ["password"]
+# Allowlist test files and examples
+[rules.allowlist]
+paths = [
+    '''\.test\.(js|ts)''',
+    '''\.spec\.(js|ts)''',
+    '''example''',
+    '''mock'''
+]
+
+# Email + Password combinations (GitGuardian detected this)
+[[rules]]
+id = "email-password-combo"
+description = "Email with Password"
+regex = '''[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}.*(?i)(password|pwd)['":\s]*[=:]['":\s]*['"][^'"]+['"]'''
+tags = ["credentials", "critical"]
+
+# Private Keys
+[[rules]]
+id = "private-key"
+description = "Private Key"
+regex = '''-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----'''
+tags = ["private-key", "critical"]

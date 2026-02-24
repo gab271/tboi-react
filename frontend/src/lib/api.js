@@ -64,18 +64,28 @@ export const fetchRandomItems = async (n = 5) => {
 };
 
 /**
- * Analyzes an Isaac Repentance save file
+ * Analyzes an Isaac Repentance save file (V2 Parser)
  * @param {File} file - The save file to analyze
  * @returns {Promise<SaveAnalysisResult>} The parsed save data
  * 
- * Response structure:
+ * V2 Response structure (data at root level, not in 'parsed'):
  * {
  *   ok: boolean,
  *   source: 'real' | 'demo' | 'error',
  *   error_code: string | null,
  *   error_message: string | null,
- *   parsed: { ... } | null,
- *   metrics: { ... } | null
+ *   metadata: { slot, fileHash, parsedAt, parserVersion, ... },
+ *   secrets: { count, total, unlockedIds },
+ *   items: { count, total, unlockedIds },
+ *   trinkets: { count, total, unlockedIds },
+ *   characters: { [name]: { marks, completedMarks, percentage, ... } },
+ *   endings: { count, total, unlockedIds },
+ *   totalMarks: number,
+ *   totalMarksExpected: number,
+ *   metrics: { deadGodPercentage, marksPercentage, ... },
+ *   sanityChecks: { invariantsPassed, warnings, errors },
+ *   missing: { secrets, items, marks },
+ *   nextSteps: [{ characterName, description, missingMarks }]
  * }
  */
 export const analyzeSaveFile = async (file) => {

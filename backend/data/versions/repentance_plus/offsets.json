@@ -1,0 +1,69 @@
+{
+    "version": "repentance_plus",
+    "lastUpdated": "2024-01-15",
+    "fileStructure": {
+        "header": {
+            "offset": 0,
+            "size": 16,
+            "fields": {
+                "magic": { "offset": 0, "size": 4 },
+                "version": { "offset": 4, "size": 4 },
+                "checksum": { "offset": 8, "size": 8 }
+            }
+        },
+        "achievements": {
+            "offset": 16,
+            "size": 80,
+            "type": "bitfield",
+            "bitsUsed": 637,
+            "note": "Each bit represents one achievement/secret"
+        },
+        "completionMarks": {
+            "offset": 96,
+            "size": 816,
+            "type": "structured",
+            "perCharacterSize": 24,
+            "totalCharacters": 34,
+            "structure": {
+                "normalMarks": { "relativeOffset": 0, "size": 2, "type": "bitfield", "bits": 11 },
+                "hardMarks": { "relativeOffset": 2, "size": 2, "type": "bitfield", "bits": 11 },
+                "greedMark": { "relativeOffset": 4, "size": 1, "type": "boolean" },
+                "greedierMark": { "relativeOffset": 5, "size": 1, "type": "boolean" },
+                "reserved": { "relativeOffset": 6, "size": 18, "type": "padding" }
+            },
+            "note": "Each character has 24 bytes of completion data"
+        },
+        "items": {
+            "offset": 912,
+            "size": 92,
+            "type": "bitfield",
+            "bitsUsed": 733
+        },
+        "trinkets": {
+            "offset": 1004,
+            "size": 24,
+            "type": "bitfield",
+            "bitsUsed": 189
+        },
+        "challenges": {
+            "offset": 1028,
+            "size": 6,
+            "type": "bitfield",
+            "bitsUsed": 45
+        }
+    },
+    "totals": {
+        "achievements": 637,
+        "items": 733,
+        "trinkets": 189,
+        "challenges": 45,
+        "characters": 34,
+        "endings": 17,
+        "marksPerCharacter": 24
+    },
+    "fileSizeRange": {
+        "min": 20000,
+        "max": 50000
+    },
+    "warning": "Offsets are estimates based on save file analysis. Verify with hex dump."
+}

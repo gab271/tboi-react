@@ -8,13 +8,23 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '../../../lib/utils';
 import { analyzeSaveFile, fetchDailyStats } from '../../../lib/api';
 
-export function HeroSection({ onUploadSuccess }) {
+export function HeroSection({ onUploadSuccess, resetRef }) {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [uploadState, setUploadState] = useState('idle'); // idle | uploading | success | error
     const [errorMessage, setErrorMessage] = useState('');
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [dailyCount, setDailyCount] = useState(null);
+
+    // Expose reset function to parent via ref
+    useEffect(() => {
+        if (resetRef) {
+            resetRef.current = () => {
+                setUploadState('idle');
+                setErrorMessage('');
+            };
+        }
+    }, [resetRef]);
 
     // Fetch daily stats on mount
     useEffect(() => {
@@ -49,10 +59,40 @@ export function HeroSection({ onUploadSuccess }) {
 
         setUploadState('uploading');
         setErrorMessage('');
+        
+        // Calculate file hash for debugging/verification
+        let fileHash = null;
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            fileHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
+            console.log('[HeroSection] File info:', {
+                name: file.name,
+                size: file.size,
+                lastModified: new Date(file.lastModified).toISOString(),
+                sha256: fileHash
+            });
+        } catch (e) {
+            console.warn('[HeroSection] Could not calculate file hash:', e);
+        }
 
         try {
             // REAL API CALL - no more mock data
             const result = await analyzeSaveFile(file);
+            
+            // Debug: Log response to verify file was processed
+            console.log('[HeroSection] API Response:', {
+                ok: result.ok,
+                source: result.source,
+                backendHash: result.metadata?.fileHash,
+                frontendHash: fileHash?.substring(0, 8),
+                hashMatch: fileHash?.substring(0, 8) === result.metadata?.fileHash,
+                deadGodPercentage: result.metrics?.deadGodPercentage,
+                secretsCount: result.secrets?.count,
+                itemsCount: result.items?.count,
+                parseTimeMs: result.metadata?.parseTimeMs
+            });
             
             // Validate source is real data
             if (result.source !== 'real') {
@@ -62,62 +102,75 @@ export function HeroSection({ onUploadSuccess }) {
                 return;
             }
 
-            // Transform API response to UI format
+            // Transform V2 API response to UI format
+            // V2 parser returns data at root level, not inside 'parsed'
+            const characters = result.characters || {};
+            const charArray = Object.values(characters);
+            const completedCharCount = charArray.filter(c => c.percentage === 100).length;
+            const vanillaChars = charArray.filter(c => !c.isTainted);
+            const taintedChars = charArray.filter(c => c.isTainted);
+            
             const uiResult = {
                 // Source tracking - CRITICAL
                 source: result.source,
                 isDemo: false,
                 
                 // Main percentage (Dead God progress)
-                percentage: result.metrics.deadGodPercentage,
-                topPercentile: result.metrics.topPercentile,
+                percentage: result.metrics?.deadGodPercentage || 0,
+                topPercentile: result.metrics?.topPercentile || null,
                 
                 // Characters
-                charactersUnlocked: result.parsed.completedCharacters,
-                totalCharacters: result.parsed.totalCharacters,
+                charactersUnlocked: charArray.length,
+                totalCharacters: charArray.length || 34,
+                completedCharacters: completedCharCount,
                 
                 // Items
-                itemsFound: result.parsed.itemsCollected,
-                totalItems: result.parsed.totalItems,
+                itemsFound: result.items?.count || 0,
+                totalItems: result.items?.total || 637,
                 
                 // Completion marks
-                completionMarks: result.parsed.completionMarks,
-                totalMarks: result.parsed.totalMarks,
-                marksPercentage: result.metrics.marksPercentage,
+                completionMarks: result.totalMarks || 0,
+                totalMarks: result.totalMarksExpected || 816,
+                marksPercentage: result.metrics?.marksPercentage || 0,
                 
-                // Achievements
-                achievementsUnlocked: result.parsed.achievementsUnlocked,
-                totalAchievements: result.parsed.totalAchievements,
+                // Achievements (secrets in V2)
+                achievementsUnlocked: result.secrets?.count || 0,
+                totalAchievements: result.secrets?.total || 637,
                 
-                // Endings (proxy: use characters with all marks as "endings seen")
-                endingsSeen: result.parsed.completedCharacters,
-                totalEndings: 17, // Approximate ending count
+                // Endings (derived from character marks in V2)
+                endingsSeen: result.endings?.count || 0,
+                totalEndings: result.endings?.total || 17,
                 
-                // Blocker info
-                blockerCharacter: result.parsed.blockerCharacter,
-                blockerMarks: result.parsed.blockerMarks,
+                // Blocker info (from nextSteps in V2)
+                blockerCharacter: result.nextSteps?.[0]?.characterName || null,
+                blockerMarks: result.nextSteps?.[0]?.missingMarks || [],
                 
                 // Time estimate
-                hoursRemaining: result.metrics.estimatedHoursRemaining,
+                hoursRemaining: result.metrics?.estimatedHoursRemaining || null,
                 
-                // Next objective
-                nextObjective: result.parsed.nextObjective,
+                // Next objective (first nextStep in V2)
+                nextObjective: result.nextSteps?.[0]?.description || t('home.heroKeepPlaying'),
                 
                 // Most deaths (placeholder - not tracked in save file)
                 mostDeaths: { count: '?', boss: t('home.heroNotAvailable') },
                 
                 // Tainted progress
-                taintedCompletion: result.metrics.taintedCompletion,
-                vanillaCompleted: result.parsed.vanillaCompleted,
-                taintedCompleted: result.parsed.taintedCompleted,
+                taintedCompletion: result.metrics?.taintedCompletion || 0,
+                vanillaCompleted: vanillaChars.filter(c => c.percentage === 100).length,
+                taintedCompleted: taintedChars.filter(c => c.percentage === 100).length,
                 
-                // File metadata
-                slot: result.parsed.slot,
-                fileHash: result.parsed.fileHash,
-                uploadedAt: result.parsed.uploadedAt,
+                // File metadata (in metadata object in V2)
+                slot: result.metadata?.slot || 1,
+                fileHash: result.metadata?.fileHash || null,
+                uploadedAt: result.metadata?.parsedAt || new Date().toISOString(),
                 
                 // Full character data for detailed view
-                characters: result.parsed.characters
+                characters: characters,
+                
+                // Additional V2 data
+                sanityChecks: result.sanityChecks,
+                missing: result.missing,
+                nextSteps: result.nextSteps
             };
             
             setUploadState('success');

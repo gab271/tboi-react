@@ -1,7 +1,7 @@
 // HybridHome.jsx - Home híbrida: landing + hub + portal
 // Combina conversión, contenido vivo y ecosistema de herramientas
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { HeroSection } from './HeroSection';
@@ -17,10 +17,17 @@ export function HybridHome() {
     const navigate = useNavigate();
     const [uploadResult, setUploadResult] = useState(null);
     const [showResultModal, setShowResultModal] = useState(false);
+    const heroResetRef = useRef(null);
 
     const handleUploadSuccess = (result) => {
         setUploadResult(result);
         setShowResultModal(true);
+    };
+    
+    const handleCloseModal = () => {
+        setShowResultModal(false);
+        // Reset HeroSection state so upload box reappears
+        heroResetRef.current?.();
     };
 
     const handlePreviewCTA = () => {
@@ -38,7 +45,10 @@ export function HybridHome() {
             {/* 1. HERO + UPLOAD (85vh)
                 Objetivo: Valor personal inmediato
                 Usuario siente: "Esto es para MÍ" */}
-            <HeroSection onUploadSuccess={handleUploadSuccess} />
+            <HeroSection 
+                onUploadSuccess={handleUploadSuccess}
+                resetRef={heroResetRef}
+            />
 
             {/* 2. PREVIEW RESULT (60vh)
                 Objetivo: Anticipación de recompensa
@@ -76,7 +86,7 @@ export function HybridHome() {
                 {showResultModal && uploadResult && (
                     <ResultModal 
                         result={uploadResult}
-                        onClose={() => setShowResultModal(false)}
+                        onClose={handleCloseModal}
                         onRegister={handleRegister}
                     />
                 )}
