@@ -1,5 +1,6 @@
 // PreviewSection.jsx - Muestra resultado ficticio para generar deseo
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import { FaTrophy, FaSkull, FaClock, FaChevronRight } from 'react-icons/fa';
 
@@ -56,6 +57,7 @@ const PREVIEW_DATA = {
 };
 
 export function PreviewSection({ onCTAClick }) {
+    const { t } = useTranslation();
     const { count: animatedPercentage, ref: percentRef } = useCountUp(PREVIEW_DATA.percentage, 2000, 300);
     
     return (
@@ -69,10 +71,10 @@ export function PreviewSection({ onCTAClick }) {
                     className="text-center mb-10"
                 >
                     <h2 className="font-heading text-2xl md:text-3xl text-text-heading uppercase tracking-wider mb-2">
-                        Así se ve tu progreso
+                        {t('home.previewTitle')}
                     </h2>
                     <p className="font-handwriting text-lg text-text-dim">
-                        Ejemplo con datos reales de un jugador
+                        {t('home.previewSubtitle')}
                     </p>
                 </motion.div>
 
@@ -103,7 +105,7 @@ export function PreviewSection({ onCTAClick }) {
                             </span>
                         </motion.div>
                         <p className="font-handwriting text-xl text-white/80">
-                            camino a Dead God
+                            {t('home.pathToDeadGod')}
                         </p>
                         
                         {/* Progress bar */}
@@ -124,25 +126,25 @@ export function PreviewSection({ onCTAClick }) {
                     <div className="p-6 md:p-8">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                             <StatBox 
-                                label="Personajes" 
+                                label={t('home.charactersLabel')} 
                                 current={PREVIEW_DATA.characters.current} 
                                 total={PREVIEW_DATA.characters.total}
                                 delay={0.1}
                             />
                             <StatBox 
-                                label="Ítems" 
+                                label={t('home.previewItems')} 
                                 current={PREVIEW_DATA.items.current} 
                                 total={PREVIEW_DATA.items.total}
                                 delay={0.2}
                             />
                             <StatBox 
-                                label="Completion Marks" 
+                                label={t('characters.completionMarks')} 
                                 current={PREVIEW_DATA.marks.current} 
                                 total={PREVIEW_DATA.marks.total}
                                 delay={0.3}
                             />
                             <StatBox 
-                                label="Endings" 
+                                label={t('home.endingsLabel')} 
                                 current={PREVIEW_DATA.endings.current} 
                                 total={PREVIEW_DATA.endings.total}
                                 delay={0.4}
@@ -162,7 +164,7 @@ export function PreviewSection({ onCTAClick }) {
                                 <FaTrophy className="w-6 h-6 text-accent-gold flex-shrink-0" />
                                 <div>
                                     <p className="font-heading text-lg text-text-heading">Top {PREVIEW_DATA.topPercentile}%</p>
-                                    <p className="text-xs text-text-dim font-handwriting">de todos los jugadores</p>
+                                    <p className="text-xs text-text-dim font-handwriting">{t('home.ofAllPlayers')}</p>
                                 </div>
                             </motion.div>
 
@@ -177,7 +179,7 @@ export function PreviewSection({ onCTAClick }) {
                                 <FaSkull className="w-6 h-6 text-accent-blood flex-shrink-0" />
                                 <div>
                                     <p className="font-heading text-sm text-text-heading">{PREVIEW_DATA.blocker.character}</p>
-                                    <p className="text-xs text-text-dim font-handwriting">te cuesta {PREVIEW_DATA.blocker.marks} marks</p>
+                                    <p className="text-xs text-text-dim font-handwriting">{t('home.previewBlockerCosts', { count: PREVIEW_DATA.blocker.marks })}</p>
                                 </div>
                             </motion.div>
 
@@ -192,7 +194,7 @@ export function PreviewSection({ onCTAClick }) {
                                 <FaClock className="w-6 h-6 text-green-500 flex-shrink-0" />
                                 <div>
                                     <p className="font-heading text-lg text-text-heading">~{PREVIEW_DATA.hoursRemaining}h</p>
-                                    <p className="text-xs text-text-dim font-handwriting">para Dead God</p>
+                                    <p className="text-xs text-text-dim font-handwriting">{t('home.previewForDeadGod')}</p>
                                 </div>
                             </motion.div>
                         </div>
@@ -209,11 +211,11 @@ export function PreviewSection({ onCTAClick }) {
                                 onClick={onCTAClick}
                                 className="inline-flex items-center gap-2 px-8 py-4 bg-accent-blood text-white font-heading text-lg border-[3px] border-black shadow-[4px_4px_0px_#000] hover:shadow-[6px_6px_0px_#000] hover:-translate-y-1 transition-all"
                             >
-                                Ver MI progreso real
+                                {t('home.previewViewMyProgress')}
                                 <FaChevronRight className="w-4 h-4" />
                             </button>
                             <p className="mt-3 text-sm text-text-dim font-handwriting">
-                                Sube tu save file y descubre tus estadísticas
+                                {t('home.previewUploadToDiscover')}
                             </p>
                         </motion.div>
                     </div>

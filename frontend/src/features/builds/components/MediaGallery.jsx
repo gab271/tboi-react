@@ -3,11 +3,13 @@
  * Display and preview media attachments for builds
  */
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaChevronLeft, FaChevronRight, FaExternalLinkAlt, FaExpand } from 'react-icons/fa';
 import { cn } from '../../../lib/utils';
 
 export function MediaGallery({ media = [] }) {
+  const { t } = useTranslation();
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [imageErrors, setImageErrors] = useState({});
 
@@ -62,7 +64,7 @@ export function MediaGallery({ media = [] }) {
               // External link (YouTube thumbnail, etc.)
               <div className="w-full h-full flex flex-col items-center justify-center bg-bg-paper-dark">
                 <FaExternalLinkAlt className="w-8 h-8 text-text-dim mb-2" />
-                <span className="text-xs font-pixel text-text-dim">External Link</span>
+                <span className="text-xs font-pixel text-text-dim">{t('builds.externalLink')}</span>
                 <a
                   href={item.external_url}
                   target="_blank"
@@ -76,7 +78,7 @@ export function MediaGallery({ media = [] }) {
             ) : imageErrors[item.id] ? (
               // Error state
               <div className="w-full h-full flex items-center justify-center bg-bg-paper-dark">
-                <span className="text-text-dim font-handwriting">Failed to load</span>
+                <span className="text-text-dim font-handwriting">{t('builds.failedToLoad')}</span>
               </div>
             ) : (
               // Image/GIF
@@ -162,7 +164,7 @@ export function MediaGallery({ media = [] }) {
               {media[selectedIndex].type === 'external' ? (
                 <div className="bg-bg-paper p-8 text-center">
                   <FaExternalLinkAlt className="w-12 h-12 text-text-dim mx-auto mb-4" />
-                  <p className="font-handwriting text-xl mb-4">External Content</p>
+                  <p className="font-handwriting text-xl mb-4">{t('builds.externalContent')}</p>
                   <a
                     href={media[selectedIndex].external_url}
                     target="_blank"

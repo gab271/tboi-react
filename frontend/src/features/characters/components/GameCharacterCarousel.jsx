@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { FaChevronLeft, FaChevronRight, FaHeart, FaBomb, FaKey } from 'react-icons/fa';
 import { cn } from '../../../lib/utils';
 
 export const GameCharacterCarousel = ({ characters, onSelect }) => {
+    const { t } = useTranslation();
     const [activeIndex, setActiveIndex] = useState(0);
     const [direction, setDirection] = useState(0);
 
@@ -72,7 +74,7 @@ export const GameCharacterCarousel = ({ characters, onSelect }) => {
                 <button 
                     onClick={handlePrev}
                     className="absolute left-0 sm:left-2 md:left-4 z-30 p-2 sm:p-3 text-black/50 hover:text-black hover:scale-125 transition-all"
-                    aria-label="Previous character"
+                    aria-label={t('characters.previousCharacter')}
                 >
                     <FaChevronLeft className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
                 </button>
@@ -206,7 +208,7 @@ export const GameCharacterCarousel = ({ characters, onSelect }) => {
                 <button 
                     onClick={handleNext}
                     className="absolute right-0 sm:right-2 md:right-4 z-30 p-2 sm:p-3 text-black/50 hover:text-black hover:scale-125 transition-all"
-                    aria-label="Next character"
+                    aria-label={t('characters.nextCharacter')}
                 >
                     <FaChevronRight className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
                 </button>
@@ -293,10 +295,10 @@ export const GameCharacterCarousel = ({ characters, onSelect }) => {
             {/* Keyboard Hint - Desktop only */}
             <div className="hidden md:flex items-center justify-center gap-4 mt-6 sm:mt-8 text-black/40 text-xs sm:text-sm font-pixel">
                 <span>← →</span>
-                <span>Navigate</span>
+                <span>{t('characters.navigate')}</span>
                 <span className="mx-2">|</span>
-                <span>ENTER</span>
-                <span>Select</span>
+                <span>{t('characters.selectKey')}</span>
+                <span>{t('characters.selectAction')}</span>
             </div>
 
             {/* Difficulty Indicator */}
@@ -313,7 +315,7 @@ export const GameCharacterCarousel = ({ characters, onSelect }) => {
                             />
                         ))}
                     </div>
-                    <span className="text-[10px] font-pixel text-black/50 mt-1 block text-right">Difficulty</span>
+                    <span className="text-[10px] font-pixel text-black/50 mt-1 block text-right">{t('characters.difficulty')}</span>
                 </div>
             )}
         </div>

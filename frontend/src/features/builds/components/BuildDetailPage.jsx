@@ -3,6 +3,7 @@
  * Full view of a single build
  */
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -55,6 +56,7 @@ const formatDate = (dateString) => {
 };
 
 export function BuildDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -147,9 +149,9 @@ export function BuildDetailPage() {
         
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-3 text-sm font-handwriting text-text-dim mb-8 text-lg">
-          <Link to="/" className="hover:text-accent-blood transition-colors">Home</Link>
+          <Link to="/" className="hover:text-accent-blood transition-colors">{t('nav.home')}</Link>
           <span>/</span>
-          <Link to="/builds" className="hover:text-accent-blood transition-colors">Builds</Link>
+          <Link to="/builds" className="hover:text-accent-blood transition-colors">{t('nav.builds')}</Link>
           <span>/</span>
           <span className="text-text-heading font-bold truncate max-w-[200px]">{build.title}</span>
         </nav>
@@ -294,7 +296,7 @@ export function BuildDetailPage() {
                       
                       {/* Essential indicator */}
                       {buildItem.is_essential && (
-                        <div className="absolute top-0 right-0 w-3 h-3 bg-accent-gold" title="Essential" />
+                        <div className="absolute top-0 right-0 w-3 h-3 bg-accent-gold" title={t('builds.essential')} />
                       )}
                       
                       {/* Tooltip */}
@@ -400,7 +402,7 @@ export function BuildDetailPage() {
 
               {/* Author Info */}
               <div className="bg-bg-paper border-2 border-text-ink/40 p-4">
-                <h3 className="font-heading text-sm text-text-dim mb-3">POSTED BY</h3>
+                <h3 className="font-heading text-sm text-text-dim mb-3">{t('builds.postedBy')}</h3>
                 <Link 
                   to={`/profile/${build.author_id}`}
                   className="flex items-center gap-3 group hover:opacity-80 transition-opacity"

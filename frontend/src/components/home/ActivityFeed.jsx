@@ -1,5 +1,6 @@
 // ActivityFeed.jsx - Live community activity section
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaFire, FaBolt, FaTrophy, FaStar, FaComment, FaChevronRight } from 'react-icons/fa';
@@ -94,7 +95,7 @@ const RECENT_ACHIEVEMENTS = [
     { id: 5, username: 'Cobaltstreak', achievement: '500 wins', time: '2h ago', icon: '🎯' },
 ];
 
-function BuildCard({ build, variant = 'full' }) {
+function BuildCard({ build, variant = 'full', t }) {
     const navigate = useNavigate();
     const isCompact = variant === 'compact';
 
@@ -123,7 +124,7 @@ function BuildCard({ build, variant = 'full' }) {
                         {build.title}
                     </h4>
                     <p className="text-xs text-text-dim font-handwriting">
-                        por @{build.author.username}
+                        {t('home.byAuthor')} @{build.author.username}
                     </p>
                 </div>
             </div>
@@ -193,13 +194,14 @@ function AchievementItem({ item }) {
 }
 
 export function ActivityFeed() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('top'); // For mobile
 
     const tabs = [
-        { id: 'top', label: 'Top Semana', icon: FaFire },
-        { id: 'recent', label: 'Recientes', icon: FaBolt },
-        { id: 'achievements', label: 'Logros', icon: FaTrophy },
+        { id: 'top', label: t('home.tabTopWeek'), icon: FaFire },
+        { id: 'recent', label: t('home.tabRecent'), icon: FaBolt },
+        { id: 'achievements', label: t('home.tabAchievements'), icon: FaTrophy },
     ];
 
     return (
@@ -209,7 +211,7 @@ export function ActivityFeed() {
                 <div className="flex items-center gap-4 mb-8">
                     <div className="h-px flex-1 bg-black/20" />
                     <h2 className="font-heading text-2xl md:text-3xl text-text-heading uppercase tracking-wider">
-                        Comunidad en Acción
+                        {t('home.communityInAction')}
                     </h2>
                     <div className="h-px flex-1 bg-black/20" />
                 </div>
@@ -242,18 +244,18 @@ export function ActivityFeed() {
                     )}>
                         <div className="flex items-center gap-2 text-accent-blood">
                             <FaFire className="w-5 h-5" />
-                            <h3 className="font-heading text-lg uppercase">Top Esta Semana</h3>
+                            <h3 className="font-heading text-lg uppercase">{t('home.topThisWeek')}</h3>
                         </div>
                         <div className="space-y-4">
                             {TOP_BUILDS.map((build) => (
-                                <BuildCard key={build.id} build={build} />
+                                <BuildCard key={build.id} build={build} t={t} />
                             ))}
                         </div>
                         <button 
                             onClick={() => navigate('/builds?sort=top')}
                             className="w-full py-3 text-center font-heading text-sm text-text-dim hover:text-accent-blood border-2 border-dashed border-black/20 hover:border-accent-blood transition-colors flex items-center justify-center gap-2"
                         >
-                            Ver ranking completo
+                            {t('home.viewFullRanking')}
                             <FaChevronRight className="w-3 h-3" />
                         </button>
                     </div>
@@ -265,18 +267,18 @@ export function ActivityFeed() {
                     )}>
                         <div className="flex items-center gap-2 text-blue-500">
                             <FaBolt className="w-5 h-5" />
-                            <h3 className="font-heading text-lg uppercase">Builds Recientes</h3>
+                            <h3 className="font-heading text-lg uppercase">{t('home.recentBuilds')}</h3>
                         </div>
                         <div className="space-y-4">
                             {RECENT_BUILDS.map((build) => (
-                                <BuildCard key={build.id} build={build} variant="compact" />
+                                <BuildCard key={build.id} build={build} variant="compact" t={t} />
                             ))}
                         </div>
                         <button 
                             onClick={() => navigate('/builds?sort=new')}
                             className="w-full py-3 text-center font-heading text-sm text-text-dim hover:text-blue-500 border-2 border-dashed border-black/20 hover:border-blue-500 transition-colors flex items-center justify-center gap-2"
                         >
-                            Ver todas las builds
+                            {t('home.viewAllBuilds')}
                             <FaChevronRight className="w-3 h-3" />
                         </button>
                     </div>
@@ -288,7 +290,7 @@ export function ActivityFeed() {
                     )}>
                         <div className="flex items-center gap-2 text-accent-gold">
                             <FaTrophy className="w-5 h-5" />
-                            <h3 className="font-heading text-lg uppercase">Logros Recientes</h3>
+                            <h3 className="font-heading text-lg uppercase">{t('home.recentAchievements')}</h3>
                         </div>
                         <div className="bg-bg-paper border-2 border-black shadow-[4px_4px_0px_#000] p-4">
                             {RECENT_ACHIEVEMENTS.map((item) => (
@@ -299,7 +301,7 @@ export function ActivityFeed() {
                             onClick={() => navigate('/achievements')}
                             className="w-full py-3 text-center font-heading text-sm text-text-dim hover:text-accent-gold border-2 border-dashed border-black/20 hover:border-accent-gold transition-colors flex items-center justify-center gap-2"
                         >
-                            Ver todos los logros
+                            {t('home.viewAllAchievements')}
                             <FaChevronRight className="w-3 h-3" />
                         </button>
                     </div>

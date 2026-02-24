@@ -119,10 +119,10 @@ function Header() {
             <button 
               onClick={() => setShowCmd(true)}
               className="search-trigger group"
-              aria-label="Buscar"
+              aria-label={t('accessibility.search')}
             >
               <FaSearch className="w-3.5 h-3.5 text-text-dim group-hover:text-text-secondary transition-colors" />
-              <span className="hidden md:inline text-[13px] text-text-dim">{t('search.placeholder', 'Buscar...')}</span>
+              <span className="hidden md:inline text-[13px] text-text-dim">{t('search.placeholder')}</span>
               <kbd className="hidden xl:inline-flex px-1.5 py-0.5 text-[10px] text-text-disabled bg-bg-paper rounded border border-border-light ml-auto">
                 ⌘K
               </kbd>
@@ -168,13 +168,13 @@ function Header() {
                   onClick={() => navigate('/login')}
                   className="btn-login hidden sm:block font-heading"
                 >
-                  {t('nav.login', 'Iniciar sesión')}
+                  {t('nav.login')}
                 </button>
                 <button 
                   onClick={() => navigate('/register')}
                   className="btn-register font-heading"
                 >
-                  {t('nav.register', 'Registro')}
+                  {t('nav.register')}
                 </button>
               </div>
             )}
@@ -183,7 +183,7 @@ function Header() {
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="mobile-toggle lg:hidden"
-              aria-label="Toggle menu"
+              aria-label={t('accessibility.toggleMenu')}
             >
               {mobileMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
             </button>
@@ -273,7 +273,7 @@ function ExploreDropdown({ t }) {
         </div>
         <DropdownMenuItem asChild>
           <NavLink to="/builds" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-bg-paper-dark cursor-pointer text-[13px]">
-            <span className="font-heading text-text-ink">Builds</span>
+            <span className="font-heading text-text-ink">{t('nav.builds')}</span>
           </NavLink>
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -304,11 +304,11 @@ function UserMenu({ user, profile, isPro, isSupporter, isAdmin, navigate, handle
         {/* User info */}
         <div className="px-3 py-2 border-b border-border-light mb-1">
           <p className="font-heading text-[13px] text-text-ink truncate max-w-[150px]">
-            {profile?.username || 'Usuario'}
+            {profile?.username || t('profile.user')}
           </p>
           {isPro && (
             <span className="text-[11px] text-accent-gold font-bold">
-              {isSupporter ? '❤️ Supporter' : '⚡ PRO'}
+              {isSupporter ? `❤️ ${t('common.supporter')}` : `⚡ ${t('common.pro')}`}
             </span>
           )}
         </div>
@@ -331,7 +331,7 @@ function UserMenu({ user, profile, isPro, isSupporter, isAdmin, navigate, handle
             onClick={() => navigate('/pricing')} 
             className="flex items-center gap-2 px-3 py-2 rounded text-[13px] text-accent-gold hover:bg-accent-gold/10 cursor-pointer font-bold"
           >
-            <FaCrown className="w-3.5 h-3.5" /> Actualizar a PRO
+            <FaCrown className="w-3.5 h-3.5" /> {t('nav.upgradeToPro')}
           </DropdownMenuItem>
         )}
         
@@ -403,7 +403,7 @@ function MobileMenu({ isOpen, onClose, user, profile, isPro, isSupporter, isAdmi
                     <p className="font-heading text-[13px] text-text-ink truncate">{profile?.username}</p>
                     {isPro && (
                       <span className="text-[11px] text-accent-gold font-bold">
-                        {isSupporter ? '❤️ Supporter' : '⚡ PRO'}
+                        {isSupporter ? `❤️ ${t('common.supporter')}` : `⚡ ${t('common.pro')}`}
                       </span>
                     )}
                   </div>
@@ -436,7 +436,7 @@ function MobileMenu({ isOpen, onClose, user, profile, isPro, isSupporter, isAdmi
                     {t('nav.community')}
                   </span>
                 </div>
-                <MobileNavItem to="/builds" label="Builds" onClick={onClose} />
+                <MobileNavItem to="/builds" label={t('nav.builds')} onClick={onClose} />
                 
                 {/* User Section */}
                 {user && (
@@ -462,7 +462,7 @@ function MobileMenu({ isOpen, onClose, user, profile, isPro, isSupporter, isAdmi
                     onClick={() => { navigate('/pricing'); onClose(); }}
                     className="w-full mb-2.5 bg-accent-gold hover:bg-accent-gold/80 text-text-ink font-heading font-bold text-[13px] h-10"
                   >
-                    <FaCrown className="mr-2 w-4 h-4" /> Actualizar a PRO
+                    <FaCrown className="mr-2 w-4 h-4" /> {t('nav.upgradeToPro')}
                   </Button>
                 )}
                 
@@ -481,13 +481,13 @@ function MobileMenu({ isOpen, onClose, user, profile, isPro, isSupporter, isAdmi
                       variant="ghost"
                       className="w-full text-text-secondary font-heading text-[13px] h-10"
                     >
-                      {t('nav.login', 'Iniciar sesión')}
+                      {t('nav.login')}
                     </Button>
                     <Button
                       onClick={() => { navigate('/register'); onClose(); }}
                       className="w-full bg-accent-blood hover:bg-accent-blood-dark text-white font-heading font-bold text-[13px] h-10"
                     >
-                      {t('nav.register', 'Crear cuenta')}
+                      {t('nav.register')}
                     </Button>
                   </div>
                 )}

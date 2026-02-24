@@ -18,7 +18,8 @@ i18n
       },
     },
     fallbackLng: 'en',
-    debug: true, // Set to false in production
+    lng: 'en', // Default language
+    debug: false,
     interpolation: {
       escapeValue: false, // React already safe from XSS
     },

@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../../lib/utils';
 import FavoriteButton from '../../../components/ui/FavoriteButton';
 import { useNavigate } from 'react-router-dom';
 
 export function ItemGridCard({ item, index, onClick }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -72,7 +74,7 @@ export function ItemGridCard({ item, index, onClick }) {
             /* Mystery Item Silhouette */
             <div className="text-white/20 flex flex-col items-center gap-1 opacity-50">
                 <span className="text-6xl font-heading scale-y-125">?</span>
-                <span className="text-[10px] font-pixel tracking-widest uppercase">Undiscovered</span>
+                <span className="text-[10px] font-pixel tracking-widest uppercase">{t('characters.undiscovered')}</span>
             </div>
          )}
       </div>

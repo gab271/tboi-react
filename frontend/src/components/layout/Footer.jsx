@@ -2,8 +2,11 @@ import { FaGithub, FaDiscord, FaTwitter, FaArrowUp, FaEnvelope, FaHeart } from '
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export function Footer() {
+  const { t } = useTranslation();
+  
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -40,7 +43,7 @@ export function Footer() {
                         </div>
                         <div className="flex flex-col">
                             <span className="font-pixel text-xl sm:text-2xl md:text-3xl text-stone-100 tracking-wider drop-shadow-sm">TBOI: Codex</span>
-                            <span className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] text-gold/90 font-medium">Ultimate Wiki</span>
+                            <span className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] text-gold/90 font-medium">{t('footer.ultimateWiki')}</span>
                         </div>
                     </div>
                     <p className="text-stone-300 font-medium text-xs sm:text-sm leading-relaxed max-w-xs text-shadow-sm hidden sm:block">
@@ -56,34 +59,34 @@ export function Footer() {
 
                 {/* Database Links */}
                 <div className="col-span-1 md:col-span-2 md:col-start-6 space-y-3 sm:space-y-6">
-                    <h4 className="text-gold font-pixel text-lg sm:text-xl md:text-2xl tracking-widest uppercase mb-2 sm:mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)]">Database</h4>
-                    <FooterLink to="/items">Items</FooterLink>
-                    <FooterLink to="/bosses">Bosses</FooterLink>
-                    <FooterLink to="/characters">Characters</FooterLink>
-                    <FooterLink to="/builds">Builds</FooterLink>
+                    <h4 className="text-gold font-pixel text-lg sm:text-xl md:text-2xl tracking-widest uppercase mb-2 sm:mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)]">{t('footer.database')}</h4>
+                    <FooterLink to="/items">{t('nav.items')}</FooterLink>
+                    <FooterLink to="/bosses">{t('nav.bosses')}</FooterLink>
+                    <FooterLink to="/characters">{t('nav.characters')}</FooterLink>
+                    <FooterLink to="/builds">{t('nav.builds')}</FooterLink>
                 </div>
 
                 {/* Community/Legal Links */}
                  <div className="col-span-1 md:col-span-2 space-y-3 sm:space-y-6">
-                    <h4 className="text-gold font-pixel text-lg sm:text-xl md:text-2xl tracking-widest uppercase mb-2 sm:mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)]">Community</h4>
-                    <FooterLink to="/about">About Us</FooterLink>
-                    <FooterLink to="/contribute">Contribute</FooterLink>
-                    <FooterLink to="/api-docs">API Docs</FooterLink>
-                    <FooterLink to="/privacy">Privacy</FooterLink>
+                    <h4 className="text-gold font-pixel text-lg sm:text-xl md:text-2xl tracking-widest uppercase mb-2 sm:mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)]">{t('footer.community')}</h4>
+                    <FooterLink to="/about">{t('footer.aboutUs')}</FooterLink>
+                    <FooterLink to="/contribute">{t('footer.contribute')}</FooterLink>
+                    <FooterLink to="/api-docs">{t('footer.apiDocs')}</FooterLink>
+                    <FooterLink to="/privacy">{t('footer.privacy')}</FooterLink>
                 </div>
 
                 {/* Newsletter */}
                 <div className="col-span-2 sm:col-span-2 md:col-span-3 space-y-3 sm:space-y-4">
-                    <h4 className="text-gold font-pixel text-lg sm:text-xl md:text-2xl tracking-widest uppercase mb-2 sm:mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)] bg-black/50 w-fit px-2">Stay Updated</h4>
+                    <h4 className="text-gold font-pixel text-lg sm:text-xl md:text-2xl tracking-widest uppercase mb-2 sm:mb-4 drop-shadow-[0_2px_0_rgba(0,0,0,1)] bg-black/50 w-fit px-2">{t('footer.stayUpdated')}</h4>
                     <p className="text-[10px] sm:text-xs text-stone-300 font-medium mb-2 sm:mb-4 hidden sm:block">Join our newsletter for the latest game updates and community highlights.</p>
                     <div className="flex flex-col gap-2">
                          <div className="flex gap-2">
-                            <Input placeholder="Enter your email" className="bg-black/60 border-white/10 h-9 sm:h-10 text-xs sm:text-sm text-stone-200 placeholder:text-stone-500 focus:border-gold/50 flex-1" />
+                            <Input placeholder={t('footer.enterEmail')} className="bg-black/60 border-white/10 h-9 sm:h-10 text-xs sm:text-sm text-stone-200 placeholder:text-stone-500 focus:border-gold/50 flex-1" />
                             <Button size="icon" className="bg-gold hover:bg-gold/80 text-black h-9 w-9 sm:h-10 sm:w-10 shrink-0 shadow-[0_0_10px_rgba(234,179,8,0.3)]">
                                 <FaEnvelope />
                             </Button>
                          </div>
-                         <span className="text-[8px] sm:text-[10px] text-stone-400 font-medium">No spam, just Isaac. Unsubscribe anytime.</span>
+                         <span className="text-[8px] sm:text-[10px] text-stone-400 font-medium">{t('footer.noSpam')}</span>
                     </div>
                 </div>
             </div>

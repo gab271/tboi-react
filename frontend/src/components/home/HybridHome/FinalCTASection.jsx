@@ -1,19 +1,21 @@
 // FinalCTASection.jsx - Cierre de conversión para usuarios que scrollearon
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FaEnvelope, FaDiscord, FaCheck } from 'react-icons/fa';
 import { useAuth } from '../../../hooks/useAuth';
 
-const BENEFITS = [
-    'Trackea tu camino a Dead God',
-    'Comparte tus mejores builds',
-    'Celebra cada logro conseguido',
-    'Únete a 3,247 jugadores activos',
-];
-
 export function FinalCTASection() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { user } = useAuth();
+
+    const BENEFITS = [
+        t('home.ctaBenefit1'),
+        t('home.ctaBenefit2'),
+        t('home.ctaBenefit3'),
+        t('home.ctaBenefit4', { count: '3,247' }),
+    ];
 
     // Don't show if user is already logged in
     if (user) return null;
@@ -52,18 +54,18 @@ export function FinalCTASection() {
                                 className="text-center mb-8"
                             >
                                 <h2 className="font-heading text-3xl md:text-4xl text-white uppercase tracking-tight mb-4">
-                                    Empieza hoy.
+                                    {t('home.ctaStartToday')}
                                     <br />
-                                    <span className="text-accent-gold">Mañana sabrás qué te falta.</span>
+                                    <span className="text-accent-gold">{t('home.ctaTomorrowKnow')}</span>
                                 </h2>
 
                                 <p className="font-handwriting text-lg md:text-xl text-white/70 max-w-lg mx-auto mb-4">
-                                    Tu camino a Dead God comienza con un paso.
+                                    {t('home.ctaPathBegins')}
                                 </p>
 
                                 <p className="font-handwriting text-base text-white/50 max-w-md mx-auto">
-                                    Guarda progreso, builds y logros para siempre.
-                                    <span className="text-accent-gold font-bold"> Es gratis.</span>
+                                    {t('home.ctaSaveProgress')}
+                                    <span className="text-accent-gold font-bold"> {t('home.ctaItsFree')}</span>
                                 </p>
                             </motion.div>
 
@@ -99,29 +101,29 @@ export function FinalCTASection() {
                                     className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-accent-blood text-white font-heading text-lg border-2 border-white/20 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] hover:bg-white hover:text-accent-blood hover:shadow-[6px_6px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all"
                                 >
                                     <FaEnvelope className="w-5 h-5" />
-                                    Crear mi cuenta gratis
+                                    {t('home.ctaCreateAccount')}
                                 </button>
                                 <button
                                     onClick={() => navigate('/auth/discord')}
                                     className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#5865F2] text-white font-heading text-lg border-2 border-white/20 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] hover:bg-white hover:text-[#5865F2] hover:shadow-[6px_6px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all"
                                 >
                                     <FaDiscord className="w-5 h-5" />
-                                    Continuar con Discord
+                                    {t('home.ctaContinueDiscord')}
                                 </button>
                             </motion.div>
 
                             {/* Trust message */}
                             <div className="text-center">
                                 <p className="text-sm text-white/50 mb-2">
-                                    Solo necesitamos tu email. Sin spam, prometido.
+                                    {t('home.ctaEmailOnly')}
                                 </p>
                                 <p className="text-sm text-white/50">
-                                    ¿Ya tienes cuenta?{' '}
+                                    {t('home.ctaAlreadyHaveAccount')}{' '}
                                     <button 
                                         onClick={() => navigate('/login')}
                                         className="text-accent-gold hover:underline"
                                     >
-                                        Inicia sesión
+                                        {t('home.ctaSignIn')}
                                     </button>
                                 </p>
                             </div>

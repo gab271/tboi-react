@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { FaHeart, FaGamepad, FaCoins, FaBomb, FaKey, FaLightbulb, FaStar } from 'react-icons/fa';
 import { CompletionMarksGrid } from './CompletionMarksGrid';
 import { ConflictResolutionModal } from './ConflictResolutionModal';
@@ -12,6 +13,7 @@ import { useCompletionMarks } from '../hooks/useCompletionMarks';
 import { useAuth } from '../../../hooks/useAuth';
 
 export function CharacterModal({ character, onClose, _isTainted }) {
+  const { t } = useTranslation();
   const [showConflictModal, setShowConflictModal] = useState(false);
   const { user } = useAuth();
   
@@ -139,7 +141,7 @@ export function CharacterModal({ character, onClose, _isTainted }) {
 
                     {/* Pickups (coins, bombs, keys) */}
                     <div className="bg-white/40 p-3 rounded-lg border border-text-ink/10">
-                        <h3 className="font-heading text-xs mb-2 text-text-dim">Pickups</h3>
+                        <h3 className="font-heading text-xs mb-2 text-text-dim">{t('characters.pickups')}</h3>
                         <div className="flex justify-around font-mono text-base">
                              <div className="flex flex-col items-center gap-1">
                                 <FaCoins className="text-yellow-600" />

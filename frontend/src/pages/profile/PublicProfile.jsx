@@ -4,6 +4,7 @@
  */
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { 
   FaHeart, 
@@ -83,6 +84,7 @@ function StatCard({ icon: Icon, label, value, color }) {
 export default function PublicProfile() {
   const { userId } = useParams();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [profile, setProfile] = useState(null);
   const [stats, setStats] = useState({
     buildsCount: 0,
@@ -249,15 +251,15 @@ export default function PublicProfile() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg-floor">
         <div className="bg-[#fdfbf7] border-2 border-black p-8 shadow-[6px_6px_0_rgba(0,0,0,0.5)] text-center">
-          <h2 className="font-heading text-2xl text-black mb-4">User Not Found</h2>
+          <h2 className="font-heading text-2xl text-black mb-4">{t('profile.userNotFound')}</h2>
           <p className="font-handwriting text-black/70 mb-6">
-            {error || "This user doesn't exist or has been removed."}
+            {error || t('profile.userNotFound')}
           </p>
           <button
             onClick={() => navigate('/builds')}
             className="flex items-center gap-2 mx-auto px-4 py-2 bg-[#1a1a1a] text-white font-pixel text-sm border-2 border-black hover:bg-accent-blood transition-colors shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
           >
-            <FaArrowLeft /> Back to Builds
+            <FaArrowLeft /> {t('common.back')}
           </button>
         </div>
       </div>
@@ -265,7 +267,7 @@ export default function PublicProfile() {
   }
 
   const memberSince = profile.created_at 
-    ? new Date(profile.created_at).toLocaleDateString('es-ES', {
+    ? new Date(profile.created_at).toLocaleDateString(i18n.language === 'es' ? 'es-ES' : 'en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -286,7 +288,7 @@ export default function PublicProfile() {
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 mb-6 text-stone-400 hover:text-white font-handwriting text-lg transition-colors"
         >
-          <FaArrowLeft /> Volver
+          <FaArrowLeft /> {t('common.back')}
         </button>
 
         {/* Profile Header Card */}
@@ -311,14 +313,14 @@ export default function PublicProfile() {
               
               <div className="flex items-center justify-center md:justify-start gap-2 mt-2 text-black/60">
                 <FaCalendarAlt className="w-4 h-4" />
-                <span className="font-handwriting">Miembro desde {memberSince}</span>
+                <span className="font-handwriting">{t('profile.memberSince', { date: memberSince })}</span>
               </div>
 
               {/* Reputation Badge */}
               {stats.totalScore > 0 && (
                 <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-yellow-100 border-2 border-yellow-600 text-yellow-800">
                   <FaStar className="w-4 h-4" />
-                  <span className="font-pixel text-sm">{stats.totalScore} puntos totales</span>
+                  <span className="font-pixel text-sm">{stats.totalScore} {t('profile.totalPoints')}</span>
                 </div>
               )}
             </div>
@@ -328,25 +330,25 @@ export default function PublicProfile() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
             <StatCard 
               icon={FaTrophy} 
-              label="Builds creadas" 
+              label={t('profile.buildsCreated')} 
               value={stats.buildsCount} 
               color="text-yellow-500"
             />
             <StatCard 
               icon={FaUsers} 
-              label="Guardados por otros" 
+              label={t('profile.savedByOthers')} 
               value={stats.savesReceived} 
               color="text-green-500"
             />
             <StatCard 
               icon={FaHeart} 
-              label="Votos dados" 
+              label={t('profile.votesGiven')} 
               value={stats.votesGiven} 
               color="text-red-500"
             />
             <StatCard 
               icon={FaStar} 
-              label="Puntuación total" 
+              label={t('profile.totalScore')} 
               value={stats.totalScore} 
               color="text-yellow-400"
             />
@@ -365,7 +367,7 @@ export default function PublicProfile() {
             )}
           >
             <FaTrophy className="inline mr-2" />
-            Builds creadas ({stats.buildsCount})
+            {t('profile.createdBuildsTab', { count: stats.buildsCount })}
           </button>
           <button
             onClick={() => setActiveTab('saved')}
@@ -377,7 +379,7 @@ export default function PublicProfile() {
             )}
           >
             <FaBookmark className="inline mr-2" />
-            Builds guardadas ({stats.savedBuilds})
+            {t('profile.savedBuildsTab', { count: stats.savedBuilds })}
           </button>
         </div>
 
@@ -394,7 +396,7 @@ export default function PublicProfile() {
               {builds.length === 0 ? (
                 <div className="bg-[#fdfbf7] border-2 border-black p-8 text-center shadow-[4px_4px_0_rgba(0,0,0,0.3)]">
                   <p className="font-handwriting text-xl text-black/60">
-                    Este usuario aún no ha compartido ninguna build.
+                    {t('profile.noBuildsShared')}
                   </p>
                 </div>
               ) : (
@@ -440,7 +442,7 @@ export default function PublicProfile() {
               {savedBuilds.length === 0 ? (
                 <div className="bg-[#fdfbf7] border-2 border-black p-8 text-center shadow-[4px_4px_0_rgba(0,0,0,0.3)]">
                   <p className="font-handwriting text-xl text-black/60">
-                    Este usuario aún no ha guardado ninguna build.
+                    {t('profile.noSavedBuilds')}
                   </p>
                 </div>
               ) : (
@@ -452,7 +454,7 @@ export default function PublicProfile() {
                           <div className="flex-1">
                             <h3 className="font-heading text-lg text-black uppercase">{build.title}</h3>
                             <p className="font-handwriting text-sm text-black/50 mt-1">
-                              por {build.author?.username || 'Anonymous'}
+                              {t('profile.by')} {build.author?.username || 'Anonymous'}
                             </p>
                             <div className="flex flex-wrap gap-2 mt-2">
                               <span className="px-2 py-0.5 bg-accent-blood text-white text-xs font-pixel">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { fetchItems } from '../../lib/api';
 import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
@@ -23,6 +24,7 @@ function useDebouncedValue(value, delay) {
 }
 
 export function ItemsList() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState({ type: 'all', quality: [] });
@@ -133,7 +135,7 @@ export function ItemsList() {
                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
                    <input
                       type="text"
-                      placeholder="Search artifacts..." 
+                      placeholder={t('search.searchArtifacts')} 
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       className="w-full bg-[#111] text-white font-pixel text-xl pl-12 pr-4 py-4 border-2 border-[#444] shadow-[4px_4px_0_rgba(0,0,0,0.5)] focus:outline-none focus:border-white focus:shadow-[2px_2px_0_rgba(0,0,0,1)] transition-all placeholder:text-gray-600"

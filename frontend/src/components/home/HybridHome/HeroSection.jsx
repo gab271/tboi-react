@@ -4,11 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaUpload, FaQuestionCircle, FaChevronDown, FaExclamationTriangle, FaBolt } from 'react-icons/fa';
 import { useDropzone } from 'react-dropzone';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../../lib/utils';
 import { analyzeSaveFile, fetchDailyStats } from '../../../lib/api';
 
 export function HeroSection({ onUploadSuccess }) {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [uploadState, setUploadState] = useState('idle'); // idle | uploading | success | error
     const [errorMessage, setErrorMessage] = useState('');
     const [showHelpModal, setShowHelpModal] = useState(false);
@@ -41,7 +43,7 @@ export function HeroSection({ onUploadSuccess }) {
         // Validate file name
         if (!file.name.includes('rep_') && !file.name.includes('persistentgamedata')) {
             setUploadState('error');
-            setErrorMessage('El archivo no parece ser un save de Isaac. Busca "rep_persistentgamedata1.dat"');
+            setErrorMessage(t('home.heroInvalidFile'));
             return;
         }
 
@@ -56,7 +58,7 @@ export function HeroSection({ onUploadSuccess }) {
             if (result.source !== 'real') {
                 console.warn('[HeroSection] Received non-real source:', result.source);
                 setUploadState('error');
-                setErrorMessage('No se pudo analizar el archivo. Por favor intenta de nuevo.');
+                setErrorMessage(t('home.heroAnalysisFailed'));
                 return;
             }
 
@@ -102,7 +104,7 @@ export function HeroSection({ onUploadSuccess }) {
                 nextObjective: result.parsed.nextObjective,
                 
                 // Most deaths (placeholder - not tracked in save file)
-                mostDeaths: { count: '?', boss: 'No disponible' },
+                mostDeaths: { count: '?', boss: t('home.heroNotAvailable') },
                 
                 // Tainted progress
                 taintedCompletion: result.metrics.taintedCompletion,
@@ -127,7 +129,7 @@ export function HeroSection({ onUploadSuccess }) {
             setErrorMessage(
                 error.response?.error_message || 
                 error.message || 
-                'Error al analizar el archivo. Por favor intenta de nuevo.'
+                t('home.heroGenericError')
             );
         }
     }, [onUploadSuccess]);
@@ -183,7 +185,7 @@ export function HeroSection({ onUploadSuccess }) {
                     >
                         <span className="inline-flex items-center gap-2 px-4 py-2 bg-accent-gold/10 border border-accent-gold/30 text-accent-gold font-heading text-sm uppercase tracking-wider">
                             <span className="w-2 h-2 bg-accent-gold rounded-full animate-pulse" />
-                            Dead God Tracker
+                            {t('home.heroTracker')}
                         </span>
                     </motion.div>
 
@@ -194,9 +196,9 @@ export function HeroSection({ onUploadSuccess }) {
                         transition={{ delay: 0.1 }}
                         className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-text-heading leading-[0.95] tracking-tight mb-4"
                     >
-                        ¿Cuánto te falta para
+                        {t('home.heroHowMuchLeft')}
                         <br />
-                        <span className="text-accent-gold">Dead God</span>?
+                        <span className="text-accent-gold">{t('home.deadGod')}</span>?
                     </motion.h1>
 
                     {/* Subtitle */}
@@ -206,7 +208,7 @@ export function HeroSection({ onUploadSuccess }) {
                         transition={{ delay: 0.2 }}
                         className="text-lg md:text-xl lg:text-2xl font-handwriting text-text-ink/80 max-w-xl mb-4"
                     >
-                        Sube tu save file → Ve tu % exacto → Descubre qué te falta
+                        {t('home.heroUploadDescription')}
                     </motion.p>
 
                     {/* Live Counter */}
@@ -227,7 +229,7 @@ export function HeroSection({ onUploadSuccess }) {
                                 >
                                     {dailyCount.toLocaleString()}
                                 </motion.span>
-                                {' '}saves analizados hoy
+                                {' '}{t('home.heroSavesAnalyzedToday')}
                             </span>
                         </motion.div>
                     )}
@@ -265,10 +267,10 @@ export function HeroSection({ onUploadSuccess }) {
                                         
                                         <div>
                                             <p className="font-heading text-lg md:text-xl text-text-heading mb-1">
-                                                {isDragActive ? "Suelta aquí" : "Arrastra tu save file"}
+                                                {isDragActive ? t('home.heroDropHere') : t('home.heroDragSaveFile')}
                                             </p>
                                             <p className="text-sm text-text-dim font-handwriting">
-                                                o haz click para seleccionar
+                                                {t('home.heroOrClickToSelect')}
                                             </p>
                                         </div>
                                     </div>
@@ -278,7 +280,7 @@ export function HeroSection({ onUploadSuccess }) {
                                 <div className="mt-4 flex flex-col items-center gap-3">
                                     <div className="flex items-center gap-2 text-sm text-text-dim">
                                         <span className="text-lg">🔒</span>
-                                        <span className="font-sans">Tu archivo no se guarda · Sin registro · 100% privado</span>
+                                        <span className="font-sans">{t('home.heroPrivacyNote')}</span>
                                     </div>
                                     <div className="flex items-center gap-4 text-sm">
                                         <button
@@ -289,7 +291,7 @@ export function HeroSection({ onUploadSuccess }) {
                                             className="flex items-center gap-1 text-accent-blood hover:underline"
                                         >
                                             <FaQuestionCircle className="w-3 h-3" />
-                                            ¿Dónde está mi save?
+                                            {t('home.heroWhereIsMySave')}
                                         </button>
                                         <button
                                             onClick={(e) => {
@@ -298,7 +300,7 @@ export function HeroSection({ onUploadSuccess }) {
                                             }}
                                             className="text-text-dim hover:text-text-heading transition-colors"
                                         >
-                                            Ver ejemplo →
+                                            {t('home.heroSeeExample')}
                                         </button>
                                     </div>
                                 </div>
@@ -315,7 +317,7 @@ export function HeroSection({ onUploadSuccess }) {
                             >
                                 <div className="flex flex-col items-center gap-4">
                                     <div className="w-12 h-12 border-4 border-accent-blood border-t-transparent rounded-full animate-spin" />
-                                    <p className="font-heading text-xl">Analizando 637 ítems...</p>
+                                    <p className="font-heading text-xl">{t('home.heroAnalyzingItems')}</p>
                                     <div className="w-full h-2 bg-black/10 overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
@@ -338,20 +340,20 @@ export function HeroSection({ onUploadSuccess }) {
                                 <div className="flex items-start gap-3 mb-3">
                                     <FaExclamationTriangle className="w-5 h-5 text-accent-blood flex-shrink-0 mt-0.5" />
                                     <div>
-                                        <p className="font-heading text-accent-blood mb-1">Error al analizar</p>
+                                        <p className="font-heading text-accent-blood mb-1">{t('home.heroErrorTitle')}</p>
                                         <p className="text-sm text-text-dim">
-                                            {errorMessage || 'El archivo no pudo ser procesado.'}
+                                            {errorMessage || t('home.heroErrorDefault')}
                                         </p>
                                     </div>
                                 </div>
                                 <p className="text-xs text-text-dim mb-4 pl-8">
-                                    Busca <code className="bg-black/10 px-1 rounded">rep_persistentgamedata1.dat</code> en tu carpeta de Isaac
+                                    {t('home.heroErrorHint')} <code className="bg-black/10 px-1 rounded">rep_persistentgamedata1.dat</code> {t('home.heroErrorHintSuffix')}
                                 </p>
                                 <button
                                     onClick={resetUpload}
                                     className="px-4 py-2 bg-black text-white font-heading text-sm hover:bg-accent-blood transition-colors"
                                 >
-                                    Intentar de nuevo
+                                    {t('home.heroTryAgain')}
                                 </button>
                             </motion.div>
                         )}
@@ -369,7 +371,7 @@ export function HeroSection({ onUploadSuccess }) {
                             className="flex flex-col items-center gap-2 text-text-dim hover:text-accent-blood transition-colors group"
                         >
                             <span className="text-sm font-handwriting">
-                                O explora builds, sinergias y más herramientas
+                                {t('home.heroScrollHint')}
                             </span>
                             <FaChevronDown className="w-4 h-4 animate-bounce group-hover:text-accent-blood" />
                         </button>
@@ -388,6 +390,7 @@ export function HeroSection({ onUploadSuccess }) {
 }
 
 function HelpModal({ onClose }) {
+    const { t } = useTranslation();
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -407,7 +410,7 @@ function HelpModal({ onClose }) {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <h3 className="font-heading text-xl text-text-heading mb-4">
-                        ¿Dónde está mi save file?
+                        {t('home.heroHelpTitle')}
                     </h3>
 
                 <div className="space-y-4 text-sm">
@@ -433,7 +436,7 @@ function HelpModal({ onClose }) {
                     </div>
 
                     <p className="text-text-dim font-handwriting pt-2 border-t border-black/10">
-                        Busca el archivo <strong>rep_persistentgamedata1.dat</strong>
+                        {t('home.heroLookForFile')} <strong>rep_persistentgamedata1.dat</strong>
                     </p>
                 </div>
 
@@ -441,7 +444,7 @@ function HelpModal({ onClose }) {
                     onClick={onClose}
                     className="mt-6 w-full py-3 bg-black text-white font-heading hover:bg-accent-blood transition-colors"
                 >
-                    Entendido
+                    {t('home.heroGotIt')}
                 </button>
                 </motion.div>
             </div>

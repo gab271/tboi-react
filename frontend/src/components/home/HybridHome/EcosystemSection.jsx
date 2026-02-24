@@ -1,65 +1,67 @@
 // EcosystemSection.jsx - Muestra todas las herramientas con beneficios claros
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FaSearch, FaBolt, FaUsers, FaChartLine, FaArrowRight } from 'react-icons/fa';
 import { cn } from '../../../lib/utils';
 
-const TOOLS = [
-    {
-        id: 'wiki',
-        icon: FaSearch,
-        title: 'Nunca más te preguntes qué hace un ítem',
-        subtitle: 'Wiki de Ítems',
-        description: 'Todos los ítems, trinkets, píldoras y cartas de Repentance con stats y efectos detallados.',
-        stats: '637 ítems',
-        cta: 'Explorar ítems',
-        link: '/items',
-        color: 'accent-blood',
-    },
-    {
-        id: 'bosses',
-        icon: FaBolt,
-        title: 'Conoce a tu enemigo antes de enfrentarlo',
-        subtitle: 'Wiki de Jefes',
-        description: 'Guías de todos los jefes, patrones de ataque, estrategias y requisitos de desbloqueo.',
-        stats: '108 jefes',
-        cta: 'Estudiar jefes',
-        link: '/bosses',
-        color: 'accent-gold',
-    },
-    {
-        id: 'builds',
-        icon: FaUsers,
-        title: 'Roba las mejores builds de otros jugadores',
-        subtitle: 'Comunidad',
-        description: 'Miles de builds votadas por la comunidad. Filtra por personaje, boss o ítems clave.',
-        stats: '12.453 builds',
-        cta: 'Ver top builds',
-        link: '/builds',
-        color: 'green-500',
-    },
-    {
-        id: 'tracker',
-        icon: FaChartLine,
-        title: 'Sabe exactamente qué te falta para Dead God',
-        subtitle: 'Progress Tracker',
-        description: 'Análisis de save file con completion marks, ítems faltantes y estimación de tiempo.',
-        stats: '3.247 usuarios',
-        cta: 'Analizar mi save',
-        link: '#upload-zone',
-        color: 'blue-500',
-    },
-];
-
-const GLOBAL_STATS = [
-    { value: '637', label: 'ítems documentados' },
-    { value: '108', label: 'jefes detallados' },
-    { value: '12.453', label: 'builds compartidas' },
-    { value: '3.247', label: 'usuarios activos' },
-];
-
 export function EcosystemSection() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
+    const TOOLS = [
+        {
+            id: 'wiki',
+            icon: FaSearch,
+            title: t('ecosystem.wikiTitle'),
+            subtitle: t('ecosystem.wikiSubtitle'),
+            description: t('ecosystem.wikiDescription'),
+            stats: t('ecosystem.wikiStats'),
+            cta: t('ecosystem.wikiCta'),
+            link: '/items',
+            color: 'accent-blood',
+        },
+        {
+            id: 'bosses',
+            icon: FaBolt,
+            title: t('ecosystem.bossesTitle'),
+            subtitle: t('ecosystem.bossesSubtitle'),
+            description: t('ecosystem.bossesDescription'),
+            stats: t('ecosystem.bossesStats'),
+            cta: t('ecosystem.bossesCta'),
+            link: '/bosses',
+            color: 'accent-gold',
+        },
+        {
+            id: 'builds',
+            icon: FaUsers,
+            title: t('ecosystem.buildsTitle'),
+            subtitle: t('ecosystem.buildsSubtitle'),
+            description: t('ecosystem.buildsDescription'),
+            stats: t('ecosystem.buildsStats'),
+            cta: t('ecosystem.buildsCta'),
+            link: '/builds',
+            color: 'green-500',
+        },
+        {
+            id: 'tracker',
+            icon: FaChartLine,
+            title: t('ecosystem.trackerTitle'),
+            subtitle: t('ecosystem.trackerSubtitle'),
+            description: t('ecosystem.trackerDescription'),
+            stats: t('ecosystem.trackerStats'),
+            cta: t('ecosystem.trackerCta'),
+            link: '#upload-zone',
+            color: 'blue-500',
+        },
+    ];
+
+    const GLOBAL_STATS = [
+        { value: '637', label: t('ecosystem.itemsDocumented') },
+        { value: '108', label: t('ecosystem.bossesDetailed') },
+        { value: '12.453', label: t('ecosystem.buildsShared') },
+        { value: '3.247', label: t('ecosystem.activeUsers') },
+    ];
 
     const handleToolClick = (link) => {
         if (link.startsWith('#')) {
@@ -89,10 +91,10 @@ export function EcosystemSection() {
                     className="text-center mb-12"
                 >
                     <h2 className="font-heading text-2xl md:text-4xl text-text-heading uppercase tracking-wider mb-3">
-                        Todo lo que necesitas para dominar Isaac
+                        {t('ecosystem.title')}
                     </h2>
                     <p className="font-handwriting text-lg text-text-dim max-w-2xl mx-auto">
-                        Herramientas gratuitas diseñadas por jugadores, para jugadores
+                        {t('ecosystem.subtitle')}
                     </p>
                 </motion.div>
 

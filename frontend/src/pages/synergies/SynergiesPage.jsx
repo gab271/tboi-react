@@ -13,6 +13,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -23,97 +24,85 @@ import {
 import { cn } from '../../lib/utils';
 import { useAuth } from '../../hooks/useAuth';
 
-// Extended synergy database
+// Extended synergy database - uses translation keys for effect/details
 const SYNERGY_DATABASE = {
     // Tier S Synergies
     'brimstone+tammy_head': { 
         rating: 'S', 
         score: 10, 
-        effect: 'Ráfaga de 10 lágrimas Brimstone en todas direcciones',
-        details: 'Al activar Tammy\'s Head, dispara 10 rayos de Brimstone en todas direcciones. Destruye habitaciones enteras.',
+        effectKey: 'brimstone_tammy_head',
         wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Brimstone#Synergies'
     },
     'ipecac+my_reflection': { 
         rating: 'S', 
         score: 10, 
-        effect: 'Explosiones masivas que vuelven hacia los enemigos',
-        details: 'Las lágrimas venenosas regresan y explotan cerca de los enemigos. Cuidado con el daño a ti mismo.',
+        effectKey: 'ipecac_my_reflection',
         wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Ipecac#Synergies'
     },
     'tech_x+brimstone': { 
         rating: 'S', 
         score: 9, 
-        effect: 'Anillos de Brimstone cargables y devastadores',
-        details: 'Combina el anillo de Tech X con el rayo de Brimstone. Daño masivo en área.',
+        effectKey: 'tech_x_brimstone',
         wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Tech_X#Synergies'
     },
     'sacred_heart+godhead': { 
         rating: 'S', 
         score: 10, 
-        effect: 'Daño masivo con aura sagrada + homing',
-        details: 'Sacred Heart da homing y +1 daño, Godhead añade aura de daño. Combo definitivo.',
+        effectKey: 'sacred_heart_godhead',
         wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Sacred_Heart#Synergies'
     },
     // Tier A
     'crickets_head+polyphemus': { 
         rating: 'A', 
         score: 8, 
-        effect: 'Daño x4 combinado, mata todo de un tiro',
-        details: 'Multiplicadores de daño se apilan. Un disparo mata prácticamente todo.',
+        effectKey: 'crickets_head_polyphemus',
         wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Polyphemus#Synergies'
     },
     'technology+spoon_bender': { 
         rating: 'A', 
         score: 7, 
-        effect: 'Láser teledirigido, nunca fallas',
-        details: 'El láser de Technology gana homing. Auto-apuntado perfecto.',
+        effectKey: 'technology_spoon_bender',
         wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Technology#Synergies'
     },
     'mom_knife+dead_eye': { 
         rating: 'A', 
         score: 8, 
-        effect: 'Cuchillo con multiplicador de daño creciente',
-        details: 'Dead Eye mantiene el multiplicador ya que el cuchillo siempre acierta.',
+        effectKey: 'mom_knife_dead_eye',
         wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Mom%27s_Knife#Synergies'
     },
     // Tier B
     'tiny_planet+rubber_cement': { 
         rating: 'B', 
         score: 6, 
-        effect: 'Órbitas rebotantes, cobertura total',
-        details: 'Las lágrimas orbitan y rebotan. Cobertura excelente en salas cerradas.',
+        effectKey: 'tiny_planet_rubber_cement',
         wikiLink: null
     },
     'the_ludovico_technique+strange_attractor': { 
         rating: 'B', 
         score: 5, 
-        effect: 'Lágrima controlable que atrae enemigos',
-        details: 'Controla la lágrima mientras los enemigos son atraídos hacia ella.',
+        effectKey: 'the_ludovico_technique_strange_attractor',
         wikiLink: null
     },
     // Anti-synergies
     'dr_fetus+ipecac': { 
         rating: 'D', 
         score: 2, 
-        effect: '⚠️ Las bombas explotan al disparar, daño propio casi garantizado', 
+        effectKey: 'dr_fetus_ipecac',
         isAntiSynergy: true,
-        details: 'PELIGROSO: Las bombas se vuelven inestables. Alta probabilidad de hacerte daño.',
         wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Dr._Fetus#Interactions'
     },
     'soy_milk+polyphemus': { 
         rating: 'C', 
         score: 4, 
-        effect: '⚠️ Se anulan parcialmente: daño reducido', 
+        effectKey: 'soy_milk_polyphemus',
         isAntiSynergy: true,
-        details: 'Soy Milk reduce drásticamente el daño de Polyphemus. No es worth.',
         wikiLink: null
     },
     'brimstone+chocolate_milk': { 
         rating: 'C', 
         score: 4, 
-        effect: '⚠️ El cargado extra no suma mucho al Brimstone', 
+        effectKey: 'brimstone_chocolate_milk',
         isAntiSynergy: true,
-        details: 'Chocolate Milk no beneficia significativamente a Brimstone.',
         wikiLink: null
     },
 };
@@ -150,6 +139,7 @@ const SUGGESTED_COMBOS = [
 ];
 
 export function SynergiesPage() {
+    const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -302,13 +292,13 @@ export function SynergiesPage() {
                 source: 'save_combo'
             });
             navigate('/register', { 
-                state: { returnTo: '/synergies', message: 'Crea una cuenta para guardar tus combos favoritos' } 
+                state: { returnTo: '/synergies', message: t('synergies.createAccountToSave') } 
             });
             return;
         }
         
         // TODO: Implement actual save functionality
-        alert('Combo guardado! (funcionalidad próximamente)');
+        alert(t('synergies.comboSavedSoon'));
     };
 
     return (
@@ -322,24 +312,24 @@ export function SynergiesPage() {
                         className="inline-flex items-center gap-2 text-text-dim hover:text-accent-blood transition-colors mb-4"
                     >
                         <FaArrowLeft className="w-4 h-4" />
-                        <span className="font-heading text-sm">Volver al inicio</span>
+                        <span className="font-heading text-sm">{t('synergies.backToHome')}</span>
                     </Link>
                     
                     <div className="flex items-center justify-between flex-wrap gap-4">
                         <div>
                             <h1 className="font-heading text-3xl md:text-4xl text-text-heading flex items-center gap-3">
                                 <FaBolt className="text-accent-gold" />
-                                Analizador de Sinergias
+                                {t('synergies.title')}
                             </h1>
                             <p className="font-handwriting text-text-dim mt-2">
-                                Descubre qué combos rompen el juego y cuáles evitar
+                                {t('synergies.subtitle')}
                             </p>
                         </div>
                         
                         <div className="flex items-center gap-2 text-xs text-text-dim">
-                            <span>627 sinergias documentadas</span>
+                            <span>{t('synergies.documentedSynergies', { count: 627 })}</span>
                             <span>·</span>
-                            <span>Actualizado a Repentance+</span>
+                            <span>{t('synergies.updatedTo')}</span>
                         </div>
                     </div>
                 </div>
@@ -358,7 +348,7 @@ export function SynergiesPage() {
                                         type="text"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder="Buscar item..."
+                                        placeholder={t('synergies.searchItem')}
                                         className="w-full pl-10 pr-4 py-2 border-2 border-black/20 bg-white font-sans text-sm focus:outline-none focus:border-accent-gold"
                                     />
                                 </div>
@@ -382,7 +372,7 @@ export function SynergiesPage() {
                                                 </button>
                                             ))
                                         ) : (
-                                            <p className="px-3 py-2 text-sm text-text-dim">No encontrado</p>
+                                            <p className="px-3 py-2 text-sm text-text-dim">{t('synergies.notFound')}</p>
                                         )}
                                     </div>
                                 )}
@@ -392,7 +382,7 @@ export function SynergiesPage() {
                             <div className="p-4">
                                 <div className="flex items-center justify-between mb-3">
                                     <span className="font-heading text-sm text-text-dim uppercase">
-                                        Items ({selectedItems.length}/6)
+                                        {t('synergies.items')} ({selectedItems.length}/6)
                                     </span>
                                     {selectedItems.length > 0 && (
                                         <button
@@ -400,7 +390,7 @@ export function SynergiesPage() {
                                             className="text-xs text-text-dim hover:text-accent-blood flex items-center gap-1"
                                         >
                                             <FaTrash className="w-3 h-3" />
-                                            Limpiar
+                                            {t('synergies.clear')}
                                         </button>
                                     )}
                                 </div>
@@ -434,7 +424,7 @@ export function SynergiesPage() {
                                     
                                     {selectedItems.length === 0 && (
                                         <p className="text-center text-text-dim font-handwriting py-4">
-                                            Busca y agrega items para analizar
+                                            {t('synergies.searchAndAddItems')}
                                         </p>
                                     )}
                                 </div>
@@ -453,12 +443,12 @@ export function SynergiesPage() {
                                     {loading ? (
                                         <>
                                             <FaSpinner className="w-4 h-4 animate-spin" />
-                                            Analizando...
+                                            {t('synergies.analyzing')}
                                         </>
                                     ) : (
                                         <>
                                             <FaBolt className="w-4 h-4" />
-                                            Analizar ({selectedItems.length} items)
+                                            {t('synergies.analyze')} ({selectedItems.length} items)
                                         </>
                                     )}
                                 </button>
@@ -466,7 +456,7 @@ export function SynergiesPage() {
                             
                             {/* Suggested Combos */}
                             <div className="p-4 border-t-2 border-black/10 bg-black/5">
-                                <p className="font-heading text-xs text-text-dim uppercase mb-3">Prueba estos:</p>
+                                <p className="font-heading text-xs text-text-dim uppercase mb-3">{t('synergies.tryThese')}</p>
                                 <div className="space-y-2">
                                     {SUGGESTED_COMBOS.map((combo, idx) => (
                                         <button
@@ -517,9 +507,9 @@ export function SynergiesPage() {
                                     className="bg-bg-paper border-2 border-black shadow-[4px_4px_0px_#000] p-8 text-center"
                                 >
                                     <FaBolt className="w-16 h-16 text-text-dim/20 mx-auto mb-4" />
-                                    <h2 className="font-heading text-xl mb-2">Selecciona items para analizar</h2>
+                                    <h2 className="font-heading text-xl mb-2">{t('synergies.selectItemsToAnalyze')}</h2>
                                     <p className="font-handwriting text-text-dim max-w-md mx-auto">
-                                        Agrega entre 2 y 6 items desde el panel izquierdo para descubrir sus sinergias
+                                        {t('synergies.addItemsFromPanel')}
                                     </p>
                                 </motion.div>
                             )}
@@ -534,9 +524,9 @@ export function SynergiesPage() {
                                     className="bg-bg-paper border-2 border-black shadow-[4px_4px_0px_#000] p-12 text-center"
                                 >
                                     <FaSpinner className="w-12 h-12 text-accent-gold animate-spin mx-auto mb-4" />
-                                    <p className="font-heading">Analizando {selectedItems.length} items...</p>
+                                    <p className="font-heading">{t('synergies.analyzingItems', { count: selectedItems.length })}</p>
                                     <p className="font-handwriting text-text-dim text-sm mt-2">
-                                        Calculando {selectedItems.length * (selectedItems.length - 1) / 2} posibles combinaciones
+                                        {t('synergies.calculatingCombinations', { count: selectedItems.length * (selectedItems.length - 1) / 2 })}
                                     </p>
                                 </motion.div>
                             )}
@@ -565,14 +555,14 @@ export function SynergiesPage() {
                                                 </span>
                                                 <div>
                                                     <h2 className="font-heading text-2xl">
-                                                        {results.overallRating === 'S' && 'Build Legendario'}
-                                                        {results.overallRating === 'A' && 'Build Excelente'}
-                                                        {results.overallRating === 'B' && 'Build Decente'}
-                                                        {results.overallRating === 'C' && 'Build Flojo'}
-                                                        {results.overallRating === 'D' && 'Build Problemático'}
+                                                        {results.overallRating === 'S' && t('synergies.legendaryBuild')}
+                                                        {results.overallRating === 'A' && t('synergies.excellentBuild')}
+                                                        {results.overallRating === 'B' && t('synergies.decentBuild')}
+                                                        {results.overallRating === 'C' && t('synergies.weakBuild')}
+                                                        {results.overallRating === 'D' && t('synergies.problematicBuild')}
                                                     </h2>
                                                     <p className="text-text-dim">
-                                                        Puntuación: {results.overallScore}/10 · {results.synergies.length} sinergias · {results.antiSynergies.length} conflictos
+                                                        {t('synergies.score')}: {results.overallScore}/10 · {results.synergies.length} {t('synergies.synergiesFound')} · {results.antiSynergies.length} {t('synergies.conflicts')}
                                                     </p>
                                                 </div>
                                             </div>
@@ -582,13 +572,13 @@ export function SynergiesPage() {
                                                     <button
                                                         onClick={shareCombo}
                                                         className="p-2 border border-black/20 hover:bg-black/5 transition-colors"
-                                                        title="Compartir"
+                                                        title={t('synergies.shareCombo')}
                                                     >
                                                         <FaShareAlt className="w-4 h-4" />
                                                     </button>
                                                     {shareTooltip && (
                                                         <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs whitespace-nowrap">
-                                                            ¡Copiado!
+                                                            {t('synergies.copied')}
                                                         </span>
                                                     )}
                                                 </div>
@@ -597,7 +587,7 @@ export function SynergiesPage() {
                                                     className="flex items-center gap-2 px-4 py-2 bg-black text-white font-heading text-sm hover:bg-gray-800 transition-colors"
                                                 >
                                                     <FaSave className="w-4 h-4" />
-                                                    {user ? 'Guardar' : 'Guardar (registrarse)'}
+                                                    {user ? t('synergies.save') : t('synergies.saveRegister')}
                                                 </button>
                                             </div>
                                         </div>
@@ -609,12 +599,12 @@ export function SynergiesPage() {
                                             <div className="p-4 border-b-2 border-black/10 bg-green-50">
                                                 <h3 className="font-heading text-lg flex items-center gap-2">
                                                     <FaCheckCircle className="text-green-500" />
-                                                    Sinergias Encontradas ({results.synergies.length})
+                                                    {t('synergies.synergiesFoundTitle')} ({results.synergies.length})
                                                 </h3>
                                             </div>
                                             <div className="divide-y-2 divide-black/10">
                                                 {results.synergies.map((syn, idx) => (
-                                                    <SynergyCard key={idx} synergy={syn} />
+                                                    <SynergyCard key={idx} synergy={syn} t={t} />
                                                 ))}
                                             </div>
                                         </div>
@@ -626,12 +616,12 @@ export function SynergiesPage() {
                                             <div className="p-4 border-b-2 border-black/10 bg-red-50">
                                                 <h3 className="font-heading text-lg flex items-center gap-2">
                                                     <FaExclamationTriangle className="text-accent-blood" />
-                                                    Conflictos Detectados ({results.antiSynergies.length})
+                                                    {t('synergies.conflictsDetected')} ({results.antiSynergies.length})
                                                 </h3>
                                             </div>
                                             <div className="divide-y-2 divide-black/10">
                                                 {results.antiSynergies.map((syn, idx) => (
-                                                    <SynergyCard key={idx} synergy={syn} isAnti />
+                                                    <SynergyCard key={idx} synergy={syn} isAnti t={t} />
                                                 ))}
                                             </div>
                                         </div>
@@ -640,9 +630,9 @@ export function SynergiesPage() {
                                     {/* No synergies found */}
                                     {results.synergies.length === 0 && results.antiSynergies.length === 0 && (
                                         <div className="bg-bg-paper border-2 border-black shadow-[4px_4px_0px_#000] p-6 text-center">
-                                            <p className="font-heading text-lg mb-2">Sin sinergias conocidas</p>
+                                            <p className="font-heading text-lg mb-2">{t('synergies.noKnownSynergies')}</p>
                                             <p className="font-handwriting text-text-dim">
-                                                Estos items funcionan de forma independiente. No hay interacciones especiales documentadas.
+                                                {t('synergies.noInteractionsFound')}
                                             </p>
                                         </div>
                                     )}
@@ -650,7 +640,7 @@ export function SynergiesPage() {
                                     {/* Contribute CTA */}
                                     <div className="text-center py-4">
                                         <p className="text-sm text-text-dim mb-2">
-                                            ¿Conoces una sinergia que falta?
+                                            {t('synergies.knownSynergyMissing')}
                                         </p>
                                         <button
                                             className="text-sm font-heading text-accent-blood hover:underline"
@@ -659,7 +649,7 @@ export function SynergiesPage() {
                                                 // TODO: Open contribution form
                                             }}
                                         >
-                                            Contribuye a la wiki →
+                                            {t('synergies.contributed')} →
                                         </button>
                                     </div>
                                 </motion.div>
@@ -673,7 +663,10 @@ export function SynergiesPage() {
 }
 
 // Synergy Card Component
-function SynergyCard({ synergy, isAnti = false }) {
+function SynergyCard({ synergy, isAnti = false, t }) {
+    const effect = synergy.effectKey ? t(`synergies.data.${synergy.effectKey}.effect`) : synergy.effect;
+    const details = synergy.effectKey ? t(`synergies.data.${synergy.effectKey}.details`) : synergy.details;
+    
     return (
         <div className="p-4 hover:bg-black/5 transition-colors">
             <div className="flex items-start gap-4">
@@ -715,12 +708,12 @@ function SynergyCard({ synergy, isAnti = false }) {
                         "font-handwriting text-sm",
                         isAnti ? "text-accent-blood" : "text-text-body"
                     )}>
-                        {synergy.effect}
+                        {effect}
                     </p>
                     
-                    {synergy.details && (
+                    {details && (
                         <p className="text-xs text-text-dim mt-1">
-                            {synergy.details}
+                            {details}
                         </p>
                     )}
                 </div>
@@ -732,7 +725,7 @@ function SynergyCard({ synergy, isAnti = false }) {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 text-text-dim hover:text-accent-blood transition-colors"
-                        title="Ver en Wiki"
+                        title={t('synergies.viewInWiki')}
                     >
                         <FaExternalLinkAlt className="w-4 h-4" />
                     </a>

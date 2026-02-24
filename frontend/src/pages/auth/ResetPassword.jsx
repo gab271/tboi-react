@@ -1,8 +1,10 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const ResetPassword = () => {
+  const { t } = useTranslation();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -42,11 +44,11 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
       <div className="max-w-md w-full p-6 bg-gray-800 rounded-lg shadow-xl">
-        <h2 className="text-3xl font-bold mb-6 text-center">Set New Password</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center">{t('auth.setNewPassword')}</h2>
         {error && <div className="bg-red-500 p-2 mb-4 rounded">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1">New Password</label>
+            <label className="block mb-1">{t('auth.newPassword')}</label>
             <input
               type="password"
               value={password}
@@ -56,7 +58,7 @@ const ResetPassword = () => {
             />
           </div>
           <div>
-            <label className="block mb-1">Confirm New Password</label>
+            <label className="block mb-1">{t('auth.confirmPassword')}</label>
             <input
               type="password"
               value={confirmPassword}

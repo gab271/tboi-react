@@ -102,40 +102,35 @@ export const TIER_CONFIG = {
 
 /**
  * Features que disparan el upgrade prompt
+ * Uses translation keys - resolve with t('premium.triggers.${triggerKey}.message|benefit')
  */
 export const PREMIUM_TRIGGERS = {
   // PRO triggers
   synergy_full: {
     requiredTier: TIERS.PRO,
-    message: 'Desbloquea explicaciones detalladas de sinergias',
-    benefit: 'Entiende POR QUÉ tus items funcionan juntos'
+    triggerKey: 'synergyFull'
   },
   optimal_path: {
     requiredTier: TIERS.PRO,
-    message: 'Ve el camino óptimo para tu build',
-    benefit: 'Maximiza tu DPS con el orden correcto'  
+    triggerKey: 'optimalPath'
   },
   synergy_suggestions: {
     requiredTier: TIERS.PRO,
-    message: 'Recibe sugerencias de items',
-    benefit: '"Con Dead Cat serías Guppy"'
+    triggerKey: 'synergySuggestions'
   },
   save_parser_full: {
     requiredTier: TIERS.PRO,
-    message: 'Desbloquea análisis completo de tu save',
-    benefit: 'Ve estadísticas detalladas y predicciones'
+    triggerKey: 'saveParserFull'
   },
   
   // SUPPORTER triggers
   profile_customization: {
     requiredTier: TIERS.SUPPORTER,
-    message: 'Personaliza tu perfil',
-    benefit: 'Avatar, banner y bio únicos'
+    triggerKey: 'profileCustomization'
   },
   profile_badge: {
     requiredTier: TIERS.SUPPORTER,
-    message: 'Muestra tu badge de Supporter',
-    benefit: 'Destaca en la comunidad'
+    triggerKey: 'profileBadge'
   }
 };
 
@@ -165,6 +160,7 @@ export function tierHasFeature(userTier, feature) {
 
 /**
  * Get upgrade suggestion for feature
+ * Returns triggerKey for translation lookup: t('premium.triggers.${triggerKey}.message|benefit')
  */
 export function getUpgradeSuggestion(currentTier, feature) {
   if (tierHasFeature(currentTier, feature)) {
@@ -175,8 +171,7 @@ export function getUpgradeSuggestion(currentTier, feature) {
   if (!trigger) {
     return {
       requiredTier: TIERS.PRO,
-      message: 'Esta función requiere PRO',
-      benefit: 'Acceso completo a todas las herramientas'
+      triggerKey: 'defaultPro'
     };
   }
   

@@ -1,7 +1,9 @@
 import { ItemCard } from './ItemCard';
 import { cn } from '../../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export function ItemGrid({ items, isLoading }) {
+  const { t } = useTranslation();
   
   // Custom Loading State (Empty Slots)
   if (isLoading) {
@@ -26,7 +28,7 @@ export function ItemGrid({ items, isLoading }) {
       return (
         <div className="flex flex-col items-center justify-center p-12 bg-[#0a0a0a]/90 text-white min-h-[400px] rounded-[3px] border-2 border-dashed border-white/10">
             <span className="text-4xl mb-4 opacity-50">🕸️</span>
-            <p className="font-pixel text-white/70 text-xl text-center tracking-widest">NO ITEMS FOUND</p>
+            <p className="font-pixel text-white/70 text-xl text-center tracking-widest">{t('items.noItemsFound')}</p>
         </div>
       );
   }

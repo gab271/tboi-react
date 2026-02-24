@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Parser from 'rss-parser';
 import './RssFeed.css';
 
 const RssFeed = () => {
+  const { t } = useTranslation();
   const [feed, setFeed] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -26,11 +28,11 @@ const RssFeed = () => {
     fetchRSS();
   }, []);
 
-  if (loading) return <div>Loading news...</div>;
+  if (loading) return <div>{t('parser.loadingNews')}</div>;
 
   return (
     <div className="rss-container">
-      <h2>Latest News</h2>
+      <h2>{t('parser.latestNews')}</h2>
       <div className="rss-items">
         {feed.map((item, index) => (
           <div key={index} className="rss-item">

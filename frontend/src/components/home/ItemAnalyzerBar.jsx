@@ -1,42 +1,37 @@
 // ItemAnalyzerBar.jsx - Quick synergy analyzer tool
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaSearch, FaTimes, FaFlask, FaExclamationTriangle, FaBolt, FaStar, FaBookmark } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 
-// Mock synergy data - in production this would come from an API
+// Mock synergy data - uses effectKey for translation lookup
 const SYNERGY_DATABASE = {
     'brimstone+polyphemus': {
         tier: 'S',
-        effect: 'Daño ×2.3 por rayo',
-        description: 'El daño de Polyphemus se aplica multiplicativamente al rayo de Brimstone',
+        effectKey: 'brimstone_polyphemus',
     },
     'brimstone+spoon bender': {
         tier: 'A',
-        effect: 'Rayos teledirigidos',
-        description: 'El rayo de Brimstone sigue a los enemigos automáticamente',
+        effectKey: 'brimstone_spoon_bender',
     },
     'brimstone+tammy\'s head': {
         tier: 'S+',
-        effect: 'Screen-clear instantáneo',
-        description: 'Dispara 10 rayos de Brimstone en todas direcciones',
+        effectKey: 'brimstone_tammy_head',
     },
     'sacred heart+polyphemus': {
         tier: 'S',
-        effect: 'One-shot todo',
-        description: 'Combinación de daño extremo con homing',
+        effectKey: 'sacred_heart_polyphemus',
     },
     'mom\'s knife+brimstone': {
         tier: 'C',
-        effect: 'Se cancelan',
-        description: 'Mom\'s Knife reemplaza el ataque de Brimstone',
+        effectKey: 'mom_knife_brimstone',
         isWarning: true,
     },
     'ipecac+dr. fetus': {
         tier: 'F',
-        effect: 'Auto-daño garantizado',
-        description: 'Las bombas explosivas causan daño masivo a ti mismo',
+        effectKey: 'dr_fetus_ipecac',
         isWarning: true,
     },
 };
@@ -75,6 +70,7 @@ const TIER_COLORS = {
 };
 
 export function ItemAnalyzerBar() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [searchValue, setSearchValue] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
@@ -200,10 +196,10 @@ export function ItemAnalyzerBar() {
                 <div className="text-center mb-6">
                     <h2 className="text-2xl md:text-3xl font-heading text-text-heading mb-2">
                         <FaFlask className="inline-block mr-2 text-accent-blood" />
-                        Analizador de Sinergias
+                        {t('analyzer.title')}
                     </h2>
                     <p className="text-text-dim font-handwriting text-lg">
-                        Introduce tus ítems actuales y descubre qué combina bien
+                        {t('analyzer.subtitle')}
                     </p>
                 </div>
 
@@ -226,7 +222,7 @@ export function ItemAnalyzerBar() {
                                 value={searchValue}
                                 onChange={(e) => setSearchValue(e.target.value)}
                                 onFocus={() => searchValue && setShowDropdown(true)}
-                                placeholder={`Escribe tus ítems: ${PLACEHOLDER_EXAMPLES[placeholderIndex]}`}
+                                placeholder={`${t('analyzer.placeholder')} ${PLACEHOLDER_EXAMPLES[placeholderIndex]}`}
                                 className="w-full h-14 pl-12 pr-4 bg-white/80 border-2 border-black text-text-ink font-handwriting text-lg placeholder:text-text-dim/50 focus:outline-none focus:border-accent-blood transition-colors"
                             />
                         </div>
@@ -301,7 +297,7 @@ export function ItemAnalyzerBar() {
                                     className="flex items-center gap-1 px-3 py-2 border-2 border-dashed border-text-dim/30 text-text-dim hover:border-accent-blood hover:text-accent-blood transition-colors"
                                 >
                                     <span className="text-lg">+</span>
-                                    <span className="font-handwriting text-sm">Añadir más</span>
+                                    <span className="font-handwriting text-sm">{t('analyzer.addMore')}</span>
                                 </button>
                             )}
                         </div>
@@ -320,7 +316,7 @@ export function ItemAnalyzerBar() {
                             )}
                         >
                             <FaFlask />
-                            Analizar combinación
+                            {t('analyzer.analyzeCombination')}
                         </button>
                         {selectedItems.length > 0 && (
                             <button
@@ -348,18 +344,22 @@ export function ItemAnalyzerBar() {
                                     <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-dashed border-black/20">
                                         <div>
                                             <h3 className="font-heading text-xl text-text-heading">
-                                                ANÁLISIS DE TU COMBINACIÓN
+                                                {t('analyzer.analysisTitle')}
                                             </h3>
                                             <p className="text-text-dim font-handwriting">
-                                                {synergies.length} sinergia{synergies.length !== 1 ? 's' : ''} encontrada{synergies.length !== 1 ? 's' : ''}
-                                                {warnings.length > 0 && ` · ${warnings.length} warning${warnings.length !== 1 ? 's' : ''}`}
+                                                {synergies.length === 1 
+                                                    ? t('analyzer.synergyFound', { count: synergies.length })
+                                                    : t('analyzer.synergiesFound', { count: synergies.length })}
+                                                {warnings.length > 0 && ` · ${warnings.length === 1 
+                                                    ? t('analyzer.warningsCount', { count: warnings.length })
+                                                    : t('analyzer.warningsCountPlural', { count: warnings.length })}`}
                                             </p>
                                         </div>
                                         <div className={cn(
                                             'px-6 py-3 font-heading text-3xl border-2 rounded',
                                             TIER_COLORS[overallTier]
                                         )}>
-                                            TIER {overallTier}
+                                            {t('analyzer.tier')} {overallTier}
                                         </div>
                                     </div>
                                 )}
@@ -369,7 +369,7 @@ export function ItemAnalyzerBar() {
                                     <div className="mb-6">
                                         <h4 className="flex items-center gap-2 font-heading text-lg text-text-heading mb-3">
                                             <FaBolt className="text-accent-gold" />
-                                            SINERGIAS ENCONTRADAS
+                                            {t('analyzer.synergiesFoundSection')}
                                         </h4>
                                         <div className="grid gap-3 md:grid-cols-2">
                                             {synergies.map((synergy, index) => (
@@ -397,10 +397,10 @@ export function ItemAnalyzerBar() {
                                                         </span>
                                                     </div>
                                                     <p className="font-heading text-sm text-accent-gold mb-1">
-                                                        {synergy.effect}
+                                                        {t(`synergies.data.${synergy.effectKey}.effect`)}
                                                     </p>
                                                     <p className="text-sm text-text-dim font-handwriting">
-                                                        {synergy.description}
+                                                        {t(`synergies.data.${synergy.effectKey}.details`)}
                                                     </p>
                                                 </div>
                                             ))}
@@ -413,7 +413,7 @@ export function ItemAnalyzerBar() {
                                     <div className="mb-6">
                                         <h4 className="flex items-center gap-2 font-heading text-lg text-accent-blood mb-3">
                                             <FaExclamationTriangle />
-                                            WARNINGS
+                                            {t('analyzer.warnings')}
                                         </h4>
                                         <div className="space-y-3">
                                             {warnings.map((warning, index) => (
@@ -428,7 +428,7 @@ export function ItemAnalyzerBar() {
                                                         </span>
                                                     </div>
                                                     <p className="text-sm text-text-ink font-handwriting">
-                                                        {warning.description}
+                                                        {t(`synergies.data.${warning.effectKey}.details`)}
                                                     </p>
                                                 </div>
                                             ))}
@@ -440,10 +440,10 @@ export function ItemAnalyzerBar() {
                                 {synergies.length === 0 && warnings.length === 0 && selectedItems.length >= 2 && (
                                     <div className="text-center py-8">
                                         <p className="text-text-dim font-handwriting text-lg mb-4">
-                                            🤔 No tenemos datos de esta combinación específica.
+                                            🤔 {t('analyzer.noCombinationData')}
                                         </p>
                                         <button className="font-heading text-accent-blood underline underline-offset-4 hover:no-underline">
-                                            ¿La probaste? Cuéntanos qué pasó →
+                                            {t('analyzer.testedIt')}
                                         </button>
                                     </div>
                                 )}
@@ -452,13 +452,13 @@ export function ItemAnalyzerBar() {
                                 {selectedItems.length === 1 && (
                                     <div className="text-center py-4">
                                         <p className="text-text-dim font-handwriting text-lg mb-4">
-                                            Añade más ítems para ver sinergias
+                                            {t('analyzer.addMoreItemsForSynergies')}
                                         </p>
                                         <button 
                                             onClick={() => navigate(`/items`)}
                                             className="font-heading text-accent-blood underline underline-offset-4 hover:no-underline"
                                         >
-                                            Ver ficha de {selectedItems[0].name} →
+                                            {t('analyzer.viewItemCard', { item: selectedItems[0].name })}
                                         </button>
                                     </div>
                                 )}
@@ -470,11 +470,11 @@ export function ItemAnalyzerBar() {
                                         className="flex items-center gap-2 px-4 py-2 bg-black text-white font-heading text-sm hover:bg-accent-blood transition-colors"
                                     >
                                         <FaStar />
-                                        Ver builds con estos ítems
+                                        {t('analyzer.viewBuildsWithItems')}
                                     </button>
                                     <button className="flex items-center gap-2 px-4 py-2 border-2 border-black text-black font-heading text-sm hover:bg-black hover:text-white transition-colors">
                                         <FaBookmark />
-                                        Guardar análisis
+                                        {t('analyzer.saveAnalysis')}
                                     </button>
                                 </div>
                             </div>
@@ -489,7 +489,7 @@ export function ItemAnalyzerBar() {
                         animate={{ opacity: 1 }}
                         className="text-center text-text-dim font-handwriting mt-4"
                     >
-                        💡 Prueba: <button onClick={() => {
+                        💡 {t('analyzer.tryExample')} <button onClick={() => {
                             addItem(ITEMS_DATABASE[0]); // Brimstone
                             addItem(ITEMS_DATABASE[5]); // Tammy's Head
                         }} className="text-accent-blood underline">Brimstone + Tammy's Head</button>

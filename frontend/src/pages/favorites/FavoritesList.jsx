@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { fetchItems } from '../../lib/api';
 import { useFavorites } from '../../features/favorites/useFavorites';
@@ -10,6 +11,7 @@ import { Button } from '../../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 
 const FavoritesList = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { favorites, isLoading: loadingFavs } = useFavorites('item');
   const [selectedItem, setSelectedItem] = useState(null);
@@ -43,14 +45,14 @@ const FavoritesList = () => {
                     animate={{ opacity: 1, x: 0 }}
                     className="text-4xl md:text-6xl font-serif font-black tracking-tighter mb-2"
                 >
-                    MY <span className="text-gold">FAVORITES</span>
+                    {t('favorites.title')}
                 </motion.h1>
                 <p className="text-muted text-lg">
                     Your personal collection of discovered artifacts.
                 </p>
             </div>
             <div className="hidden md:block pb-2">
-               <span className="font-mono text-gold text-xl font-bold">{favIds.length}</span> <span className="text-muted text-sm uppercase tracking-wider">Items</span>
+               <span className="font-mono text-gold text-xl font-bold">{favIds.length}</span> <span className="text-muted text-sm uppercase tracking-wider">{t('favorites.items')}</span>
             </div>
          </div>
       </section>
@@ -69,7 +71,7 @@ const FavoritesList = () => {
                 <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
                     <FaHeart className="text-3xl text-white/20" />
                 </div>
-                <h2 className="text-2xl font-serif font-bold mb-2">No Favorites Yet</h2>
+                <h2 className="text-2xl font-serif font-bold mb-2">{t('favorites.noFavorites')}</h2>
                 <p className="text-muted mb-8 max-w-md">Mark items as favorite in the collection to see them here.</p>
                 <Button onClick={() => navigate('/items')} className="bg-gold text-bg-0 hover:bg-gold/90">
                     Browse Collection

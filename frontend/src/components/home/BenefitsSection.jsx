@@ -1,51 +1,53 @@
 // BenefitsSection.jsx - Clear value proposition cards
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FaSearch, FaLightbulb, FaChartBar, FaShare } from 'react-icons/fa';
 import { cn } from '../../lib/utils';
 
-const BENEFITS = [
-    {
-        icon: FaSearch,
-        title: 'Analiza tus runs',
-        description: 'Introduce tus ítems y ve qué funciona y qué no. Detecta sinergias que no conocías.',
-        cta: 'Probar',
-        ctaLink: '#item-analyzer',
-        badge: 'Gratis',
-        badgeColor: 'bg-green-500',
-    },
-    {
-        icon: FaLightbulb,
-        title: 'Descubre sinergias',
-        description: '627 combinaciones documentadas. Desde Tier S hasta trampas mortales.',
-        cta: 'Explorar',
-        ctaLink: '/synergies',
-        badge: 'Gratis',
-        badgeColor: 'bg-green-500',
-    },
-    {
-        icon: FaChartBar,
-        title: 'Trackea tu progreso',
-        description: 'Dead God checker con análisis de save o entrada manual. Sabe exactamente qué te falta.',
-        cta: 'Empezar',
-        ctaLink: '#progress-tracker',
-        badge: 'Gratis*',
-        badgeColor: 'bg-green-500',
-        badgeNote: '* Stats avanzadas en Premium',
-    },
-    {
-        icon: FaShare,
-        title: 'Comparte builds',
-        description: 'Sube tu build, recibe votos de la comunidad y ayuda a otros jugadores.',
-        cta: 'Crear',
-        ctaLink: '/builds/create',
-        badge: 'Cuenta gratis',
-        badgeColor: 'bg-blue-500',
-    },
-];
-
 export function BenefitsSection() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
+    const BENEFITS = [
+        {
+            icon: FaSearch,
+            title: t('benefits.analyzeRuns'),
+            description: t('benefits.analyzeRunsDesc'),
+            cta: t('benefits.try'),
+            ctaLink: '#item-analyzer',
+            badge: t('benefits.free'),
+            badgeColor: 'bg-green-500',
+        },
+        {
+            icon: FaLightbulb,
+            title: t('benefits.discoverSynergies'),
+            description: t('benefits.discoverSynergiesDesc'),
+            cta: t('benefits.explore'),
+            ctaLink: '/synergies',
+            badge: t('benefits.free'),
+            badgeColor: 'bg-green-500',
+        },
+        {
+            icon: FaChartBar,
+            title: t('benefits.trackProgress'),
+            description: t('benefits.trackProgressDesc'),
+            cta: t('benefits.start'),
+            ctaLink: '#progress-tracker',
+            badge: t('benefits.free') + '*',
+            badgeColor: 'bg-green-500',
+            badgeNote: t('benefits.advancedStatsPremium'),
+        },
+        {
+            icon: FaShare,
+            title: t('benefits.shareBuilds'),
+            description: t('benefits.shareBuildsDesc'),
+            cta: t('benefits.create'),
+            ctaLink: '/builds/create',
+            badge: t('benefits.freeAccount'),
+            badgeColor: 'bg-blue-500',
+        },
+    ];
 
     const handleClick = (link) => {
         if (link.startsWith('#')) {
@@ -62,10 +64,10 @@ export function BenefitsSection() {
                 {/* Section header */}
                 <div className="text-center mb-10">
                     <h2 className="font-heading text-2xl md:text-3xl text-text-heading uppercase tracking-wider mb-2">
-                        Todo lo que necesitas para dominar Isaac
+                        {t('benefits.title')}
                     </h2>
                     <p className="font-handwriting text-lg text-text-dim">
-                        Herramientas gratuitas que realmente mejoran tus runs
+                        {t('benefits.subtitle')}
                     </p>
                 </div>
 

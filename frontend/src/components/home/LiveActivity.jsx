@@ -3,11 +3,13 @@
  * Muestra actividad real de la comunidad con textos que rotan
  */
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getActivityTexts } from '../../lib/activityDisplay';
 import { fetchLiveActivity } from '../../lib/api';
 
 export function LiveActivity({ className = '' }) {
+  const { t } = useTranslation();
   const [stats, setStats] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,7 +51,7 @@ export function LiveActivity({ className = '' }) {
     return (
       <div className={`flex items-center gap-2 text-sm text-text-dim ${className}`}>
         <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" />
-        <span className="font-handwriting">Cargando...</span>
+        <span className="font-handwriting">{t('common.loading')}</span>
       </div>
     );
   }

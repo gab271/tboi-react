@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 
 export function Pagination({ currentPage, totalPages, onPageChange, className }) {
+  const { t } = useTranslation();
   // Helper to ensure page doesn't go out of bounds
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
@@ -16,7 +18,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className })
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 0}
         className="group relative p-2 transform transition-transform hover:scale-125 disabled:opacity-20 disabled:pointer-events-none"
-        aria-label="Previous Page"
+        aria-label={t('accessibility.previousPage')}
       >
         <svg 
             width="40" 
@@ -49,7 +51,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className })
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage >= totalPages - 1}
         className="group relative p-2 transform transition-transform hover:scale-125 disabled:opacity-20 disabled:pointer-events-none"
-        aria-label="Next Page"
+        aria-label={t('accessibility.nextPage')}
       >
          <svg 
             width="40" 

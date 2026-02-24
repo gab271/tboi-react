@@ -1,5 +1,6 @@
 // ProgressTracker.jsx - Dead God progress tracker feature
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaUpload, FaCheckSquare, FaUsers, FaTrophy, FaChevronRight, FaQuestionCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +13,7 @@ const MOCK_STATS = {
 };
 
 export function ProgressTracker() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState(null); // 'upload' | 'manual' | null
     const [uploadState, setUploadState] = useState('idle'); // 'idle' | 'uploading' | 'success' | 'error'
@@ -100,10 +102,10 @@ export function ProgressTracker() {
                             {/* Main text */}
                             <div className="text-center mb-6">
                                 <h3 className="text-2xl sm:text-3xl font-heading text-black uppercase mb-2">
-                                    YOUR PROGRESS
+                                    {t('home.yourProgress')}
                                 </h3>
                                 <p className="font-handwriting text-xl text-black/70">
-                                    &quot;¿Cuánto te falta para Dead God?&quot;
+                                    {t('home.howMuchForDeadGod')}
                                 </p>
                             </div>
 
@@ -132,19 +134,19 @@ export function ProgressTracker() {
                                         {/* Stats grid */}
                                         <div className="grid grid-cols-2 gap-3 text-sm mb-4">
                                             <div className="p-3 bg-white/50 border border-black/10">
-                                                <span className="text-text-dim font-handwriting">Personajes</span>
+                                                <span className="text-text-dim font-handwriting">{t('home.charactersLabel')}</span>
                                                 <p className="font-heading text-lg">{progress.charactersUnlocked}/{progress.totalCharacters}</p>
                                             </div>
                                             <div className="p-3 bg-white/50 border border-black/10">
-                                                <span className="text-text-dim font-handwriting">Ítems encontrados</span>
+                                                <span className="text-text-dim font-handwriting">{t('home.itemsFound')}</span>
                                                 <p className="font-heading text-lg">{progress.itemsFound}/{progress.totalItems}</p>
                                             </div>
                                             <div className="p-3 bg-white/50 border border-black/10">
-                                                <span className="text-text-dim font-handwriting">Endings</span>
+                                                <span className="text-text-dim font-handwriting">{t('home.endingsLabel')}</span>
                                                 <p className="font-heading text-lg">{progress.endingsSeen}/{progress.totalEndings}</p>
                                             </div>
                                             <div className="p-3 bg-accent-gold/10 border border-accent-gold/30">
-                                                <span className="text-accent-gold font-handwriting">Siguiente objetivo</span>
+                                                <span className="text-accent-gold font-handwriting">{t('home.nextObjective')}</span>
                                                 <p className="font-heading text-xs leading-tight">{progress.nextObjective}</p>
                                             </div>
                                         </div>
@@ -155,13 +157,13 @@ export function ProgressTracker() {
                                                 onClick={() => navigate('/auth/register')}
                                                 className="flex-1 h-12 flex items-center justify-center gap-2 bg-accent-blood text-white font-heading border-2 border-black shadow-[3px_3px_0px_#000] hover:shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 transition-all"
                                             >
-                                                💾 Guardar en mi perfil
+                                                💾 {t('home.saveToProfile')}
                                             </button>
                                             <button 
                                                 onClick={resetTracker}
                                                 className="h-12 px-4 bg-white text-black font-heading border-2 border-black hover:bg-black hover:text-white transition-colors"
                                             >
-                                                ↺ Otro análisis
+                                                ↺ {t('home.anotherAnalysis')}
                                             </button>
                                         </div>
                                     </motion.div>
@@ -181,10 +183,10 @@ export function ProgressTracker() {
                                             className="w-12 h-12 border-4 border-black border-t-accent-blood rounded-full mx-auto mb-4"
                                         />
                                         <p className="font-handwriting text-xl text-black">
-                                            Analizando tu save...
+                                            {t('home.analyzingSave')}
                                         </p>
                                         <p className="text-sm text-text-dim mt-2">
-                                            Contando tus lágrimas derramadas...
+                                            {t('home.countingTears')}
                                         </p>
                                     </motion.div>
                                 )}
@@ -215,8 +217,8 @@ export function ProgressTracker() {
                                                         <FaUpload className="w-5 h-5" />
                                                     </div>
                                                     <div className="flex-1 text-left">
-                                                        <span className="font-heading text-lg block">Subir mi archivo de save</span>
-                                                        <span className="text-sm opacity-70 font-handwriting">Análisis automático en 10 seg</span>
+                                                        <span className="font-heading text-lg block">{t('home.uploadSaveFile')}</span>
+                                                        <span className="text-sm opacity-70 font-handwriting">{t('home.automaticAnalysis')}</span>
                                                     </div>
                                                     <FaChevronRight className="w-4 h-4 opacity-50" />
                                                 </div>
@@ -224,7 +226,7 @@ export function ProgressTracker() {
 
                                             <div className="flex items-center gap-4 text-text-dim">
                                                 <div className="flex-1 h-px bg-black/20" />
-                                                <span className="font-handwriting">o</span>
+                                                <span className="font-handwriting">{t('common.or')}</span>
                                                 <div className="flex-1 h-px bg-black/20" />
                                             </div>
 
@@ -241,8 +243,8 @@ export function ProgressTracker() {
                                                     <FaCheckSquare className="w-5 h-5" />
                                                 </div>
                                                 <div className="flex-1 text-left">
-                                                    <span className="font-heading text-lg block">Trackear manualmente</span>
-                                                    <span className="text-sm opacity-70 font-handwriting">Marca tus completion marks</span>
+                                                    <span className="font-heading text-lg block">{t('home.trackManually')}</span>
+                                                    <span className="text-sm opacity-70 font-handwriting">{t('home.markYourMarks')}</span>
                                                 </div>
                                                 <FaChevronRight className="w-4 h-4 opacity-50" />
                                             </button>
@@ -252,7 +254,7 @@ export function ProgressTracker() {
                                         <div className="text-center">
                                             <button className="inline-flex items-center gap-1 text-sm text-text-dim hover:text-accent-blood transition-colors font-handwriting">
                                                 <FaQuestionCircle className="w-3 h-3" />
-                                                ¿Dónde está mi archivo de save?
+                                                {t('home.whereIsMySave')}
                                             </button>
                                         </div>
                                     </motion.div>
@@ -270,7 +272,7 @@ export function ProgressTracker() {
                     >
                         <FaUsers className="w-4 h-4" />
                         <span className="font-handwriting">
-                            {MOCK_STATS.usersTracking.toLocaleString()} jugadores ya trackeando su Dead God
+                            {t('home.playersTrackingDeadGod', { count: MOCK_STATS.usersTracking.toLocaleString() })}
                         </span>
                     </motion.div>
                 </motion.div>

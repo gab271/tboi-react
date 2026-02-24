@@ -1,8 +1,10 @@
 // ResultModal.jsx - Modal con resultado del análisis del save file
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { FaTrophy, FaSkull, FaClock, FaTimes, FaChevronRight, FaExclamationTriangle } from 'react-icons/fa';
 
 export function ResultModal({ result, onClose, onRegister }) {
+    const { t } = useTranslation();
     if (!result) return null;
     
     // CRITICAL: Check if this is demo data
@@ -20,11 +22,11 @@ export function ResultModal({ result, onClose, onRegister }) {
         endingsSeen = 0,
         totalEndings = 17,
         topPercentile = 50,
-        blockerCharacter = 'No detectado',
+        blockerCharacter = t('home.heroNotAvailable'),
         blockerMarks = '?',
         hoursRemaining = '?',
-        mostDeaths = { count: '?', boss: 'Desconocido' },
-        nextObjective = 'Continúa explorando el juego'
+        mostDeaths = { count: '?', boss: t('common.unknown') },
+        nextObjective = t('home.nextObjective')
     } = result || {};
 
     return (
@@ -49,8 +51,8 @@ export function ResultModal({ result, onClose, onRegister }) {
                     <div className="bg-accent-gold/20 border-b-2 border-accent-gold px-4 py-3 flex items-center gap-3">
                         <FaExclamationTriangle className="w-5 h-5 text-accent-gold flex-shrink-0" />
                         <div>
-                            <p className="font-heading text-sm text-accent-gold">Datos de ejemplo</p>
-                            <p className="text-xs text-text-dim">Sube tu save file real para ver tu progreso</p>
+                            <p className="font-heading text-sm text-accent-gold">{t('liveActivity.sampleData')}</p>
+                            <p className="text-xs text-text-dim">{t('liveActivity.uploadRealSave')}</p>
                         </div>
                     </div>
                 )}
@@ -76,7 +78,7 @@ export function ResultModal({ result, onClose, onRegister }) {
                         </span>
                     </motion.div>
                     <p className="font-handwriting text-xl text-white/80">
-                        camino a Dead God
+                        {t('home.pathToDeadGod')}
                     </p>
                     
                     {/* Progress bar */}
@@ -97,22 +99,22 @@ export function ResultModal({ result, onClose, onRegister }) {
                     {/* Stats grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <StatBox 
-                            label="Personajes" 
+                            label={t('home.charactersLabel')} 
                             current={charactersUnlocked} 
                             total={totalCharacters}
                         />
                         <StatBox 
-                            label="Ítems" 
+                            label={t('home.previewItems')} 
                             current={itemsFound} 
                             total={totalItems}
                         />
                         <StatBox 
-                            label="Completion Marks" 
+                            label={t('characters.completionMarks')} 
                             current={completionMarks} 
                             total={totalMarks}
                         />
                         <StatBox 
-                            label="Endings" 
+                            label={t('home.endingsLabel')} 
                             current={endingsSeen} 
                             total={totalEndings}
                         />
@@ -130,10 +132,10 @@ export function ResultModal({ result, onClose, onRegister }) {
                             <FaTrophy className="w-6 h-6 text-accent-gold flex-shrink-0" />
                             <div>
                                 <p className="font-heading text-lg text-text-heading">
-                                    Top {topPercentile}% de jugadores
+                                    {t('results.topPercentOfPlayers', { percent: topPercentile })}
                                 </p>
                                 <p className="text-sm text-text-dim font-handwriting">
-                                    Estás por encima del {100 - topPercentile}% de la comunidad
+                                    {t('results.aboveCommunity', { percent: 100 - topPercentile })}
                                 </p>
                             </div>
                         </motion.div>
@@ -151,7 +153,7 @@ export function ResultModal({ result, onClose, onRegister }) {
                                     {blockerCharacter}
                                 </p>
                                 <p className="text-sm text-text-dim font-handwriting">
-                                    te está costando {blockerMarks} completion marks
+                                    {t('results.costingYouMarks', { count: blockerMarks })}
                                 </p>
                             </div>
                         </motion.div>
@@ -166,10 +168,10 @@ export function ResultModal({ result, onClose, onRegister }) {
                             <FaClock className="w-6 h-6 text-green-500 flex-shrink-0" />
                             <div>
                                 <p className="font-heading text-lg text-text-heading">
-                                    ~{hoursRemaining} horas restantes
+                                    {t('results.hoursRemaining', { hours: hoursRemaining })}
                                 </p>
                                 <p className="text-sm text-text-dim font-handwriting">
-                                    estimación hasta Dead God
+                                    {t('results.estimateToDeadGod')}
                                 </p>
                             </div>
                         </motion.div>
@@ -182,15 +184,15 @@ export function ResultModal({ result, onClose, onRegister }) {
                                 <span className="text-xl">💀</span>
                                 <div>
                                     <p className="font-heading text-text-heading">
-                                        {mostDeaths?.count || '?'} muertes contra {mostDeaths?.boss || 'Desconocido'}
+                                        {t('results.deathsAgainst', { count: mostDeaths?.count || '?', boss: mostDeaths?.boss || t('common.unknown') })}
                                     </p>
-                                    <p className="text-sm text-text-dim">Tu boss más difícil</p>
+                                    <p className="text-sm text-text-dim">{t('results.yourHardestBoss')}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
                                 <span className="text-xl">📊</span>
                                 <div>
-                                    <p className="font-heading text-text-heading">Historial completo de progreso</p>
+                                    <p className="font-heading text-text-heading">{t('liveActivity.fullProgressHistory')}</p>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +200,7 @@ export function ResultModal({ result, onClose, onRegister }) {
                         {/* Overlay */}
                         <div className="absolute inset-0 flex items-center justify-center bg-bg-paper/80">
                             <span className="px-4 py-2 bg-black text-white text-sm font-heading">
-                                Crea cuenta para ver más stats
+                                {t('results.createAccountForMoreStats')}
                             </span>
                         </div>
                     </div>
@@ -211,7 +213,7 @@ export function ResultModal({ result, onClose, onRegister }) {
                         className="p-4 bg-accent-gold/5 border-2 border-accent-gold/20"
                     >
                         <p className="text-xs text-accent-gold font-heading uppercase mb-1">
-                            Próximo objetivo
+                            {t('results.nextObjectiveLabel')}
                         </p>
                         <p className="font-handwriting text-lg text-text-heading">
                             {nextObjective}
@@ -229,14 +231,14 @@ export function ResultModal({ result, onClose, onRegister }) {
                             onClick={onRegister}
                             className="w-full flex items-center justify-center gap-2 py-4 bg-accent-blood text-white font-heading text-lg border-[3px] border-black shadow-[4px_4px_0px_#000] hover:shadow-[6px_6px_0px_#000] hover:-translate-y-1 transition-all"
                         >
-                            Guardar mi progreso (gratis)
+                            {t('results.saveMyProgress')}
                             <FaChevronRight className="w-4 h-4" />
                         </button>
                         <button
                             onClick={onClose}
                             className="w-full py-2 text-text-dim font-handwriting text-sm hover:text-text-heading transition-colors"
                         >
-                            Analizar otro archivo
+                            {t('results.analyzeAnotherFile')}
                         </button>
                     </motion.div>
                 </div>

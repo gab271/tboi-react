@@ -1,11 +1,13 @@
 // FinalCTA.jsx - Final registration push section
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FaEnvelope, FaDiscord } from 'react-icons/fa';
 import { useAuth } from '../../hooks/useAuth';
 
 export function FinalCTA() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { user } = useAuth();
 
     // Don't show if user is already logged in
@@ -39,14 +41,14 @@ export function FinalCTA() {
                             viewport={{ once: true }}
                             className="font-heading text-2xl md:text-4xl uppercase tracking-tight mb-4"
                         >
-                            Tu progreso no debería
+                            {t('home.finalCtaTitle')}
                             <br />
-                            <span className="text-accent-blood">perderse en el Void</span>
+                            <span className="text-accent-blood">{t('home.finalCtaHighlight')}</span>
                         </motion.h2>
 
                         {/* Subtext */}
                         <p className="font-handwriting text-lg md:text-xl text-white/70 mb-8 max-w-lg mx-auto">
-                            Crea tu cuenta y guarda tu progreso, builds y logros para siempre. Es gratis.
+                            {t('home.finalCtaSubtext')}
                         </p>
 
                         {/* CTA buttons */}
@@ -56,30 +58,30 @@ export function FinalCTA() {
                                 className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-accent-blood text-white font-heading text-lg border-2 border-white/20 hover:bg-white hover:text-accent-blood transition-all"
                             >
                                 <FaEnvelope className="w-5 h-5" />
-                                Registrarme con email
+                                {t('home.finalCtaRegisterEmail')}
                             </button>
                             <button
                                 onClick={() => navigate('/auth/discord')}
                                 className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#5865F2] text-white font-heading text-lg border-2 border-white/20 hover:bg-white hover:text-[#5865F2] transition-all"
                             >
                                 <FaDiscord className="w-5 h-5" />
-                                Continuar con Discord
+                                {t('home.finalCtaContinueDiscord')}
                             </button>
                         </div>
 
                         {/* Trust message */}
                         <p className="text-sm text-white/50">
-                            Solo necesitamos tu email. Sin spam, lo prometemos.
+                            {t('home.finalCtaTrustMessage')}
                         </p>
 
                         {/* Login link */}
                         <p className="mt-4 text-sm text-white/50">
-                            ¿Ya tienes cuenta?{' '}
+                            {t('home.finalCtaHaveAccount')}{' '}
                             <button 
                                 onClick={() => navigate('/auth/login')}
                                 className="text-accent-gold hover:underline"
                             >
-                                Inicia sesión
+                                {t('home.finalCtaSignIn')}
                             </button>
                         </p>
                     </div>

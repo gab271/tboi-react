@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { fetchItem } from '../../lib/api';
 import { Button } from '../../components/ui/Button';
 import { FaShare, FaInfoCircle } from 'react-icons/fa';
@@ -51,6 +52,8 @@ const PoolIcon = ({ poolName }) => {
 // Quality Badge Component con colores oficiales y animación
 // Returns null for trinkets (quality is null/undefined)
 const QualityBadge = ({ quality, itemType }) => {
+  const { t } = useTranslation();
+  
   // Don't show quality for trinkets - they don't have quality in TBOI
   if (itemType === 'trinket' || quality === null || quality === undefined) {
     return null;
@@ -78,7 +81,7 @@ const QualityBadge = ({ quality, itemType }) => {
         )}
       </div>
       <div className="text-center">
-        <span className="text-xs font-handwriting text-text-dim uppercase tracking-widest block">Quality</span>
+        <span className="text-xs font-handwriting text-text-dim uppercase tracking-widest block">{t('items.quality')}</span>
         <span className="text-[10px] font-bold text-text-dim/60">{config.name}</span>
       </div>
     </div>
@@ -93,6 +96,7 @@ const Tag = ({ label }) => (
 );
 
 export function ItemDetail() {
+  const { t } = useTranslation();
   const { id } = useParams(); 
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('details');
@@ -110,9 +114,9 @@ export function ItemDetail() {
   if (isError || !item) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-4 bg-bg-paper">
-        <h2 className="text-4xl font-heading font-bold text-text-heading mb-4">Item Lost in the Void</h2>
+        <h2 className="text-4xl font-heading font-bold text-text-heading mb-4">{t('items.itemLostInVoid')}</h2>
         <p className="text-text-dim mb-8 font-handwriting text-2xl">The artifact you seek appears to have been rerolled.</p>
-        <Button onClick={() => navigate('/items')}>Return to Collection</Button>
+        <Button onClick={() => navigate('/items')}>{t('items.returnToCollection')}</Button>
       </div>
     );
   }
@@ -129,9 +133,9 @@ export function ItemDetail() {
         
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-3 text-sm font-handwriting text-text-dim mb-8 text-lg">
-          <Link to="/" className="hover:text-accent-blood transition-colors">Home</Link>
+          <Link to="/" className="hover:text-accent-blood transition-colors">{t('nav.home')}</Link>
           <span>/</span>
-          <Link to="/items" className="hover:text-accent-blood transition-colors">Items</Link>
+          <Link to="/items" className="hover:text-accent-blood transition-colors">{t('nav.items')}</Link>
           <span>/</span>
           <span className="text-text-heading font-bold">{item.name}</span>
         </nav>
@@ -162,7 +166,7 @@ export function ItemDetail() {
                    <div className="flex gap-4 w-full justify-center border-t-2 border-[#d3c6aa] pt-6 mb-2">
                        {item.item_id && (
                            <div className="text-center">
-                               <div className="text-xs uppercase font-bold tracking-widest text-text-dim mb-1">ID</div>
+                               <div className="text-xs uppercase font-bold tracking-widest text-text-dim mb-1">{t('items.id')}</div>
                                <div className="font-heading text-2xl">{item.item_id}</div>
                            </div>
                        )}
@@ -180,12 +184,12 @@ export function ItemDetail() {
              {/* Type & Pools */}
              <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-[#e6ddc5] rounded border-l-4 border-accent-blood">
-                   <span className="font-heading uppercase font-bold text-sm tracking-widest text-text-dim">Type</span>
+                   <span className="font-heading uppercase font-bold text-sm tracking-widest text-text-dim">{t('items.type')}</span>
                    <span className="font-heading font-bold text-lg capitalize">{item.type || item.item_type || 'Passive'}</span>
                 </div>
                 {item.pools && (
                     <div className="flex flex-col gap-3 p-4 bg-[#e6ddc5] rounded border-l-4 border-accent-gold">
-                    <span className="font-heading uppercase font-bold text-sm tracking-widest text-text-dim">Pools</span>
+                    <span className="font-heading uppercase font-bold text-sm tracking-widest text-text-dim">{t('items.pools')}</span>
                     <div className="flex flex-wrap gap-3">
                          {item.pools.split(',').map((p, i) => (
                              <PoolIcon key={i} poolName={p.trim()} />
@@ -216,7 +220,7 @@ export function ItemDetail() {
                <div className="flex flex-wrap gap-2 mb-6">
                  {(item.tags || []).map(tag => <Tag key={tag} label={tag} />)}
                  {(!item.tags || item.tags.length === 0) && (
-                     <span className="text-text-dim text-sm italic">No specific tags identified</span>
+                     <span className="text-text-dim text-sm italic">{t('items.noTagsIdentified')}</span>
                  )}
                </div>
                

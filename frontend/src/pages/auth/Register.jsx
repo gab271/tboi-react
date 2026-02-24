@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '../../lib/supabaseClient';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Input } from '../../components/ui/Input';
 import { FaEnvelope, FaLock, FaUser, FaArrowLeft, FaSkull, FaKey } from 'react-icons/fa';
 import { LoginLayout } from '../../components/LoginLayout/LoginLayout';
@@ -16,6 +17,7 @@ const Register = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const lastSubmitTime = useRef(0);
 
@@ -30,11 +32,11 @@ const Register = () => {
     if (isSubmitting) return;
 
     if (password !== confirmPassword) {
-      return setError('Las contraseñas no coinciden');
+      return setError(t('auth.passwordsNotMatch'));
     }
 
     if (password.length < 6) {
-        return setError('La contraseña debe tener al menos 6 caracteres');
+        return setError(t('auth.passwordTooShort'));
     }
 
     try {
@@ -51,7 +53,7 @@ const Register = () => {
          console.error(checkError);
       } else if (count > 0) {
          setIsSubmitting(false);
-         return setError('Este nombre de usuario ya está ocupado. Elige otro.');
+         return setError(t('auth.usernameAlreadyTaken'));
       }
 
       const { data, error } = await signUp(email, password, { username });
@@ -62,7 +64,7 @@ const Register = () => {
         navigate('/');
       }
     } catch (error) {
-      setError(error.message || 'Error al crear la cuenta');
+      setError(error.message || t('auth.errorCreatingAccount'));
     } finally {
       setIsSubmitting(false);
     }
@@ -76,7 +78,7 @@ const Register = () => {
         className="absolute -top-12 left-0 flex items-center gap-2 text-white/50 hover:text-white text-sm font-handwriting transition-colors group"
       >
         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> 
-        Volver al Codex
+        {t('auth.backToCodex')}
       </Link>
 
       {/* Header */}
@@ -92,7 +94,7 @@ const Register = () => {
         
         <div className="relative inline-block">
           <h1 className="text-2xl sm:text-3xl font-heading text-[#1a1a1a] tracking-widest uppercase">
-            ÚNETE AL DESCENSO
+            {t('auth.joinTheDescent')}
           </h1>
           <svg 
             className="absolute -bottom-1 left-0 w-full h-3" 
@@ -110,7 +112,7 @@ const Register = () => {
         </div>
         
         <p className="text-[#5c4a32]/70 mt-3 font-handwriting text-base sm:text-lg italic">
-          Crea tu cuenta para guardar tus builds
+          {t('auth.createAccountDescription')}
         </p>
       </div>
 
@@ -132,7 +134,7 @@ const Register = () => {
         {/* Username */}
         <div className="space-y-1">
           <label className="text-xs sm:text-sm font-bold text-[#1a1a1a] uppercase tracking-wider ml-1 font-pixel">
-            Usuario
+            {t('auth.username')}
           </label>
           <div className="relative group">
             <Input 
@@ -168,7 +170,7 @@ const Register = () => {
         {/* Password */}
         <div className="space-y-1">
           <label className="text-xs sm:text-sm font-bold text-[#1a1a1a] uppercase tracking-wider ml-1 font-pixel">
-            Contraseña
+            {t('auth.password')}
           </label>
           <div className="relative group">
             <Input 
@@ -186,7 +188,7 @@ const Register = () => {
         {/* Confirm Password */}
         <div className="space-y-1">
           <label className="text-xs sm:text-sm font-bold text-[#1a1a1a] uppercase tracking-wider ml-1 font-pixel">
-            Confirmar
+            {t('auth.confirm')}
           </label>
           <div className="relative group">
             <Input 
@@ -218,10 +220,10 @@ const Register = () => {
                 >
                   ⟳
                 </motion.span>
-                INVOCANDO...
+                {t('auth.summoning')}
               </>
             ) : (
-              'CREAR CUENTA'
+              t('auth.createAccount')
             )}
           </span>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
@@ -231,12 +233,12 @@ const Register = () => {
       {/* Footer Link */}
       <div className="mt-6 text-center">
         <p className="text-[#5c4a32]/70 font-handwriting text-sm sm:text-base">
-          ¿Ya tienes cuenta?{' '}
+          {t('auth.alreadyHaveAccount')}{' '}
           <Link 
             to="/login" 
             className="font-bold text-[#8a1c1c] hover:text-[#b91c1c] transition-colors relative inline-block group"
           >
-            Inicia Sesión
+            {t('auth.signIn')}
             <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-[#8a1c1c] group-hover:w-full transition-all duration-300" />
           </Link>
         </p>

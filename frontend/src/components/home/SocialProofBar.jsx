@@ -1,5 +1,6 @@
 // SocialProofBar.jsx - Stats bar showing community activity
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import { FaLayerGroup, FaUsers, FaTrophy, FaBolt } from 'react-icons/fa';
 
@@ -44,6 +45,7 @@ function AnimatedNumber({ value, duration = 1.5 }) {
 }
 
 export function SocialProofBar() {
+    const { t } = useTranslation();
     const [lastBuildTime, setLastBuildTime] = useState(STATS.lastBuildMinutes);
 
     // Simulate live updates
@@ -60,25 +62,25 @@ export function SocialProofBar() {
         {
             icon: FaLayerGroup,
             value: STATS.builds,
-            label: 'builds compartidas',
+            label: t('socialProof.buildsShared'),
             color: 'text-accent-blood',
         },
         {
             icon: FaUsers,
             value: STATS.users,
-            label: 'usuarios activos',
+            label: t('socialProof.activeUsers'),
             color: 'text-accent-gold',
         },
         {
             icon: FaTrophy,
             value: STATS.achievementsToday,
-            label: 'logros hoy',
+            label: t('socialProof.achievementsToday'),
             color: 'text-green-500',
         },
         {
             icon: FaBolt,
             value: lastBuildTime,
-            label: 'min desde última build',
+            label: t('socialProof.minSinceLastBuild'),
             color: 'text-blue-500',
             isLive: true,
         },

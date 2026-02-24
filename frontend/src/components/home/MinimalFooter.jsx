@@ -1,4 +1,5 @@
 // MinimalFooter.jsx - Compact footer for redesigned home
+import { useTranslation } from 'react-i18next';
 import { FaDiscord, FaGithub, FaTwitter, FaSkull } from 'react-icons/fa';
 
 const SOCIAL_LINKS = [
@@ -8,12 +9,14 @@ const SOCIAL_LINKS = [
 ];
 
 const LEGAL_LINKS = [
-    { label: 'Privacidad', href: '/privacy' },
-    { label: 'Términos', href: '/terms' },
-    { label: 'Contacto', href: '/contact' },
+    { labelKey: 'privacy', href: '/privacy' },
+    { labelKey: 'terms', href: '/terms' },
+    { labelKey: 'contact', href: '/contact' },
 ];
 
 export function MinimalFooter() {
+    const { t } = useTranslation();
+    
     return (
         <footer className="w-full px-4 md:px-8 py-8 border-t border-black/10">
             <div className="max-w-6xl mx-auto">
@@ -22,7 +25,7 @@ export function MinimalFooter() {
                     <div className="flex items-center gap-2 text-text-dim">
                         <FaSkull className="w-4 h-4" />
                         <span className="font-handwriting text-sm">
-                            Hecho con 💀 por fans para fans
+                            {t('footer.madeWithLove')}
                         </span>
                     </div>
 
@@ -43,9 +46,9 @@ export function MinimalFooter() {
                     {/* Right - Legal */}
                     <div className="flex items-center gap-4 text-xs text-text-dim">
                         {LEGAL_LINKS.map((link, index) => (
-                            <span key={link.label} className="flex items-center gap-4">
+                            <span key={link.labelKey} className="flex items-center gap-4">
                                 <a href={link.href} className="hover:text-text-ink transition-colors">
-                                    {link.label}
+                                    {t(`footer.${link.labelKey}`)}
                                 </a>
                                 {index < LEGAL_LINKS.length - 1 && (
                                     <span className="text-black/20">·</span>
@@ -57,7 +60,7 @@ export function MinimalFooter() {
 
                 {/* Copyright */}
                 <p className="text-center text-xs text-text-dim/60 mt-6">
-                    © 2026 Basement Bible — The Binding of Isaac es propiedad de Edmund McMillen
+                    {t('footer.copyright')}
                 </p>
             </div>
         </footer>

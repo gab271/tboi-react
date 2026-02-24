@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '../../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { 
   FaEnvelope, 
@@ -20,7 +21,7 @@ import {
 // ═══════════════════════════════════════════════════════════════
 // TBOI-STYLED AVATAR COMPONENT (Character Portrait Frame)
 // ═══════════════════════════════════════════════════════════════
-function IsaacAvatar({ url, size = 120, onUpload, uploading }) {
+function IsaacAvatar({ url, size = 120, onUpload, uploading, t }) {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const { user } = useAuth();
   const fileInputRef = useRef(null);
@@ -124,7 +125,7 @@ function IsaacAvatar({ url, size = 120, onUpload, uploading }) {
         className="flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] text-white font-pixel text-sm border-2 border-black hover:bg-[#2a2a2a] transition-colors shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px]"
       >
         <FaUpload className="w-3 h-3" />
-        {uploading ? 'Subiendo...' : 'Cambiar'}
+        {uploading ? t('account.uploading') : t('account.change')}
       </button>
     </div>
   );
@@ -196,19 +197,19 @@ function IsaacButton({ children, variant = 'primary', className = '', ...props }
 // ═══════════════════════════════════════════════════════════════
 // PLAYER STATS PANEL (Gamification with TBOI icons) - IMPROVED GRID
 // ═══════════════════════════════════════════════════════════════
-function PlayerStats({ memberSince, buildsCount = 0, votesGiven = 0, savedBuilds = 0 }) {
+function PlayerStats({ memberSince, buildsCount = 0, votesGiven = 0, savedBuilds = 0, t }) {
   const stats = [
-    { icon: FaHeart, label: 'Miembro desde', value: memberSince, color: 'text-red-500' },
-    { icon: FaTrophy, label: 'Builds', value: buildsCount, color: 'text-yellow-500' },
-    { icon: FaStar, label: 'Votos dados', value: votesGiven, color: 'text-yellow-400' },
-    { icon: FaBookmark, label: 'Guardados', value: savedBuilds, color: 'text-blue-400' },
+    { icon: FaHeart, label: t('account.memberSince'), value: memberSince, color: 'text-red-500' },
+    { icon: FaTrophy, label: t('account.builds'), value: buildsCount, color: 'text-yellow-500' },
+    { icon: FaStar, label: t('account.votesGiven'), value: votesGiven, color: 'text-yellow-400' },
+    { icon: FaBookmark, label: t('account.saved'), value: savedBuilds, color: 'text-blue-400' },
   ];
 
   return (
     <div className="bg-[#f4f1ea] border-2 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] transform rotate-1">
       <h3 className="font-heading text-lg uppercase mb-4 pb-2 border-b-2 border-dashed border-black/40 flex items-center gap-2">
         <FaBomb className="text-black/60" />
-        Player Stats
+        {t('account.playerStats')}
       </h3>
       {/* Grid layout for better alignment */}
       <div className="grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-2 items-center">
@@ -224,7 +225,7 @@ function PlayerStats({ memberSince, buildsCount = 0, votesGiven = 0, savedBuilds
       {/* Doodle decoration */}
       <div className="mt-4 pt-3 border-t border-dashed border-black/20">
         <p className="font-handwriting text-xs text-black/40 italic text-center">
-          "The more you explore, the more you find..."
+          "{t('account.statsQuote')}"
         </p>
       </div>
     </div>
@@ -295,6 +296,7 @@ function Alert({ type, message }) {
 export default function Account() {
   const { user: _user, session, updatePassword, signOut } = useAuth();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   
   // Profile State
   const [loading, setLoading] = useState(false);
@@ -337,7 +339,7 @@ export default function Account() {
         setUsername(data.username || '');
         setAvatarUrl(data.avatar_url);
         if (data.created_at) {
-          setMemberSince(new Date(data.created_at).toLocaleDateString('es-ES', {
+          setMemberSince(new Date(data.created_at).toLocaleDateString(i18n.language === 'es' ? 'es-ES' : 'en-US', {
             year: 'numeric',
             month: 'short'
           }));
@@ -411,7 +413,7 @@ export default function Account() {
     if (error) {
       setProfileMessage({ type: 'error', text: error.message });
     } else {
-      setProfileMessage({ type: 'success', text: '¡Perfil actualizado!' });
+      setProfileMessage({ type: 'success', text: t('account.profileUpdated') });
     }
     setLoading(false);
   }
@@ -427,12 +429,12 @@ export default function Account() {
     setSecurityMessage(null);
 
     if (password !== confirmPassword) {
-      setSecurityMessage({ type: 'error', text: 'Las contraseñas no coinciden' });
+      setSecurityMessage({ type: 'error', text: t('account.passwordsNotMatch') });
       return;
     }
 
     if (password.length < 6) {
-      setSecurityMessage({ type: 'error', text: 'La contraseña debe tener al menos 6 caracteres' });
+      setSecurityMessage({ type: 'error', text: t('account.passwordTooShort') });
       return;
     }
 
@@ -440,7 +442,7 @@ export default function Account() {
     if (error) {
       setSecurityMessage({ type: 'error', text: error.message });
     } else {
-      setSecurityMessage({ type: 'success', text: '¡Contraseña actualizada!' });
+      setSecurityMessage({ type: 'success', text: t('account.passwordUpdated') });
       setPassword('');
       setConfirmPassword('');
     }
@@ -448,7 +450,7 @@ export default function Account() {
 
   // Handle Account Deletion
   async function handleDeleteAccount() {
-    if (!window.confirm('⚠️ ¿Estás SEGURO?\n\nEsta acción es IRREVERSIBLE y borrará todos tus datos, incluyendo:\n- Tu perfil\n- Tus builds\n- Tus favoritos\n- Todos tus datos')) {
+    if (!window.confirm(t('account.deleteConfirmation'))) {
       return;
     }
 
@@ -461,7 +463,7 @@ export default function Account() {
     }).then(res => res.json());
 
     if (error) {
-      alert('Error al borrar cuenta: ' + error);
+      alert(t('account.deleteError') + ': ' + error);
     } else {
       await signOut();
       navigate('/');
@@ -481,10 +483,10 @@ export default function Account() {
         <header className="mb-8 border-b-4 border-dashed border-stone-600 pb-4">
           <h1 className="text-4xl md:text-5xl font-heading uppercase tracking-tight text-stone-200 flex items-center gap-3">
             <FaUser className="text-accent-blood" />
-            Tu Cuenta
+            {t('account.title')}
           </h1>
           <p className="font-handwriting text-xl text-stone-400 mt-2 transform -rotate-1">
-            Gestiona tu perfil y seguridad
+            {t('account.subtitle')}
           </p>
         </header>
 
@@ -495,14 +497,14 @@ export default function Account() {
             onClick={() => setActiveTab('profile')}
             icon={FaUser}
           >
-            Perfil
+            {t('account.profile')}
           </TabButton>
           <TabButton 
             active={activeTab === 'security'} 
             onClick={() => setActiveTab('security')}
             icon={FaKey}
           >
-            Seguridad
+            {t('account.security')}
           </TabButton>
           <TabButton 
             active={activeTab === 'danger'} 
@@ -510,7 +512,7 @@ export default function Account() {
             icon={FaSkull}
             variant="danger"
           >
-            Peligro
+            {t('account.danger')}
           </TabButton>
         </div>
 
@@ -536,6 +538,7 @@ export default function Account() {
                     size={140}
                     onUpload={handleAvatarUpload}
                     uploading={uploading}
+                    t={t}
                   />
                   
                   {/* Stats Panel - Desktop only */}
@@ -545,6 +548,7 @@ export default function Account() {
                       buildsCount={userStats.buildsCount}
                       votesGiven={userStats.votesGiven}
                       savedBuilds={userStats.savedBuilds}
+                      t={t}
                     />
                   </div>
                 </div>
@@ -553,28 +557,28 @@ export default function Account() {
                 <form onSubmit={updateProfile} className="flex-1 space-y-6">
                   <IsaacInput
                     icon={FaEnvelope}
-                    label="Email"
+                    label={t('account.emailLabel')}
                     type="email"
                     value={session?.user.email || ''}
                     disabled
                   />
                   <p className="text-xs font-handwriting text-black/50 -mt-4 ml-6">
-                    (El email no se puede cambiar)
+                    {t('account.emailCannotChange')}
                   </p>
                   
                   <IsaacInput
                     icon={FaUser}
-                    label="Nombre de Usuario"
+                    label={t('account.usernameLabel')}
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Tu nombre en el codex..."
+                    placeholder={t('account.usernamePlaceholder')}
                   />
 
                   <Alert type={profileMessage?.type} message={profileMessage?.text} />
 
                   <IsaacButton type="submit" disabled={loading}>
-                    {loading ? 'Guardando...' : 'Guardar Cambios'}
+                    {loading ? t('account.saving') : t('account.saveChanges')}
                   </IsaacButton>
                 </form>
               </div>
@@ -586,6 +590,7 @@ export default function Account() {
                   buildsCount={userStats.buildsCount}
                   votesGiven={userStats.votesGiven}
                   savedBuilds={userStats.savedBuilds}
+                  t={t}
                 />
               </div>
             </motion.div>
@@ -600,13 +605,13 @@ export default function Account() {
             >
               <div className="flex items-center gap-3 mb-6 pb-3 border-b-2 border-dashed border-black/30">
                 <FaKey className="w-6 h-6 text-accent-blood" />
-                <h2 className="font-heading text-xl uppercase">Cambiar Contraseña</h2>
+                <h2 className="font-heading text-xl uppercase">{t('account.changePassword')}</h2>
               </div>
               
               <form onSubmit={handlePasswordUpdate} className="space-y-6">
                 <IsaacInput
                   icon={FaKey}
-                  label="Nueva Contraseña"
+                  label={t('account.newPassword')}
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -615,7 +620,7 @@ export default function Account() {
                 
                 <IsaacInput
                   icon={FaKey}
-                  label="Confirmar Contraseña"
+                  label={t('account.confirmPassword')}
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -625,7 +630,7 @@ export default function Account() {
                 <Alert type={securityMessage?.type} message={securityMessage?.text} />
 
                 <IsaacButton type="submit" disabled={loading}>
-                  Actualizar Contraseña
+                  {t('account.updatePassword')}
                 </IsaacButton>
               </form>
             </motion.div>
@@ -642,9 +647,9 @@ export default function Account() {
               <div className="bg-red-900/20 border-2 border-red-800 p-4 mb-6 flex items-start gap-3">
                 <FaExclamationTriangle className="w-6 h-6 text-red-500 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-heading text-lg text-red-400 uppercase">Zona de Peligro</h3>
+                  <h3 className="font-heading text-lg text-red-400 uppercase">{t('account.dangerZone')}</h3>
                   <p className="font-handwriting text-red-300/80 mt-1">
-                    Las acciones aquí son irreversibles. Procede con cuidado.
+                    {t('account.dangerZoneDescription')}
                   </p>
                 </div>
               </div>
@@ -653,26 +658,26 @@ export default function Account() {
               <div className="bg-[#2a1a1a] border-2 border-red-900/50 p-6 transform -rotate-[0.5deg]">
                 <div className="flex items-center gap-3 mb-4">
                   <FaSkull className="w-6 h-6 text-red-500" />
-                  <h3 className="font-heading text-lg text-red-400 uppercase">Eliminar Cuenta</h3>
+                  <h3 className="font-heading text-lg text-red-400 uppercase">{t('account.deleteAccount')}</h3>
                 </div>
                 
                 <p className="font-handwriting text-gray-400 mb-4 leading-relaxed">
-                  Una vez que elimines tu cuenta, <span className="text-red-400 font-bold">no hay vuelta atrás</span>. 
-                  Esto eliminará permanentemente:
+                  {t('account.deleteDescription')} <span className="text-red-400 font-bold">{t('account.deleteWarning')}</span>. 
+                  {t('account.deleteWillRemove')}
                 </p>
                 
                 <ul className="font-pixel text-sm text-gray-500 space-y-1 mb-6 ml-4">
                   <li className="flex items-center gap-2">
-                    <span className="text-red-500">×</span> Tu perfil y avatar
+                    <span className="text-red-500">×</span> {t('account.deleteProfileAvatar')}
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="text-red-500">×</span> Todas tus builds
+                    <span className="text-red-500">×</span> {t('account.deleteAllBuilds')}
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="text-red-500">×</span> Tus favoritos y votos
+                    <span className="text-red-500">×</span> {t('account.deleteFavoritesVotes')}
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="text-red-500">×</span> Todos tus comentarios
+                    <span className="text-red-500">×</span> {t('account.deleteAllComments')}
                   </li>
                 </ul>
 
@@ -681,7 +686,7 @@ export default function Account() {
                   onClick={handleDeleteAccount}
                 >
                   <FaSkull className="w-4 h-4 mr-2" />
-                  Eliminar mi cuenta permanentemente
+                  {t('account.deleteAccountButton')}
                 </IsaacButton>
               </div>
             </motion.div>

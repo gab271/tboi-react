@@ -4,6 +4,7 @@
  */
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaPlus, 
@@ -21,6 +22,7 @@ import { LoginRequiredModal } from './LoginRequiredModal';
 
 export function BuildsPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   
   // State
@@ -110,7 +112,7 @@ export function BuildsPage() {
               COMMUNITY BUILDS
             </h1>
             <p className="font-handwriting text-xl text-text-dim mt-2">
-              Sinergias compartidas por la comunidad
+              {t('builds.communityShared')}
             </p>
           </div>
           

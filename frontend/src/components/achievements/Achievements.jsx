@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Banner from "../banner/Banner";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
@@ -7,6 +8,7 @@ import "./Achievements.css";
 
 
 function Achievements() {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredAchievements = achievementsData.filter(achievement =>
@@ -16,13 +18,13 @@ function Achievements() {
   return (
     <>
       <Header />
-      <Banner title="Achievements" />
+      <Banner title={t('nav.achievements')} />
       
       <div className="achievements-container">
         <div className="search-section">
           <input
             type="text"
-            placeholder="Search achievements..."
+            placeholder={t('search.searchAchievements')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"

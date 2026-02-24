@@ -3,6 +3,7 @@
  * Display and manage comments on a build
  */
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaUser, 
@@ -33,6 +34,7 @@ const formatRelativeTime = (dateString) => {
 
 // Single Comment Component
 function Comment({ comment, postId, onLoginRequired, onReport }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [showReply, setShowReply] = useState(false);
   const [replyContent, setReplyContent] = useState('');
@@ -163,7 +165,7 @@ function Comment({ comment, postId, onLoginRequired, onReport }) {
               <textarea
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
-                placeholder="Write a reply..."
+                placeholder={t('builds.comments.writeReply')}
                 rows={2}
                 maxLength={VALIDATION.comment.max}
                 className="flex-1 p-2 bg-bg-paper-dark border border-text-ink/30 font-handwriting text-lg focus:outline-none focus:border-accent-blood resize-none"
@@ -196,6 +198,7 @@ function Comment({ comment, postId, onLoginRequired, onReport }) {
 
 // Main CommentsList Component
 export function CommentsList({ postId, comments = [], onLoginRequired, onReport }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [newComment, setNewComment] = useState('');
   
@@ -236,7 +239,7 @@ export function CommentsList({ postId, comments = [], onLoginRequired, onReport 
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Share your thoughts..."
+                placeholder={t('builds.comments.shareThoughts')}
                 rows={3}
                 maxLength={VALIDATION.comment.max}
                 className="w-full p-3 bg-bg-paper-dark border border-text-ink/20 font-handwriting text-lg focus:outline-none focus:border-accent-blood resize-none"

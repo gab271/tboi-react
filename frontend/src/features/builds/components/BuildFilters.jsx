@@ -3,6 +3,7 @@
  * Sidebar filters for the builds feed
  */
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaTimes, FaSearch } from 'react-icons/fa';
 import { cn } from '../../../lib/utils';
 import { 
@@ -20,6 +21,7 @@ export function BuildFilters({
   onClose,
   className 
 }) {
+  const { t } = useTranslation();
   const [tagInput, setTagInput] = useState('');
   const [showAllCharacters, setShowAllCharacters] = useState(false);
   
@@ -71,7 +73,7 @@ export function BuildFilters({
     )}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-dashed border-text-ink/30">
-        <h2 className="font-heading text-lg text-text-heading">FILTERS</h2>
+        <h2 className="font-heading text-lg text-text-heading">{t('builds.filters.title')}</h2>
         {onClose && (
           <button 
             onClick={onClose}
@@ -114,7 +116,7 @@ export function BuildFilters({
           <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-dim w-4 h-4" />
           <input
             type="text"
-            placeholder="Search builds..."
+            placeholder={t('builds.filters.search')}
             value={filters.search || ''}
             onChange={(e) => handleFilterChange('search', e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-bg-paper-dark border-2 border-text-ink/40 font-handwriting text-lg focus:outline-none focus:border-accent-blood"
@@ -183,7 +185,7 @@ export function BuildFilters({
           onChange={(e) => handleFilterChange('gameVersion', e.target.value || null)}
           className="w-full py-2 px-3 bg-bg-paper-dark border-2 border-text-ink/40 font-pixel text-sm focus:outline-none focus:border-accent-blood"
         >
-          <option value="">All Versions</option>
+          <option value="">{t('builds.allVersions')}</option>
           {GAME_VERSIONS.map((ver) => (
             <option key={ver.value} value={ver.value}>
               {ver.label}
@@ -255,7 +257,7 @@ export function BuildFilters({
         {/* Tag Input */}
         <input
           type="text"
-          placeholder="Add tag..."
+          placeholder={t('builds.filters.addTag')}
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={(e) => {

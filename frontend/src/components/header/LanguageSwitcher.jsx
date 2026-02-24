@@ -8,12 +8,12 @@ import {
 } from '../ui/DropdownMenu';
 
 const languages = [
-  { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'en', flag: '🇺🇸' },
+  { code: 'es', flag: '🇪🇸' },
 ];
 
 function LanguageSwitcher() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
 
   const changeLanguage = (langCode) => {
@@ -26,7 +26,7 @@ function LanguageSwitcher() {
         <button 
           type="button"
           className="icon-btn"
-          aria-label="Change language"
+          aria-label={t('accessibility.changeLanguage')}
         >
           <FaGlobe className="w-[18px] h-[18px]" />
         </button>
@@ -44,7 +44,7 @@ function LanguageSwitcher() {
             }`}
           >
             <span>{lang.flag}</span>
-            <span className="font-heading">{lang.label}</span>
+            <span className="font-heading">{t(`language.${lang.code}`)}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

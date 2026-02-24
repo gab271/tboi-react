@@ -1,6 +1,7 @@
 /**
  * HeartDisplay - Muestra la vida inicial del personaje con iconos reales
  */
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../../lib/utils';
 
 // Sprite paths
@@ -79,6 +80,8 @@ function Heart({ type, half = false, className }) {
  * HeartDisplay - Renderiza la vida inicial completa
  */
 export function HeartDisplay({ health, className }) {
+  const { t } = useTranslation();
+  
   if (!health) return null;
   
   // Random (Eden)
@@ -109,16 +112,16 @@ export function HeartDisplay({ health, className }) {
       <div className={cn("flex items-center gap-2", className)}>
         {health.hasHolyMantle && (
           <span className="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full">
-            ✨ Holy Mantle
+            ✨ {t('characters.holyMantle')}
           </span>
         )}
         {health.hasFlight && (
           <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
-            🪽 Flight
+            🪽 {t('characters.flight')}
           </span>
         )}
         {!health.hasHolyMantle && !health.hasFlight && (
-          <span className="text-sm text-red-500">Sin vida</span>
+          <span className="text-sm text-red-500">{t('characters.noLife')}</span>
         )}
       </div>
     );
@@ -178,17 +181,17 @@ export function HeartDisplay({ health, className }) {
       
       {/* Special indicators */}
       {health.hasHolyMantle && (
-        <span className="ml-2 text-xs px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full" title="Holy Mantle">
+        <span className="ml-2 text-xs px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full" title={t('characters.holyMantle')}>
           ✨
         </span>
       )}
       {health.hasFlight && (
-        <span className="ml-1 text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full" title="Flight">
+        <span className="ml-1 text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full" title={t('characters.flight')}>
           🪽
         </span>
       )}
       {health.healthDrain && (
-        <span className="ml-1 text-xs px-2 py-0.5 bg-red-100 text-red-700 rounded-full" title="Life Drain">
+        <span className="ml-1 text-xs px-2 py-0.5 bg-red-100 text-red-700 rounded-full" title={t('characters.lifeDrain')}>
           ⬇️
         </span>
       )}

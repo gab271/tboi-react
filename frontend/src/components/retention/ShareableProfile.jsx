@@ -1,75 +1,38 @@
 // ShareableProfile.jsx - Perfil que el usuario quiere compartir
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { FaShare, FaDiscord, FaTwitter, FaCopy, FaCheck, FaTrophy, FaSkull, FaBolt, FaMedal, FaFire, FaGem } from 'react-icons/fa';
 import { cn } from '../../lib/utils';
 
-// Definición de badges
-const BADGES = {
-    dead_god: {
-        id: 'dead_god',
-        name: 'Dead God',
-        icon: FaTrophy,
-        color: 'accent-gold',
-        bgGradient: 'from-yellow-400 to-amber-600',
-        condition: (stats) => stats.percentage === 100,
-        description: '100% completado'
-    },
-    masochist: {
-        id: 'masochist',
-        name: 'Masoquista',
-        icon: FaSkull,
-        color: 'accent-blood',
-        bgGradient: 'from-red-500 to-red-700',
-        condition: (stats) => stats.taintedCompletion === 100,
-        description: '100% Tainted completado'
-    },
-    speedrunner: {
-        id: 'speedrunner',
-        name: 'Speedrunner',
-        icon: FaBolt,
-        color: 'blue-500',
-        bgGradient: 'from-blue-400 to-blue-600',
-        condition: (stats) => stats.avgRunTime < 25,
-        description: 'Promedio <25 min por run'
-    },
-    veteran: {
-        id: 'veteran',
-        name: 'Veterano',
-        icon: FaMedal,
-        color: 'purple-500',
-        bgGradient: 'from-purple-400 to-purple-600',
-        condition: (stats) => stats.totalRuns >= 500,
-        description: '500+ runs jugadas'
-    },
-    streak_master: {
-        id: 'streak_master',
-        name: 'En Racha',
-        icon: FaFire,
-        color: 'orange-500',
-        bgGradient: 'from-orange-400 to-red-500',
-        condition: (stats) => stats.currentStreak >= 10,
-        description: '10+ victorias seguidas'
-    },
-    hitless: {
-        id: 'hitless',
-        name: 'Intocable',
-        icon: FaGem,
-        color: 'cyan-400',
-        bgGradient: 'from-cyan-300 to-cyan-500',
-        condition: (stats) => stats.hitlessRuns >= 5,
-        description: '5+ runs sin daño'
-    }
+// Badge icons mapping
+const BADGE_ICONS = {
+    dead_god: FaTrophy,
+    masochist: FaSkull,
+    speedrunner: FaBolt,
+    veteran: FaMedal,
+    streak_master: FaFire,
+    hitless: FaGem
 };
 
-// Estilos de juego detectables
-const PLAY_STYLES = {
-    speedrunner: { name: 'Speedrunner', desc: 'Runs rápidas y eficientes' },
-    strategist: { name: 'Estratega', desc: 'Runs largas y calculadas' },
-    angel: { name: 'Ángel', desc: 'Prefiere Angel Rooms' },
-    devil: { name: 'Demonio', desc: 'Prefiere Devil Deals' },
-    risk_taker: { name: 'Arriesgado', desc: 'Toma muchos riesgos' },
-    collector: { name: 'Coleccionista', desc: 'Explora todo' }
+// Badge gradients
+const BADGE_GRADIENTS = {
+    dead_god: 'from-yellow-400 to-amber-600',
+    masochist: 'from-red-500 to-red-700',
+    speedrunner: 'from-blue-400 to-blue-600',
+    veteran: 'from-purple-400 to-purple-600',
+    streak_master: 'from-orange-400 to-red-500',
+    hitless: 'from-cyan-300 to-cyan-500'
+};
+
+// Badge conditions
+const BADGE_CONDITIONS = {
+    dead_god: (stats) => stats.percentage === 100,
+    masochist: (stats) => stats.taintedCompletion === 100,
+    speedrunner: (stats) => stats.avgRunTime < 25,
+    veteran: (stats) => stats.totalRuns >= 500,
+    streak_master: (stats) => stats.currentStreak >= 10,
+    hitless: (stats) => stats.hitlessRuns >= 5
 };
 
 // Mock data
@@ -87,19 +50,20 @@ const MOCK_PROFILE = {
     taintedCompletion: 45,
     avgRunTime: 34,
     hitlessRuns: 2,
-    recentAchievement: { name: 'Completó Tainted Lost', date: '2 días' },
+    recentAchievement: { name: 'Completed Tainted Lost', date: '2 days' },
     badges: ['veteran', 'streak_master']
 };
 
 export function ShareableProfile({ profile = MOCK_PROFILE, isOwnProfile = true }) {
+    const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
 
-    // Calcular badges ganados
-    const earnedBadges = Object.values(BADGES).filter(badge => 
-        profile.badges?.includes(badge.id) || badge.condition(profile)
+    // Calculate earned badges using translation-based structure
+    const badgeIds = Object.keys(BADGE_CONDITIONS);
+    const earnedBadges = badgeIds.filter(id => 
+        profile.badges?.includes(id) || BADGE_CONDITIONS[id](profile)
     );
 
-    const playStyle = PLAY_STYLES[profile.playStyle] || PLAY_STYLES.strategist;
     const profileUrl = `isaaccompanion.gg/@${profile.username}`;
 
     const handleCopyLink = async () => {
@@ -109,12 +73,12 @@ export function ShareableProfile({ profile = MOCK_PROFILE, isOwnProfile = true }
     };
 
     const handleShareDiscord = () => {
-        const text = `🎮 Mi perfil en Isaac Companion\n${profile.percentage}% → Dead God | ${profile.winrate}% winrate\nhttps://${profileUrl}`;
+        const text = `🎮 My Isaac Companion Profile\n${profile.percentage}% → Dead God | ${profile.winrate}% winrate\nhttps://${profileUrl}`;
         window.open(`https://discord.com/channels/@me?text=${encodeURIComponent(text)}`, '_blank');
     };
 
     const handleShareTwitter = () => {
-        const text = `🎮 Mi progreso en The Binding of Isaac:\n${profile.percentage}% hacia Dead God\n${profile.totalRuns} runs | ${profile.winrate}% winrate\n\n#BindingOfIsaac #DeadGod`;
+        const text = `🎮 My progress in The Binding of Isaac:\n${profile.percentage}% towards Dead God\n${profile.totalRuns} runs | ${profile.winrate}% winrate\n\n#BindingOfIsaac #DeadGod`;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=https://${profileUrl}`, '_blank');
     };
 
@@ -160,26 +124,29 @@ export function ShareableProfile({ profile = MOCK_PROFILE, isOwnProfile = true }
 
                     {/* Play style */}
                     <p className="font-handwriting text-white/70">
-                        {playStyle.name} · {playStyle.desc}
+                        {t(`profile.playStyles.${profile.playStyle || 'strategist'}.name`)} · {t(`profile.playStyles.${profile.playStyle || 'strategist'}.desc`)}
                     </p>
 
                     {/* Badges */}
                     {earnedBadges.length > 0 && (
                         <div className="flex justify-center gap-2 mt-4">
-                            {earnedBadges.map(badge => (
-                                <motion.div
-                                    key={badge.id}
-                                    whileHover={{ scale: 1.1, rotate: 5 }}
-                                    className={cn(
-                                        "w-10 h-10 rounded-full flex items-center justify-center",
-                                        `bg-gradient-to-br ${badge.bgGradient}`,
-                                        "border-2 border-white/30 shadow-lg"
-                                    )}
-                                    title={`${badge.name}: ${badge.description}`}
-                                >
-                                    <badge.icon className="w-5 h-5 text-white" />
-                                </motion.div>
-                            ))}
+                            {earnedBadges.map(badgeId => {
+                                const BadgeIcon = BADGE_ICONS[badgeId];
+                                return (
+                                    <motion.div
+                                        key={badgeId}
+                                        whileHover={{ scale: 1.1, rotate: 5 }}
+                                        className={cn(
+                                            "w-10 h-10 rounded-full flex items-center justify-center",
+                                            `bg-gradient-to-br ${BADGE_GRADIENTS[badgeId]}`,
+                                            "border-2 border-white/30 shadow-lg"
+                                        )}
+                                        title={`${t(`profile.badges.${badgeId}.name`)}: ${t(`profile.badges.${badgeId}.description`)}`}
+                                    >
+                                        <BadgeIcon className="w-5 h-5 text-white" />
+                                    </motion.div>
+                                );
+                            })}
                         </div>
                     )}
                 </div>
@@ -190,15 +157,15 @@ export function ShareableProfile({ profile = MOCK_PROFILE, isOwnProfile = true }
                     <div className="grid grid-cols-3 gap-4 mb-6 text-center">
                         <div>
                             <p className="font-heading text-3xl text-accent-gold">{profile.percentage}%</p>
-                            <p className="text-xs text-text-dim font-handwriting">progreso</p>
+                            <p className="text-xs text-text-dim font-handwriting">{t('profile.progress')}</p>
                         </div>
                         <div>
                             <p className="font-heading text-3xl text-text-heading">{profile.totalRuns}</p>
-                            <p className="text-xs text-text-dim font-handwriting">runs</p>
+                            <p className="text-xs text-text-dim font-handwriting">{t('profile.runs')}</p>
                         </div>
                         <div>
                             <p className="font-heading text-3xl text-green-500">{profile.winrate}%</p>
-                            <p className="text-xs text-text-dim font-handwriting">winrate</p>
+                            <p className="text-xs text-text-dim font-handwriting">{t('profile.winrate')}</p>
                         </div>
                     </div>
 
@@ -211,10 +178,10 @@ export function ShareableProfile({ profile = MOCK_PROFILE, isOwnProfile = true }
                             onError={(e) => { e.target.src = '/sprites/placeholder.png'; }}
                         />
                         <div>
-                            <p className="text-xs text-text-dim font-handwriting">Personaje principal</p>
+                            <p className="text-xs text-text-dim font-handwriting">{t('profile.mainCharacter')}</p>
                             <p className="font-heading text-text-heading">
                                 {profile.mainCharacter.name}
-                                <span className="text-text-dim font-normal"> · {profile.mainCharacter.runs} runs</span>
+                                <span className="text-text-dim font-normal"> · {profile.mainCharacter.runs} {t('profile.runs')}</span>
                             </p>
                         </div>
                     </div>
@@ -225,10 +192,10 @@ export function ShareableProfile({ profile = MOCK_PROFILE, isOwnProfile = true }
                             <FaFire className="w-5 h-5 text-orange-500" />
                             <div>
                                 <p className="font-heading text-orange-500">
-                                    Racha actual: {profile.currentStreak} victorias
+                                    {t('profile.currentStreak', { count: profile.currentStreak })}
                                 </p>
                                 <p className="text-xs text-text-dim">
-                                    Mejor racha: {profile.bestStreak}
+                                    {t('profile.bestStreak', { count: profile.bestStreak })}
                                 </p>
                             </div>
                         </div>
@@ -238,11 +205,11 @@ export function ShareableProfile({ profile = MOCK_PROFILE, isOwnProfile = true }
                     {profile.recentAchievement && (
                         <div className="p-3 bg-accent-gold/5 border-2 border-accent-gold/20 mb-6">
                             <p className="text-xs text-accent-gold font-heading uppercase mb-1">
-                                Logro reciente
+                                {t('profile.recentAchievement')}
                             </p>
                             <p className="font-handwriting text-text-heading">
                                 {profile.recentAchievement.name}
-                                <span className="text-text-dim"> · hace {profile.recentAchievement.date}</span>
+                                <span className="text-text-dim"> · {t('profile.ago')} {profile.recentAchievement.date}</span>
                             </p>
                         </div>
                     )}
@@ -251,7 +218,7 @@ export function ShareableProfile({ profile = MOCK_PROFILE, isOwnProfile = true }
                     {isOwnProfile && (
                         <div className="space-y-3">
                             <p className="text-xs text-text-dim font-heading uppercase text-center mb-2">
-                                Compartir perfil
+                                {t('profile.shareProfile')}
                             </p>
                             
                             <div className="grid grid-cols-3 gap-2">
@@ -260,7 +227,7 @@ export function ShareableProfile({ profile = MOCK_PROFILE, isOwnProfile = true }
                                     className="flex items-center justify-center gap-2 py-3 bg-black/5 border-2 border-black/20 font-heading text-xs hover:bg-black/10 transition-colors"
                                 >
                                     {copied ? <FaCheck className="text-green-500" /> : <FaCopy />}
-                                    {copied ? 'Copiado' : 'Copiar'}
+                                    {copied ? t('profile.copied') : t('profile.copy')}
                                 </button>
                                 <button
                                     onClick={handleShareDiscord}

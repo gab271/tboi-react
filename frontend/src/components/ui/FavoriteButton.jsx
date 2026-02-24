@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { useFavorites } from '../../features/favorites/useFavorites';
 import { useAuth } from '../../hooks/useAuth';
 
 const FavoriteButton = ({ entityType, entityId }) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { isFavorite, toggleFavorite, isToggling } = useFavorites();
   const favorite = isFavorite(entityType, entityId);
@@ -9,7 +11,7 @@ const FavoriteButton = ({ entityType, entityId }) => {
   const handleClick = (e) => {
     e.preventDefault();
     if (!user) {
-      alert('Please login to add to favorites');
+      alert(t('favorites.loginToAdd'));
       return;
     }
     toggleFavorite({ entityType, entityId, isFavorite: favorite });

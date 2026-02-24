@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
 import { FaEnvelope, FaArrowLeft, FaSkull, FaCheckCircle, FaQuestion } from 'react-icons/fa';
@@ -7,6 +8,7 @@ import { LoginLayout } from '../../components/LoginLayout/LoginLayout';
 import { motion } from 'framer-motion';
 
 const ForgotPassword = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -48,7 +50,7 @@ const ForgotPassword = () => {
         className="absolute -top-12 left-0 flex items-center gap-2 text-white/50 hover:text-white text-sm font-handwriting transition-colors group"
       >
         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> 
-        Volver al login
+        {t('auth.backToLogin')}
       </Link>
 
       {/* Header */}
@@ -145,10 +147,10 @@ const ForgotPassword = () => {
                 >
                   ⟳
                 </motion.span>
-                ENVIANDO...
+                {t('auth.sendingLink')}
               </>
             ) : (
-              'ENVIAR LINK'
+              t('auth.sendLink')
             )}
           </span>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
@@ -158,12 +160,12 @@ const ForgotPassword = () => {
       {/* Footer Link */}
       <div className="mt-8 text-center">
         <p className="text-[#5c4a32]/70 font-handwriting text-base sm:text-lg">
-          ¿Te acordaste?{' '}
+          {t('auth.rememberedPassword')}{' '}
           <Link 
             to="/login" 
             className="font-bold text-[#8a1c1c] hover:text-[#b91c1c] transition-colors relative inline-block group"
           >
-            Entra aquí
+            {t('auth.enterHere')}
             <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-[#8a1c1c] group-hover:w-full transition-all duration-300" />
           </Link>
         </p>

@@ -2,20 +2,22 @@ import { useEffect, useState } from 'react'
 import { Command } from 'cmdk'
 import { FaSearch, FaSpinner, FaBoxOpen, FaSkull, FaUser, FaHome, FaHammer, FaTimes } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export function CommandPalette({ open, onOpenChange }) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [value, setValue] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
 
   // Static Routes Definition
   const staticRoutes = [
-    { label: 'Home', path: '/', icon: <FaHome />, shortcut: 'H' },
-    { label: 'All Items', path: '/items', icon: <FaBoxOpen />, shortcut: 'I' },
-    { label: 'Bosses', path: '/bosses', icon: <FaSkull />, shortcut: 'B' },
-    { label: 'Characters', path: '/characters', icon: <FaUser />, shortcut: 'C' },
-    { label: 'Builds', path: '/builds', icon: <FaHammer />, shortcut: 'T' },
+    { label: t('nav.home'), path: '/', icon: <FaHome />, shortcut: 'H' },
+    { label: t('items.allItems'), path: '/items', icon: <FaBoxOpen />, shortcut: 'I' },
+    { label: t('nav.bosses'), path: '/bosses', icon: <FaSkull />, shortcut: 'B' },
+    { label: t('nav.characters'), path: '/characters', icon: <FaUser />, shortcut: 'C' },
+    { label: t('nav.builds'), path: '/builds', icon: <FaHammer />, shortcut: 'T' },
   ];
 
   // Toggle/Escape Logic
@@ -111,7 +113,7 @@ export function CommandPalette({ open, onOpenChange }) {
              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#f4e7c3] rotate-1 shadow-sm border-l border-r border-[#dcd0ac] z-10 pointer-events-none opacity-90"></div>
 
              <Command 
-                label="Global Search" 
+                label={t('search.globalSearch')} 
                 shouldFilter={false} // We handle filtering/fetching manually
                 className="w-full h-full"
              >
@@ -123,7 +125,7 @@ export function CommandPalette({ open, onOpenChange }) {
                    value={value}
                    onValueChange={setValue}
                    className="flex-1 h-8 bg-transparent outline-none text-2xl font-handwriting font-bold text-[#2c241b] placeholder:text-[#8f7e63]/60 lowercase"
-                   placeholder="search wiki..."
+                   placeholder={t('search.searchWiki')}
                    autoFocus
                  />
                  <div className="flex items-center gap-2">
@@ -143,7 +145,7 @@ export function CommandPalette({ open, onOpenChange }) {
                  {/* Empty State */}
                  {!loading && results.length === 0 && filteredRoutes.length === 0 && value.length >= 2 && (
                     <div className="py-12 text-center">
-                        <p className="font-handwriting text-xl text-[#8f7e63]">No scraps found for &quot;{value}&quot;...</p>
+                        <p className="font-handwriting text-xl text-[#8f7e63]">{t('search.noResults')} &quot;{value}&quot;...</p>
                     </div>
                  )}
 

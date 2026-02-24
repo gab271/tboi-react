@@ -93,7 +93,7 @@ export function ConflictResolutionModal({
               />
               
               <div className="conflict-vs">
-                <span>VS</span>
+                <span>{t('common.vs')}</span>
               </div>
               
               <ComparisonColumn
@@ -202,6 +202,8 @@ function ComparisonColumn({ title, icon, marks, completion }) {
 
 // Sub-component: Option card
 function OptionCard({ id, icon, title, description, selected, recommended, onClick }) {
+  const { t } = useTranslation();
+  
   return (
     <button
       className={`option-card ${selected ? 'selected' : ''} ${recommended ? 'recommended' : ''}`}
@@ -213,7 +215,7 @@ function OptionCard({ id, icon, title, description, selected, recommended, onCli
         <span className="option-title">
           {title}
           {recommended && (
-            <span className="option-badge">Recomendado</span>
+            <span className="option-badge">{t('common.recommended')}</span>
           )}
         </span>
         <span className="option-description">{description}</span>

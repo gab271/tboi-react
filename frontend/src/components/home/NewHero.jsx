@@ -1,5 +1,6 @@
 // NewHero.jsx - Redesigned hero focused on single action: upload save file
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaUpload, FaQuestionCircle, FaUsers, FaSpinner, FaCheck, FaExclamationTriangle } from 'react-icons/fa';
@@ -14,6 +15,7 @@ const COMMUNITY_STATS = {
 };
 
 export function NewHero() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [uploadState, setUploadState] = useState('idle'); // idle | uploading | success | error
     const [progress, setProgress] = useState(null);
@@ -27,7 +29,7 @@ export function NewHero() {
         // Validate file name
         if (!file.name.includes('rep_') && !file.name.includes('persistentgamedata')) {
             setUploadState('error');
-            setErrorMessage('El archivo no parece ser un save de Isaac. Busca "rep_persistentgamedata1.dat"');
+            setErrorMessage(t('home.heroInvalidFile'));
             return;
         }
 
@@ -40,7 +42,7 @@ export function NewHero() {
             
             if (result.source !== 'real') {
                 setUploadState('error');
-                setErrorMessage('No se pudo analizar el archivo. Por favor intenta de nuevo.');
+                setErrorMessage(t('home.heroAnalysisFailed'));
                 return;
             }
             
@@ -103,7 +105,7 @@ export function NewHero() {
                     >
                         <span className="inline-flex items-center gap-2 px-4 py-2 bg-accent-gold/10 border border-accent-gold/30 text-accent-gold font-heading text-sm uppercase tracking-wider">
                             <span className="w-2 h-2 bg-accent-gold rounded-full animate-pulse" />
-                            Dead God Tracker
+                            {t('home.heroTracker')}
                         </span>
                     </motion.div>
 
@@ -114,7 +116,7 @@ export function NewHero() {
                         transition={{ delay: 0.1 }}
                         className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-text-heading leading-[0.95] tracking-tight mb-4"
                     >
-                        ¿Cuánto te falta para
+                        {t('home.heroQuestion')}
                         <br />
                         <span className="text-accent-gold">Dead God</span>?
                     </motion.h1>
@@ -126,7 +128,7 @@ export function NewHero() {
                         transition={{ delay: 0.2 }}
                         className="text-lg md:text-xl lg:text-2xl font-handwriting text-text-ink/80 max-w-xl mb-8"
                     >
-                        <span className="text-accent-blood font-bold">{COMMUNITY_STATS.usersTracking.toLocaleString()}</span> jugadores ya saben. Tú aún no.
+                        {t('home.heroPlayersKnow', { count: COMMUNITY_STATS.usersTracking.toLocaleString() })}
                     </motion.p>
 
                     {/* Upload Zone or Results */}
@@ -162,10 +164,10 @@ export function NewHero() {
                                         
                                         <div>
                                             <p className="font-heading text-lg md:text-xl text-text-heading mb-1">
-                                                {isDragActive ? "Suelta aquí" : "Arrastra tu save file"}
+                                                {isDragActive ? t('home.heroDropHere') : t('home.heroDragSaveFile')}
                                             </p>
                                             <p className="text-sm text-text-dim font-handwriting">
-                                                o haz click para seleccionar
+                                                {t('home.heroOrClickToSelect')}
                                             </p>
                                         </div>
                                     </div>
@@ -173,7 +175,7 @@ export function NewHero() {
 
                                 {/* Microcopy */}
                                 <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-text-dim">
-                                    <span className="font-sans">Gratis · Privado · Sin registro</span>
+                                    <span className="font-sans">{t('home.heroFreePrivate')}</span>
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
@@ -182,7 +184,7 @@ export function NewHero() {
                                         className="flex items-center gap-1 text-accent-blood hover:underline"
                                     >
                                         <FaQuestionCircle className="w-3 h-3" />
-                                        ¿Dónde está mi save?
+                                        {t('home.heroWhereIsMySave')}
                                     </button>
                                 </div>
 
@@ -194,7 +196,7 @@ export function NewHero() {
                                     className="mt-6 flex items-center justify-center gap-2 text-sm text-text-dim"
                                 >
                                     <FaUsers className="w-4 h-4" />
-                                    <span>{COMMUNITY_STATS.uploadsToday} análisis hoy</span>
+                                    <span>{t('home.heroAnalysisToday', { count: COMMUNITY_STATS.uploadsToday })}</span>
                                 </motion.div>
                             </motion.div>
                         )}
@@ -209,7 +211,7 @@ export function NewHero() {
                             >
                                 <div className="flex flex-col items-center gap-4">
                                     <FaSpinner className="w-12 h-12 text-accent-blood animate-spin" />
-                                    <p className="font-heading text-xl">Analizando 637 ítems...</p>
+                                    <p className="font-heading text-xl">{t('home.heroAnalyzingItems')}</p>
                                     <div className="w-full h-2 bg-black/10 overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
@@ -233,6 +235,7 @@ export function NewHero() {
                                     progress={progress} 
                                     onReset={resetUpload}
                                     onRegister={() => navigate('/auth/register')}
+                                    t={t}
                                 />
                             </motion.div>
                         )}
@@ -244,15 +247,15 @@ export function NewHero() {
                                 animate={{ opacity: 1 }}
                                 className="w-full max-w-lg bg-accent-blood/10 border-2 border-accent-blood p-6"
                             >
-                                <p className="font-heading text-accent-blood mb-2">Archivo no reconocido</p>
+                                <p className="font-heading text-accent-blood mb-2">{t('home.heroFileNotRecognized')}</p>
                                 <p className="text-sm text-text-dim mb-4">
-                                    Asegúrate de subir rep_persistentgamedata1.dat
+                                    {t('home.heroMakeSureUpload')}
                                 </p>
                                 <button
                                     onClick={resetUpload}
                                     className="px-4 py-2 bg-black text-white font-heading text-sm"
                                 >
-                                    Intentar de nuevo
+                                    {t('home.heroTryAgain')}
                                 </button>
                             </motion.div>
                         )}
@@ -263,7 +266,7 @@ export function NewHero() {
             {/* Help Modal */}
             <AnimatePresence>
                 {showHelpModal && (
-                    <HelpModal onClose={() => setShowHelpModal(false)} />
+                    <HelpModal onClose={() => setShowHelpModal(false)} t={t} />
                 )}
             </AnimatePresence>
         </section>
@@ -271,7 +274,7 @@ export function NewHero() {
 }
 
 // Result Preview Component (shows after upload, before registration)
-function ResultPreview({ progress, onReset, onRegister }) {
+function ResultPreview({ progress, onReset, onRegister, t }) {
     return (
         <div className="bg-bg-paper border-3 border-black shadow-[6px_6px_0px_#000] overflow-hidden">
             {/* Header with main percentage */}
@@ -284,7 +287,7 @@ function ResultPreview({ progress, onReset, onRegister }) {
                 >
                     {progress.percentage}%
                 </motion.p>
-                <p className="font-handwriting text-lg text-white/80">camino a Dead God</p>
+                <p className="font-handwriting text-lg text-white/80">{t('home.pathToDeadGod')}</p>
             </div>
 
             {/* Stats preview */}
@@ -299,7 +302,7 @@ function ResultPreview({ progress, onReset, onRegister }) {
                     <span className="text-2xl">🏆</span>
                     <div>
                         <p className="font-heading text-text-heading">Top {progress.topPercentile}%</p>
-                        <p className="text-sm text-text-dim font-handwriting">de todos los jugadores</p>
+                        <p className="text-sm text-text-dim font-handwriting">{t('home.ofAllPlayers')}</p>
                     </div>
                 </motion.div>
 
@@ -314,7 +317,7 @@ function ResultPreview({ progress, onReset, onRegister }) {
                     <div>
                         <p className="font-heading text-text-heading">{progress.blockerCharacter}</p>
                         <p className="text-sm text-text-dim font-handwriting">
-                            te está costando {progress.blockerMarks} marks
+                            {t('home.costingYouMarks', { count: progress.blockerMarks })}
                         </p>
                     </div>
                 </motion.div>
@@ -328,11 +331,11 @@ function ResultPreview({ progress, onReset, onRegister }) {
                 >
                     <span className="text-2xl">💀</span>
                     <div className="blur-sm select-none">
-                        <p className="font-heading text-text-heading">{progress.mostDeaths.count} muertes</p>
-                        <p className="text-sm text-text-dim">contra {progress.mostDeaths.boss}</p>
+                        <p className="font-heading text-text-heading">{progress.mostDeaths?.count || 0} {t('weekly.runs')}</p>
+                        <p className="text-sm text-text-dim">{progress.mostDeaths?.boss || ''}</p>
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center bg-white/50">
-                        <span className="text-xs font-heading text-text-dim uppercase">Crea cuenta para ver</span>
+                        <span className="text-xs font-heading text-text-dim uppercase">{t('home.createAccountToSee')}</span>
                     </div>
                 </motion.div>
 
@@ -345,7 +348,7 @@ function ResultPreview({ progress, onReset, onRegister }) {
                 >
                     <span className="text-2xl">✅</span>
                     <div>
-                        <p className="font-heading text-text-heading text-sm">Próximo objetivo</p>
+                        <p className="font-heading text-text-heading text-sm">{t('home.nextObjectiveLabel')}</p>
                         <p className="text-sm text-text-dim font-handwriting">{progress.nextObjective}</p>
                     </div>
                 </motion.div>
@@ -357,13 +360,13 @@ function ResultPreview({ progress, onReset, onRegister }) {
                     onClick={onRegister}
                     className="w-full py-4 bg-accent-blood text-white font-heading text-lg border-2 border-black shadow-[4px_4px_0px_#000] hover:shadow-[6px_6px_0px_#000] hover:-translate-y-1 transition-all"
                 >
-                    Guardar mi progreso (gratis)
+                    {t('home.saveMyProgress')}
                 </button>
                 <button
                     onClick={onReset}
                     className="w-full py-2 text-text-dim font-handwriting text-sm hover:text-text-heading transition-colors"
                 >
-                    Analizar otro archivo
+                    {t('home.analyzeAnotherFile')}
                 </button>
             </div>
         </div>
@@ -371,7 +374,7 @@ function ResultPreview({ progress, onReset, onRegister }) {
 }
 
 // Help Modal for finding save file
-function HelpModal({ onClose }) {
+function HelpModal({ onClose, t }) {
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -391,14 +394,14 @@ function HelpModal({ onClose }) {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <h3 className="font-heading text-xl text-text-heading mb-4">
-                        ¿Dónde está mi save file?
+                        {t('home.helpModalTitle')}
                     </h3>
 
                     <div className="space-y-4 text-sm">
                         <div>
                             <p className="font-heading text-accent-blood mb-1">Windows:</p>
                             <code className="block p-2 bg-black/5 text-xs break-all">
-                                C:\Users\TU_USUARIO\Documents\My Games\Binding of Isaac Repentance\
+                                C:\Users\YOUR_USER\Documents\My Games\Binding of Isaac Repentance\
                             </code>
                         </div>
 
@@ -417,7 +420,7 @@ function HelpModal({ onClose }) {
                         </div>
 
                         <p className="text-text-dim font-handwriting">
-                            Busca el archivo <strong>rep_persistentgamedata1.dat</strong>
+                            {t('home.lookForFile')} <strong>rep_persistentgamedata1.dat</strong>
                         </p>
                     </div>
 
@@ -425,7 +428,7 @@ function HelpModal({ onClose }) {
                         onClick={onClose}
                         className="mt-6 w-full py-3 bg-black text-white font-heading"
                     >
-                        Entendido
+                        {t('home.understood')}
                     </button>
                 </motion.div>
             </div>

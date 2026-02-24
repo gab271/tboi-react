@@ -12,6 +12,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../../lib/utils';
 import { 
   COMPLETION_MARKS, 
@@ -213,6 +214,8 @@ export function CompletionMarksGrid({
   onCancel,
   className,
 }) {
+  const { t } = useTranslation();
+  
   // Estado local de marks
   const [marks, setMarks] = useState(() => 
     initialMarks?.marks || createEmptyMarks(characterId).marks
@@ -391,14 +394,14 @@ export function CompletionMarksGrid({
                 <button
                   onClick={handleCancel}
                   className="p-1.5 rounded text-text-secondary hover:text-accent-blood hover:bg-accent-blood/10 transition-colors"
-                  title="Cancel"
+                  title={t('characters.cancelEdit')}
                 >
                   <FaTimes className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={handleSave}
                   className="p-1.5 rounded text-text-secondary hover:text-green-600 hover:bg-green-100 transition-colors"
-                  title="Save changes"
+                  title={t('characters.saveChanges')}
                 >
                   <FaSave className="w-3.5 h-3.5" />
                 </button>
@@ -407,7 +410,7 @@ export function CompletionMarksGrid({
               <button
                 onClick={handleStartEdit}
                 className="p-1.5 rounded text-text-secondary hover:text-accent-gold hover:bg-accent-gold/10 transition-colors"
-                title="Edit marks manually"
+                title={t('characters.editManually')}
               >
                 <FaPencilAlt className="w-3.5 h-3.5" />
               </button>
@@ -456,7 +459,7 @@ export function CompletionMarksGrid({
           {source === MARK_SOURCE.SAVE ? (
             <>
               <FaLock className="w-2.5 h-2.5" />
-              <span>From save file</span>
+              <span>{t('characters.fromSaveFile')}</span>
             </>
           ) : source === MARK_SOURCE.MERGED ? (
             <>
@@ -466,7 +469,7 @@ export function CompletionMarksGrid({
           ) : (
             <>
               <FaPencilAlt className="w-2.5 h-2.5" />
-              <span>Manual entry</span>
+              <span>{t('characters.manualEntry')}</span>
             </>
           )}
         </div>

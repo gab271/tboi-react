@@ -19,27 +19,28 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FaBolt, FaSearch, FaTimes, FaArrowRight, FaExclamationTriangle, FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
 import { cn } from '../../../lib/utils';
 
-// Sinergias precalculadas para demo rápido (sin DB)
+// Sinergias precalculadas para demo rápido (sin DB) - uses translation keys
 const SYNERGY_DATABASE = {
     // Tier S Synergies
-    'brimstone+tammy_head': { rating: 'S', score: 10, effect: 'Ráfaga de 10 lágrimas Brimstone en todas direcciones' },
-    'ipecac+my_reflection': { rating: 'S', score: 10, effect: 'Explosiones masivas que vuelven hacia los enemigos' },
-    'tech_x+brimstone': { rating: 'S', score: 9, effect: 'Anillos de Brimstone cargables y devastadores' },
-    'sacred_heart+godhead': { rating: 'S', score: 10, effect: 'Daño masivo con aura sagrada + homing' },
+    'brimstone+tammy_head': { rating: 'S', score: 10, effectKey: 'brimstone_tammy_head' },
+    'ipecac+my_reflection': { rating: 'S', score: 10, effectKey: 'ipecac_my_reflection' },
+    'tech_x+brimstone': { rating: 'S', score: 9, effectKey: 'tech_x_brimstone' },
+    'sacred_heart+godhead': { rating: 'S', score: 10, effectKey: 'sacred_heart_godhead' },
     // Tier A
-    'crickets_head+polyphemus': { rating: 'A', score: 8, effect: 'Daño x4 combinado, mata todo de un tiro' },
-    'technology+spoon_bender': { rating: 'A', score: 7, effect: 'Láser teledirigido, nunca fallas' },
-    'mom_knife+dead_eye': { rating: 'A', score: 8, effect: 'Cuchillo con multiplicador de daño creciente' },
+    'crickets_head+polyphemus': { rating: 'A', score: 8, effectKey: 'crickets_head_polyphemus' },
+    'technology+spoon_bender': { rating: 'A', score: 7, effectKey: 'technology_spoon_bender' },
+    'mom_knife+dead_eye': { rating: 'A', score: 8, effectKey: 'mom_knife_dead_eye' },
     // Tier B
-    'tiny_planet+rubber_cement': { rating: 'B', score: 6, effect: 'Órbitas rebotantes, cobertura total' },
-    'the_ludovico_technique+strange_attractor': { rating: 'B', score: 5, effect: 'Lágrima controlable que atrae enemigos' },
+    'tiny_planet+rubber_cement': { rating: 'B', score: 6, effectKey: 'tiny_planet_rubber_cement' },
+    'the_ludovico_technique+strange_attractor': { rating: 'B', score: 5, effectKey: 'the_ludovico_technique_strange_attractor' },
     // Negative synergies
-    'dr_fetus+ipecac': { rating: 'D', score: 2, effect: '⚠️ Las bombas explotan al disparar, daño propio casi garantizado', isAntiSynergy: true },
-    'soy_milk+polyphemus': { rating: 'C', score: 4, effect: '⚠️ Se anulan parcialmente: daño reducido', isAntiSynergy: true },
-    'brimstone+chocolate_milk': { rating: 'C', score: 4, effect: '⚠️ El cargado extra no suma mucho al Brimstone', isAntiSynergy: true },
+    'dr_fetus+ipecac': { rating: 'D', score: 2, effectKey: 'dr_fetus_ipecac', isAntiSynergy: true },
+    'soy_milk+polyphemus': { rating: 'C', score: 4, effectKey: 'soy_milk_polyphemus', isAntiSynergy: true },
+    'brimstone+chocolate_milk': { rating: 'C', score: 4, effectKey: 'brimstone_chocolate_milk', isAntiSynergy: true },
 };
 
 // Items populares para sugerencias
@@ -56,6 +57,7 @@ const POPULAR_ITEMS = [
 
 export function SynergyAnalyzerMini() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [selectedItems, setSelectedItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [state, setState] = useState('empty'); // empty | searching | loading | result | error
@@ -123,7 +125,6 @@ export function SynergyAnalyzerMini() {
             setResult({
                 rating: 'B',
                 score: 5,
-                effect: 'Sinergia neutral. Ambos items funcionan de forma independiente.',
                 isGeneric: true
             });
             setState('result');
@@ -164,14 +165,14 @@ export function SynergyAnalyzerMini() {
                 >
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent-gold/10 border border-accent-gold/20 text-accent-gold text-xs font-heading uppercase tracking-wider mb-4">
                         <FaBolt className="w-3 h-3" />
-                        Prueba rápida
+                        {t('synergy.quickAnalyzer')}
                     </div>
                     
                     <h2 className="font-heading text-2xl md:text-3xl text-text-heading mb-2">
-                        ¿Esa combo rompe el juego?
+                        {t('synergy.analyzerSubtitle')}
                     </h2>
                     <p className="font-handwriting text-text-dim max-w-md mx-auto">
-                        Selecciona 2-3 items y descubre si tienes una run ganadora
+                        {t('synergy.selectAtLeast2')}
                     </p>
                 </motion.div>
 
@@ -194,7 +195,7 @@ export function SynergyAnalyzerMini() {
                                     onClick={reset}
                                     className="text-xs text-text-dim hover:text-accent-blood transition-colors"
                                 >
-                                    Limpiar
+                                    {t('synergy.clear')}
                                 </button>
                             )}
                         </div>
@@ -243,7 +244,7 @@ export function SynergyAnalyzerMini() {
                                                     type="text"
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                                    placeholder="Buscar item..."
+                                                    placeholder={t('synergy.searchItem')}
                                                     className="pl-10 pr-4 py-2 w-48 border-2 border-black/20 bg-white font-sans text-sm focus:outline-none focus:border-accent-gold"
                                                     autoFocus
                                                 />
@@ -261,7 +262,7 @@ export function SynergyAnalyzerMini() {
                                             className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-black/20 text-text-dim hover:border-accent-gold hover:text-accent-gold transition-colors"
                                         >
                                             <FaSearch className="w-4 h-4" />
-                                            <span className="font-heading text-sm">Agregar item</span>
+                                            <span className="font-heading text-sm">{t('synergy.addItem')}</span>
                                         </button>
                                     )}
                                     
@@ -288,7 +289,7 @@ export function SynergyAnalyzerMini() {
                                                     </button>
                                                 ))
                                             ) : (
-                                                <p className="px-3 py-2 text-sm text-text-dim">No encontrado</p>
+                                                <p className="px-3 py-2 text-sm text-text-dim">{t('synergy.notFound')}</p>
                                             )}
                                         </div>
                                     )}
@@ -299,7 +300,7 @@ export function SynergyAnalyzerMini() {
                         {/* Quick suggestions */}
                         {selectedItems.length === 0 && !showSearch && (
                             <div className="mt-4">
-                                <p className="text-xs text-text-dim mb-2">Populares:</p>
+                                <p className="text-xs text-text-dim mb-2">{t('synergy.popular')}</p>
                                 <div className="flex flex-wrap gap-2">
                                     {POPULAR_ITEMS.slice(0, 6).map(item => (
                                         <button
@@ -334,7 +335,7 @@ export function SynergyAnalyzerMini() {
                                     className="w-full py-4 bg-accent-gold text-black font-heading text-lg hover:bg-accent-gold/90 transition-colors flex items-center justify-center gap-2"
                                 >
                                     <FaBolt className="w-5 h-5" />
-                                    Analizar Sinergia
+                                    {t('synergy.analyzeSynergy')}
                                 </motion.button>
                             )}
                             
@@ -346,7 +347,7 @@ export function SynergyAnalyzerMini() {
                                     animate={{ opacity: 1 }}
                                     className="text-center text-text-dim font-handwriting py-4"
                                 >
-                                    Selecciona al menos 2 items para analizar
+                                    {t('synergy.selectAtLeast2')}
                                 </motion.p>
                             )}
                             
@@ -360,7 +361,7 @@ export function SynergyAnalyzerMini() {
                                     className="flex items-center justify-center gap-3 py-6"
                                 >
                                     <FaSpinner className="w-5 h-5 animate-spin text-accent-gold" />
-                                    <span className="font-heading">Analizando combinación...</span>
+                                    <span className="font-heading">{t('synergy.analyzing')}</span>
                                 </motion.div>
                             )}
                             
@@ -388,14 +389,14 @@ export function SynergyAnalyzerMini() {
                                             </span>
                                             <div>
                                                 <p className="font-heading text-lg">
-                                                    {result.rating === 'S' && 'Sinergia Legendaria'}
-                                                    {result.rating === 'A' && 'Sinergia Excelente'}
-                                                    {result.rating === 'B' && 'Sinergia Decente'}
-                                                    {result.rating === 'C' && 'Sinergia Débil'}
-                                                    {result.rating === 'D' && 'Anti-Sinergia'}
+                                                    {result.rating === 'S' && t('synergy.legendary')}
+                                                    {result.rating === 'A' && t('synergy.excellent')}
+                                                    {result.rating === 'B' && t('synergy.decent')}
+                                                    {result.rating === 'C' && t('synergy.weak')}
+                                                    {result.rating === 'D' && t('synergy.antiSynergy')}
                                                 </p>
                                                 <p className="text-xs text-text-dim">
-                                                    Puntuación: {result.score}/10
+                                                    {t('synergy.score')}: {result.score}/10
                                                 </p>
                                             </div>
                                         </div>
@@ -415,7 +416,12 @@ export function SynergyAnalyzerMini() {
                                             ? "bg-accent-blood/10 border-accent-blood" 
                                             : "bg-accent-gold/10 border-accent-gold"
                                     )}>
-                                        {result.effect}
+                                        {result.effectKey 
+                                            ? t(`synergies.data.${result.effectKey}.effect`)
+                                            : result.isGeneric 
+                                                ? t('synergy.neutralSynergy')
+                                                : result.effect
+                                        }
                                     </div>
                                     
                                     {/* CTAs */}
@@ -424,21 +430,21 @@ export function SynergyAnalyzerMini() {
                                             onClick={goToFullAnalyzer}
                                             className="flex-1 py-3 bg-black text-white font-heading text-sm hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
                                         >
-                                            Ver análisis completo
+                                            {t('synergy.viewFullAnalysis')}
                                             <FaArrowRight className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={reset}
                                             className="py-3 px-6 border-2 border-black/20 font-heading text-sm hover:bg-black/5 transition-colors"
                                         >
-                                            Probar otra
+                                            {t('synergy.tryAnother')}
                                         </button>
                                     </div>
                                     
                                     {/* Generic result notice */}
                                     {result.isGeneric && (
                                         <p className="text-xs text-text-dim text-center">
-                                            ¿Conoces esta sinergia? <button className="underline hover:text-accent-blood">Contribuye a la wiki</button>
+                                            {t('synergy.knowThisSynergy')} <button className="underline hover:text-accent-blood">{t('synergy.contributeToWiki')}</button>
                                         </p>
                                     )}
                                 </motion.div>
@@ -455,7 +461,7 @@ export function SynergyAnalyzerMini() {
                     transition={{ delay: 0.2 }}
                     className="text-center mt-6 text-sm text-text-dim font-handwriting"
                 >
-                    627 sinergias documentadas · Actualizado a Repentance+
+                    {t('synergy.documentedSynergies', { count: 627 })}
                 </motion.p>
             </div>
         </section>

@@ -1,24 +1,21 @@
 // PremiumTeaser.jsx - Subtle premium upsell section
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FaStar, FaChartLine, FaDownload, FaMagic, FaDesktop, FaBan, FaMedal, FaQuoteLeft } from 'react-icons/fa';
-
-const PREMIUM_FEATURES = [
-    { icon: FaChartLine, text: 'Stats avanzadas de tus runs' },
-    { icon: FaDownload, text: 'Importador de saves automático' },
-    { icon: FaMagic, text: 'Recomendador de ítems con IA' },
-    { icon: FaDesktop, text: 'Overlay para streaming' },
-    { icon: FaBan, text: 'Sin anuncios' },
-    { icon: FaMedal, text: 'Badge exclusivo de supporter' },
-];
-
-const TESTIMONIAL = {
-    text: "El recomendador me salvó 3 runs esta semana. Vale cada centavo.",
-    author: "@TaintedFan",
-};
 
 export function PremiumTeaser() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
+    const PREMIUM_FEATURES = [
+        { icon: FaChartLine, textKey: 'premium.advancedStats' },
+        { icon: FaDownload, textKey: 'premium.autoImporter' },
+        { icon: FaMagic, textKey: 'premium.aiRecommender' },
+        { icon: FaDesktop, textKey: 'premium.streamOverlay' },
+        { icon: FaBan, textKey: 'premium.noAds' },
+        { icon: FaMedal, textKey: 'premium.exclusiveBadge' },
+    ];
 
     return (
         <section className="w-full px-4 md:px-8 py-12">
@@ -40,7 +37,7 @@ export function PremiumTeaser() {
                         <div className="flex items-center gap-2 mb-6">
                             <FaStar className="w-5 h-5 text-accent-gold" />
                             <h2 className="font-heading text-xl md:text-2xl text-text-heading uppercase">
-                                ¿Quieres ir más allá?
+                                {t('premium.wantMore')}
                             </h2>
                         </div>
 
@@ -48,7 +45,7 @@ export function PremiumTeaser() {
                         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
                             {PREMIUM_FEATURES.map((feature, index) => (
                                 <motion.div
-                                    key={feature.text}
+                                    key={feature.textKey}
                                     initial={{ opacity: 0, x: -10 }}
                                     whileInView={{ opacity: 1, x: 0 }}
                                     viewport={{ once: true }}
@@ -57,7 +54,7 @@ export function PremiumTeaser() {
                                 >
                                     <feature.icon className="w-4 h-4 text-accent-gold flex-shrink-0" />
                                     <span className="text-sm font-handwriting text-text-ink">
-                                        {feature.text}
+                                        {t(feature.textKey)}
                                     </span>
                                 </motion.div>
                             ))}
@@ -71,10 +68,10 @@ export function PremiumTeaser() {
                                     onClick={() => navigate('/premium')}
                                     className="px-8 py-3 bg-accent-gold text-black font-heading text-lg border-2 border-black shadow-[4px_4px_0px_#000] hover:shadow-[6px_6px_0px_#000] hover:-translate-y-1 transition-all"
                                 >
-                                    Ver planes
+                                    {t('premium.viewPlans')}
                                 </button>
                                 <span className="text-sm text-text-dim font-handwriting">
-                                    7 días gratis, cancela cuando quieras
+                                    {t('premium.trialInfo')}
                                 </span>
                             </div>
 
@@ -83,10 +80,10 @@ export function PremiumTeaser() {
                                 <FaQuoteLeft className="w-4 h-4 text-accent-gold/50 flex-shrink-0 mt-1" />
                                 <div>
                                     <p className="text-sm font-handwriting text-text-ink italic">
-                                        &quot;{TESTIMONIAL.text}&quot;
+                                        &quot;{t('premium.testimonial')}&quot;
                                     </p>
                                     <p className="text-xs text-text-dim mt-1">
-                                        — {TESTIMONIAL.author}
+                                        — @TaintedFan
                                     </p>
                                 </div>
                             </div>

@@ -1,17 +1,19 @@
 // LiveActivitySection.jsx - Prueba social con actividad en tiempo real
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaFire, FaBolt, FaTrophy, FaChevronRight, FaStar, FaComment } from 'react-icons/fa';
 import { cn } from '../../../lib/utils';
 
 // Mock data - en producción vendría de la API
+// Uses translation keys for action and time
 const LIVE_ACTIVITIES = [
-    { id: 1, user: 'EdmundFan', action: 'subió build', target: '"Brimstone Machine"', time: 'hace 3 min', type: 'build' },
-    { id: 2, user: 'NorthernLion', action: 'alcanzó', target: 'Dead God', time: 'hace 12 min', type: 'achievement' },
-    { id: 3, user: 'SinVicta', action: 'completó', target: 'Tainted Lost', time: 'hace 28 min', type: 'character' },
-    { id: 4, user: 'Hutts', action: 'subió build', target: '"Tech X Chaos"', time: 'hace 34 min', type: 'build' },
-    { id: 5, user: 'LavolpeTV', action: 'consiguió', target: 'Guppy transformation', time: 'hace 45 min', type: 'achievement' },
+    { id: 1, user: 'EdmundFan', actionKey: 'uploadedBuild', target: '"Brimstone Machine"', minutes: 3, type: 'build' },
+    { id: 2, user: 'NorthernLion', actionKey: 'achieved', target: 'Dead God', minutes: 12, type: 'achievement' },
+    { id: 3, user: 'SinVicta', actionKey: 'completed', target: 'Tainted Lost', minutes: 28, type: 'character' },
+    { id: 4, user: 'Hutts', actionKey: 'uploadedBuild', target: '"Tech X Chaos"', minutes: 34, type: 'build' },
+    { id: 5, user: 'LavolpeTV', actionKey: 'got', target: 'Guppy transformation', minutes: 45, type: 'achievement' },
 ];
 
 const TOP_BUILDS = [
@@ -60,6 +62,7 @@ const TODAY_STATS = {
 };
 
 export function LiveActivitySection() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [currentActivityIndex, setCurrentActivityIndex] = useState(0);
 
@@ -83,10 +86,10 @@ export function LiveActivitySection() {
                 >
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent-blood/10 border border-accent-blood/30 text-accent-blood font-heading text-sm uppercase tracking-wider mb-4">
                         <span className="w-2 h-2 bg-accent-blood rounded-full animate-pulse" />
-                        Comunidad activa
+                        {t('home.activeCommunity')}
                     </div>
                     <h2 className="font-heading text-2xl md:text-3xl text-text-heading uppercase tracking-wider">
-                        Lo que está pasando ahora
+                        {t('home.whatsHappening')}
                     </h2>
                 </motion.div>
 
@@ -105,7 +108,7 @@ export function LiveActivitySection() {
                             >
                                 <FaBolt className="w-3 h-3" />
                             </motion.span>
-                            EN VIVO
+                            {t('home.live')}
                         </div>
                         
                         <div className="flex-1 overflow-hidden">
@@ -120,13 +123,13 @@ export function LiveActivitySection() {
                                     {LIVE_ACTIVITIES[currentActivityIndex].user}
                                 </span>
                                 <span className="text-white/70">
-                                    {LIVE_ACTIVITIES[currentActivityIndex].action}
+                                    {t(`liveActivity.${LIVE_ACTIVITIES[currentActivityIndex].actionKey}`)}
                                 </span>
                                 <span className="text-white">
                                     {LIVE_ACTIVITIES[currentActivityIndex].target}
                                 </span>
                                 <span className="text-white/50 text-xs">
-                                    · {LIVE_ACTIVITIES[currentActivityIndex].time}
+                                    · {t('liveActivity.minutesAgo', { count: LIVE_ACTIVITIES[currentActivityIndex].minutes })}
                                 </span>
                             </motion.div>
                         </div>
@@ -152,13 +155,13 @@ export function LiveActivitySection() {
                                 >
                                     <FaFire className="text-accent-blood" />
                                 </motion.span>
-                                Builds Populares
+                                {t('home.topWeekBuilds')}
                             </h3>
                             <button 
                                 onClick={() => navigate('/builds')}
                                 className="text-sm text-accent-blood hover:underline font-heading flex items-center gap-1"
                             >
-                                Ver todas <FaChevronRight className="w-3 h-3" />
+                                {t('home.viewAllBuilds')} <FaChevronRight className="w-3 h-3" />
                             </button>
                         </div>
 
@@ -184,7 +187,7 @@ export function LiveActivitySection() {
                             >
                                 <FaTrophy className="text-accent-gold" />
                             </motion.span>
-                            Logros de hoy
+                            {t('home.todayStats')}
                         </h3>
 
                         <motion.div
@@ -197,29 +200,29 @@ export function LiveActivitySection() {
                                 <StatRow 
                                     icon="🏆" 
                                     value={TODAY_STATS.deadGods} 
-                                    label="Dead Gods conseguidos" 
+                                    label={t('liveActivity.deadGodsAchieved')} 
                                     highlight
                                 />
                                 <StatRow 
                                     icon="✅" 
                                     value={TODAY_STATS.completionMarks} 
-                                    label="Completion marks" 
+                                    label={t('liveActivity.completionMarks')} 
                                 />
                                 <StatRow 
                                     icon="💀" 
                                     value={TODAY_STATS.taintedLostCompleted} 
-                                    label="Tainted Lost completados" 
+                                    label={t('liveActivity.taintedLostCompleted')} 
                                 />
                                 <StatRow 
                                     icon="👤" 
                                     value={TODAY_STATS.newUsers} 
-                                    label="Nuevos usuarios" 
+                                    label={t('liveActivity.newUsers')} 
                                 />
                             </div>
 
                             <div className="mt-6 pt-4 border-t-2 border-dashed border-black/10">
                                 <p className="text-xs text-text-dim font-handwriting text-center">
-                                    Actualizado hace 2 minutos
+                                    {t('liveActivity.updatedMinutesAgo', { count: 2 })}
                                 </p>
                             </div>
                         </motion.div>
@@ -232,6 +235,7 @@ export function LiveActivitySection() {
 
 function BuildCard({ build, index }) {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     return (
         <motion.div
@@ -261,7 +265,7 @@ function BuildCard({ build, index }) {
                         {build.title}
                     </h4>
                     <p className="text-xs text-text-dim font-handwriting">
-                        por @{build.author}
+                        {t('liveActivity.byAuthor')} @{build.author}
                     </p>
                 </div>
             </div>

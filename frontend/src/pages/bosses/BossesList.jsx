@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { fetchBosses } from '../../lib/api';
 import { FaSearch, FaSkull, FaFilter, FaTimes, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
@@ -23,6 +24,7 @@ function useDebouncedValue(value, delay) {
 }
 
 export function BossesList() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [activeFilters, setActiveFilters] = useState({ location: 'all' });
@@ -139,7 +141,7 @@ export function BossesList() {
                     <FaSearch className="ml-3 text-gray-500 w-5 h-5" />
                     <input
                       type="text"
-                      placeholder="Find target..." 
+                      placeholder={t('search.findTarget')} 
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       className="w-full bg-transparent text-black font-handwriting text-2xl px-3 py-2 focus:outline-none placeholder:text-gray-400 uppercase"
@@ -171,7 +173,7 @@ export function BossesList() {
                     
                     {bossList.length === 0 && (
                         <div className="col-span-full text-center py-20">
-                            <h3 className="font-heading text-2xl md:text-4xl text-[#f4e4bc]/50">No bounties found.</h3>
+                            <h3 className="font-heading text-2xl md:text-4xl text-[#f4e4bc]/50">{t('bosses.noBossesFound')}</h3>
                         </div>
                     )}
                 </div>
@@ -185,7 +187,7 @@ export function BossesList() {
                         onClick={() => setPage(p => Math.max(0, p - 1))}
                         className="flex items-center gap-2 text-[#8b0000] disabled:opacity-30 hover:scale-110 transition-all uppercase drop-shadow-sm"
                      >
-                        <FaArrowLeft className="w-6 h-6" /> <span className="hidden sm:inline">PREV</span>
+                        <FaArrowLeft className="w-6 h-6" /> <span className="hidden sm:inline">{t('common.prev')}</span>
                      </button>
                      
                      <span className="text-[#2a1a10] bg-[#f4e4bc] px-4 py-2 border-2 border-[#8b0000] rotate-2 shadow-sm rounded-sm">
@@ -197,7 +199,7 @@ export function BossesList() {
                         onClick={() => setPage(p => p + 1)}
                         className="flex items-center gap-2 text-[#8b0000] disabled:opacity-30 hover:scale-110 transition-all uppercase drop-shadow-sm"
                      >
-                        <span className="hidden sm:inline">NEXT</span> <FaArrowRight className="w-6 h-6" />
+                        <span className="hidden sm:inline">{t('common.nextShort')}</span> <FaArrowRight className="w-6 h-6" />
                      </button>
                  </div>
              )}
