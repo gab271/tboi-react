@@ -85,13 +85,13 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
             console.log('[HeroSection] API Response:', {
                 ok: result.ok,
                 source: result.source,
-                backendHash: result.metadata?.fileHash,
-                frontendHash: fileHash?.substring(0, 8),
-                hashMatch: fileHash?.substring(0, 8) === result.metadata?.fileHash,
-                deadGodPercentage: result.metrics?.deadGodPercentage,
-                secretsCount: result.secrets?.count,
-                itemsCount: result.items?.count,
-                parseTimeMs: result.metadata?.parseTimeMs
+                // V3 uses meta.sha256, V2 uses metadata.fileHash
+                serverHash: (result.meta?.sha256 || result.metadata?.sha256 || result.metadata?.fileHash || '').substring(0, 16),
+                clientHash: result._clientHash?.substring(0, 16),
+                deadGodPercent: result.progress?.deadGodPercent || result.metrics?.deadGodPercentage,
+                achievementsCount: result.progress?.breakdown?.achievements?.count || result.secrets?.count,
+                itemsCount: result.progress?.breakdown?.items?.count || result.items?.count,
+                parseTimeMs: result.meta?.parseMs || result.metadata?.parseTimeMs
             });
             
             // Validate source is real data
@@ -102,13 +102,22 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                 return;
             }
 
-            // Transform V2 API response to UI format
-            // V2 parser returns data at root level, not inside 'parsed'
+            // Transform V3 API response to UI format
+            // V3 uses 'progress' and 'meta', V2 used 'metrics' and 'metadata'
             const characters = result.characters || {};
             const charArray = Object.values(characters);
             const completedCharCount = charArray.filter(c => c.percentage === 100).length;
             const vanillaChars = charArray.filter(c => !c.isTainted);
             const taintedChars = charArray.filter(c => c.isTainted);
+            
+            // Handle both V3 and V2 response formats
+            const deadGodPercent = result.progress?.deadGodPercent ?? result.metrics?.deadGodPercentage ?? 0;
+            const itemsCount = result.items?.collectedCount ?? result.items?.count ?? 0;
+            const itemsTotal = result.items?.totalItems ?? result.items?.total ?? 733;
+            const achievementsCount = result.progress?.breakdown?.achievements?.count ?? result.secrets?.count ?? 0;
+            const achievementsTotal = result.progress?.breakdown?.achievements?.total ?? result.secrets?.total ?? 637;
+            const endingsCount = result.endings?.count ?? 0;
+            const endingsTotal = result.endings?.totalEndings ?? result.endings?.total ?? 17;
             
             const uiResult = {
                 // Source tracking - CRITICAL
@@ -116,61 +125,60 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                 isDemo: false,
                 
                 // Main percentage (Dead God progress)
-                percentage: result.metrics?.deadGodPercentage || 0,
+                percentage: deadGodPercent,
                 topPercentile: result.metrics?.topPercentile || null,
                 
                 // Characters
                 charactersUnlocked: charArray.length,
-                totalCharacters: charArray.length || 34,
+                totalCharacters: 34,
                 completedCharacters: completedCharCount,
                 
                 // Items
-                itemsFound: result.items?.count || 0,
-                totalItems: result.items?.total || 637,
+                itemsFound: itemsCount,
+                totalItems: itemsTotal,
                 
                 // Completion marks
                 completionMarks: result.totalMarks || 0,
                 totalMarks: result.totalMarksExpected || 816,
-                marksPercentage: result.metrics?.marksPercentage || 0,
+                marksPercentage: result.progress?.breakdown?.marksHard?.percent ?? result.metrics?.marksPercentage ?? 0,
                 
                 // Achievements (secrets in V2)
-                achievementsUnlocked: result.secrets?.count || 0,
-                totalAchievements: result.secrets?.total || 637,
+                achievementsUnlocked: achievementsCount,
+                totalAchievements: achievementsTotal,
                 
-                // Endings (derived from character marks in V2)
-                endingsSeen: result.endings?.count || 0,
-                totalEndings: result.endings?.total || 17,
-                
-                // Blocker info (from nextSteps in V2)
-                blockerCharacter: result.nextSteps?.[0]?.characterName || null,
-                blockerMarks: result.nextSteps?.[0]?.missingMarks || [],
+                // Endings
+                endingsSeen: endingsCount,
+                totalEndings: endingsTotal,
                 
                 // Time estimate
                 hoursRemaining: result.metrics?.estimatedHoursRemaining || null,
                 
-                // Next objective (first nextStep in V2)
-                nextObjective: result.nextSteps?.[0]?.description || t('home.heroKeepPlaying'),
+                // Next objective
+                nextObjective: t('home.heroKeepPlaying'),
                 
                 // Most deaths (placeholder - not tracked in save file)
                 mostDeaths: { count: '?', boss: t('home.heroNotAvailable') },
                 
                 // Tainted progress
-                taintedCompletion: result.metrics?.taintedCompletion || 0,
+                taintedCompletion: result.metrics?.taintedProgress?.percentage || 0,
                 vanillaCompleted: vanillaChars.filter(c => c.percentage === 100).length,
                 taintedCompleted: taintedChars.filter(c => c.percentage === 100).length,
                 
-                // File metadata (in metadata object in V2)
-                slot: result.metadata?.slot || 1,
-                fileHash: result.metadata?.fileHash || null,
-                uploadedAt: result.metadata?.parsedAt || new Date().toISOString(),
+                // File metadata
+                slot: result.meta?.slot ?? result.metadata?.slot ?? 1,
+                fileHash: (result.meta?.sha256 ?? result.metadata?.sha256 ?? result.metadata?.fileHash ?? '').substring(0, 16),
+                sha256Full: result.meta?.sha256 ?? result.metadata?.sha256,
+                uploadedAt: result.meta?.parsedAt ?? result.metadata?.parsedAt ?? new Date().toISOString(),
                 
                 // Full character data for detailed view
                 characters: characters,
                 
-                // Additional V2 data
-                sanityChecks: result.sanityChecks,
-                missing: result.missing,
-                nextSteps: result.nextSteps
+                // Sanity checks
+                sanityChecks: result.sanity ?? result.sanityChecks,
+                
+                // Invariants passed
+                invariantsPassed: result.sanity?.ok ?? result.sanityChecks?.invariantsPassed ?? true,
+                warnings: result.meta?.warnings ?? result.sanity?.warnings ?? []
             };
             
             setUploadState('success');

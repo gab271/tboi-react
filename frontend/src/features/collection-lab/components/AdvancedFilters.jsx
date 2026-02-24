@@ -4,7 +4,7 @@
  */
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { FaLock, FaCrown } from 'react-icons/fa';
+import { FaCrown } from 'react-icons/fa';
 import { useBuildLabContext } from '../context/BuildLabContext';
 import { useFeatures } from '../../../hooks/useFeatures';
 import { getFiltersByCategory, SMART_FILTERS } from '../lib/filterEngine';
@@ -112,11 +112,9 @@ export const AdvancedFilters = memo(function AdvancedFilters() {
           <div className="pt-4 border-t-2 border-dashed border-black/20">
             <h4 className="font-handwriting text-lg font-bold text-black/60 mb-3 flex items-center gap-2">
               🧠 Smart Filters
-              {!isPro && (
-                <span className="text-xs text-yellow-600 flex items-center gap-1">
-                  <FaCrown /> PRO
-                </span>
-              )}
+              <span className="text-xs text-yellow-600 flex items-center gap-1">
+                <FaCrown className="text-[10px]" /> PRO
+              </span>
             </h4>
             
             <div className="space-y-4">
@@ -133,18 +131,27 @@ export const AdvancedFilters = memo(function AdvancedFilters() {
                       return (
                         <button
                           key={filter.id}
-                          onClick={() => !isLocked && toggleSmartFilter(filter.id)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (isLocked) return;
+                            toggleSmartFilter(filter.id);
+                          }}
                           disabled={isLocked}
                           className={cn(
                             "w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-all text-left",
                             isActive && !isLocked && "bg-accent-gold/20 text-black font-bold",
                             !isActive && !isLocked && "hover:bg-black/5",
-                            isLocked && "opacity-50 cursor-not-allowed"
+                            isLocked && "opacity-40 cursor-not-allowed bg-gray-100"
                           )}
                         >
                           <span>{filter.icon}</span>
                           <span className="flex-1 truncate">{filter.name}</span>
-                          {isLocked && <FaLock className="text-xs text-gray-400" />}
+                          {isLocked && (
+                            <span className="flex items-center gap-1 text-xs text-yellow-600">
+                              <FaCrown className="text-[10px]" />
+                              <span className="font-bold">PRO</span>
+                            </span>
+                          )}
                           {isActive && !isLocked && <span className="text-green-600">✓</span>}
                         </button>
                       );

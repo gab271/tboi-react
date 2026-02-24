@@ -1,0 +1,48 @@
+{
+    "version": "repentance_plus",
+    "lastUpdated": "2026-02-24",
+    "total": 17,
+    
+    "endings": [
+        { "id": 1, "name": "Ending 1", "boss": "Mom", "requirement": "Defeat Mom for the first time" },
+        { "id": 2, "name": "Ending 2", "boss": "Mom's Heart", "requirement": "Defeat Mom's Heart" },
+        { "id": 3, "name": "Ending 3", "boss": "It Lives", "requirement": "Defeat It Lives 10 times" },
+        { "id": 4, "name": "Ending 4", "boss": "Isaac", "requirement": "Defeat Isaac in the Cathedral" },
+        { "id": 5, "name": "Ending 5", "boss": "???", "requirement": "Defeat ??? in The Chest" },
+        { "id": 6, "name": "Ending 6", "boss": "Satan", "requirement": "Defeat Satan in Sheol" },
+        { "id": 7, "name": "Ending 7", "boss": "The Lamb", "requirement": "Defeat The Lamb in Dark Room" },
+        { "id": 8, "name": "Ending 8", "boss": "Boss Rush", "requirement": "Complete Boss Rush (reach in under 20 min)" },
+        { "id": 9, "name": "Ending 9", "boss": "Mega Satan", "requirement": "Defeat Mega Satan" },
+        { "id": 10, "name": "Ending 10", "boss": "Hush", "requirement": "Defeat Hush (reach in under 30 min)" },
+        { "id": 11, "name": "Ending 11", "boss": "Delirium", "requirement": "Defeat Delirium in The Void" },
+        { "id": 12, "name": "Ending 12", "boss": "Ultra Greed", "requirement": "Defeat Ultra Greed in Greed Mode" },
+        { "id": 13, "name": "Ending 13", "boss": "Ultra Greedier", "requirement": "Defeat Ultra Greedier in Greedier Mode" },
+        { "id": 14, "name": "Ending 14", "boss": "Mother", "requirement": "Defeat Mother in Corpse II" },
+        { "id": 15, "name": "Ending 15", "boss": "The Beast", "requirement": "Defeat The Beast in Home" },
+        { "id": 16, "name": "Epilogue", "boss": "Various", "requirement": "Complete multiple endings" },
+        { "id": 17, "name": "True Ending", "boss": "Dead God", "requirement": "Achieve 100% completion (Dead God)" }
+    ],
+    
+    "derivationRules": {
+        "note": "Endings can be derived from completion marks in the save file",
+        "mappings": {
+            "1": { "requires": "any_save_data" },
+            "2": { "requires": { "anyCharacter": { "mark": "momsHeart", "difficulty": "any" } } },
+            "3": { "requires": { "anyCharacter": { "mark": "momsHeart", "difficulty": "any", "count": 10 } } },
+            "4": { "requires": { "anyCharacter": { "mark": "isaac", "difficulty": "any" } } },
+            "5": { "requires": { "anyCharacter": { "mark": "blueBaby", "difficulty": "any" } } },
+            "6": { "requires": { "anyCharacter": { "mark": "satan", "difficulty": "any" } } },
+            "7": { "requires": { "anyCharacter": { "mark": "theLamb", "difficulty": "any" } } },
+            "8": { "requires": { "anyCharacter": { "mark": "bossRush", "difficulty": "any" } } },
+            "9": { "requires": { "anyCharacter": { "mark": "megaSatan", "difficulty": "any" } } },
+            "10": { "requires": { "anyCharacter": { "mark": "hush", "difficulty": "any" } } },
+            "11": { "requires": { "anyCharacter": { "mark": "delirium", "difficulty": "any" } } },
+            "12": { "requires": { "anyCharacter": { "mark": "ultraGreed", "difficulty": "greed" } } },
+            "13": { "requires": { "anyCharacter": { "mark": "ultraGreedier", "difficulty": "greedier" } } },
+            "14": { "requires": { "anyCharacter": { "mark": "mother", "difficulty": "any" } } },
+            "15": { "requires": { "anyCharacter": { "mark": "beast", "difficulty": "any" } } },
+            "16": { "requires": "endings_count_10" },
+            "17": { "requires": "dead_god_complete" }
+        }
+    }
+}

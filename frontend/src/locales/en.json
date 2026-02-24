@@ -160,6 +160,7 @@
     "heroGenericError": "Error analyzing file. Please try again.",
     "heroLookForFile": "Look for the file",
     "heroNotAvailable": "Not available",
+    "heroKeepPlaying": "Keep playing to unlock more!",
     "previewTitle": "This is how your progress looks",
     "previewSubtitle": "Example with real player data",
     "previewItems": "Items",
@@ -181,7 +182,22 @@
     "deadGodsToday": "Dead Gods today",
     "marksDone": "marks done",
     "taintedLostCompleted": "Tainted Lost completed",
-    "newPlayers": "new players"
+    "newPlayers": "new players",
+    "ctaStartToday": "Start today.",
+    "ctaTomorrowKnow": "Tomorrow you'll know what you're missing.",
+    "ctaPathBegins": "Your path to Dead God begins with one step.",
+    "ctaSaveProgress": "Save progress, builds and achievements forever.",
+    "ctaItsFree": "It's free.",
+    "ctaBenefit1": "Track your path to Dead God",
+    "ctaBenefit2": "Share your best builds",
+    "ctaBenefit3": "Celebrate every achievement",
+    "ctaBenefit4": "Join {{count}} active players",
+    "ctaCreateAccount": "Create my free account",
+    "ctaContinueDiscord": "Continue with Discord",
+    "ctaJoinDiscord": "Join our Discord",
+    "ctaEmailOnly": "We only need your email. No spam, promise.",
+    "ctaAlreadyHaveAccount": "Already have an account?",
+    "ctaSignIn": "Sign in"
   },
   "liveActivity": {
     "deadGodsAchieved": "Dead Gods achieved",
@@ -1054,6 +1070,10 @@
     "byAuthor": "by"
   },
   "results": {
+    "parseError": "Could not read save file",
+    "parseErrorDesc": "The file may be corrupted or from an unsupported version.",
+    "tryAnotherFile": "Try another file",
+    "needsCompletion": "needs completion marks",
     "topPercentOfPlayers": "Top {{percent}}% of players",
     "aboveCommunity": "You're above {{percent}}% of the community",
     "costingYouMarks": "is costing you {{count}} completion marks",

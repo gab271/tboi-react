@@ -1,0 +1,47 @@
+{
+    "version": "repentance_plus",
+    "lastUpdated": "2026-02-24",
+    "total": 637,
+    
+    "notes": {
+        "deadGodDefinition": "Dead God achievement requires ALL 637 achievements",
+        "achievementCategories": [
+            "Character unlocks",
+            "Completion mark achievements",
+            "Item unlocks",
+            "Challenge completions",
+            "Special secrets"
+        ]
+    },
+    
+    "majorMilestones": [
+        { "id": 1, "name": "Magdalene", "description": "Have 7+ heart containers at once" },
+        { "id": 2, "name": "Cain", "description": "Have 55+ coins at once" },
+        { "id": 3, "name": "Judas", "description": "Defeat Satan" },
+        { "id": 4, "name": "Eve", "description": "Never pick up hearts for 2 floors" },
+        { "id": 30, "name": "Eden", "description": "Defeat Mom's Heart for the first time" },
+        { "id": 31, "name": "Blue Baby", "description": "Complete the full game 10 times" },
+        { "id": 81, "name": "Samson", "description": "Complete 2 floors without taking damage" },
+        { "id": 96, "name": "Lazarus", "description": "Have 4 or more Soul/Black Hearts at once" },
+        { "id": 135, "name": "Azazel", "description": "Make 3 deals with the devil in one run" },
+        { "id": 145, "name": "The Lost", "description": "Die 100 times (cumulative)" },
+        { "id": 182, "name": "Lilith", "description": "Complete the Greed Mode as Azazel" },
+        { "id": 199, "name": "Keeper", "description": "Donate 1000 coins to the Greed Donation Machine" },
+        { "id": 262, "name": "Apollyon", "description": "Defeat Mega Satan as any character" },
+        { "id": 324, "name": "The Forgotten", "description": "Complete specific unlock requirements" },
+        { "id": 394, "name": "Bethany", "description": "Defeat Mom's Heart on Hard with Lazarus" },
+        { "id": 428, "name": "Jacob & Esau", "description": "Defeat Mother for the first time" },
+        { "id": 552, "name": "Tainted Isaac", "description": "Unlock with Red Key/Cracked Key in Home" },
+        { "id": 637, "name": "Dead God", "description": "Complete everything - 100% achievements" }
+    ],
+    
+    "achievementRanges": {
+        "characterUnlocks": { "start": 1, "end": 50 },
+        "itemUnlocks": { "start": 51, "end": 400 },
+        "completionMarks": { "start": 401, "end": 550 },
+        "taintedCharacters": { "start": 551, "end": 600 },
+        "specialSecrets": { "start": 601, "end": 637 }
+    },
+    
+    "deadGodAchievementId": 637
+}

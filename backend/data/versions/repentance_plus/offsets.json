@@ -1,23 +1,35 @@
 {
     "version": "repentance_plus",
-    "lastUpdated": "2024-01-15",
+    "versionId": "rep+",
+    "lastUpdated": "2026-02-24",
+    "source": "https://bindingofisaac.fandom.com/wiki/Save_Data",
+    "compatibility": ["rep_persistentgamedata", "rep+persistentgamedata"],
+    
+    "fileSignature": {
+        "expected": "ISAACNGSAVE06",
+        "offset": 0,
+        "note": "Magic bytes to validate Isaac save file"
+    },
+    
     "fileStructure": {
         "header": {
             "offset": 0,
             "size": 16,
             "fields": {
-                "magic": { "offset": 0, "size": 4 },
-                "version": { "offset": 4, "size": 4 },
-                "checksum": { "offset": 8, "size": 8 }
+                "magic": { "offset": 0, "size": 12, "type": "ascii" },
+                "version": { "offset": 12, "size": 4, "type": "uint32le" }
             }
         },
+        
         "achievements": {
             "offset": 16,
             "size": 80,
             "type": "bitfield",
             "bitsUsed": 637,
-            "note": "Each bit represents one achievement/secret"
+            "encoding": "lsb_first",
+            "note": "Achievements/Secrets - THIS IS THE DEAD GOD TRACKER"
         },
+        
         "completionMarks": {
             "offset": 96,
             "size": 816,
@@ -25,45 +37,117 @@
             "perCharacterSize": 24,
             "totalCharacters": 34,
             "structure": {
-                "normalMarks": { "relativeOffset": 0, "size": 2, "type": "bitfield", "bits": 11 },
-                "hardMarks": { "relativeOffset": 2, "size": 2, "type": "bitfield", "bits": 11 },
-                "greedMark": { "relativeOffset": 4, "size": 1, "type": "boolean" },
-                "greedierMark": { "relativeOffset": 5, "size": 1, "type": "boolean" },
-                "reserved": { "relativeOffset": 6, "size": 18, "type": "padding" }
-            },
-            "note": "Each character has 24 bytes of completion data"
+                "normalMarks": { 
+                    "relativeOffset": 0, 
+                    "size": 2, 
+                    "type": "bitfield", 
+                    "bits": 11,
+                    "encoding": "lsb_first"
+                },
+                "hardMarks": { 
+                    "relativeOffset": 2, 
+                    "size": 2, 
+                    "type": "bitfield", 
+                    "bits": 11,
+                    "encoding": "lsb_first"
+                },
+                "greedMark": { 
+                    "relativeOffset": 4, 
+                    "size": 1, 
+                    "type": "boolean" 
+                },
+                "greedierMark": { 
+                    "relativeOffset": 5, 
+                    "size": 1, 
+                    "type": "boolean" 
+                },
+                "reserved": { 
+                    "relativeOffset": 6, 
+                    "size": 18, 
+                    "type": "padding" 
+                }
+            }
         },
+        
         "items": {
             "offset": 912,
             "size": 92,
             "type": "bitfield",
-            "bitsUsed": 733
+            "bitsUsed": 733,
+            "encoding": "lsb_first",
+            "note": "Items collected bitmap"
         },
-        "trinkets": {
+        
+        "itemsSeen": {
             "offset": 1004,
+            "size": 92,
+            "type": "bitfield",
+            "bitsUsed": 733,
+            "encoding": "lsb_first",
+            "note": "Items seen (encyclopedia) bitmap"
+        },
+        
+        "trinkets": {
+            "offset": 1096,
             "size": 24,
             "type": "bitfield",
-            "bitsUsed": 189
+            "bitsUsed": 189,
+            "encoding": "lsb_first"
         },
+        
         "challenges": {
-            "offset": 1028,
+            "offset": 1120,
             "size": 6,
             "type": "bitfield",
-            "bitsUsed": 45
+            "bitsUsed": 45,
+            "encoding": "lsb_first"
+        },
+        
+        "bestiary": {
+            "offset": 1126,
+            "size": 128,
+            "type": "bitfield",
+            "bitsUsed": 1024,
+            "encoding": "lsb_first",
+            "note": "Enemy encounters - not required for Dead God"
         }
     },
+    
     "totals": {
         "achievements": 637,
         "items": 733,
+        "itemsSeen": 733,
         "trinkets": 189,
         "challenges": 45,
         "characters": 34,
         "endings": 17,
-        "marksPerCharacter": 24
+        "bestiary": 1024
     },
+    
+    "deadGodRequirements": {
+        "achievements": 637,
+        "note": "Dead God = 100% achievements/secrets unlocked. All 637 must be complete."
+    },
+    
+    "completionMarksInfo": {
+        "perCharacter": {
+            "normalMarks": 11,
+            "hardMarks": 11,
+            "greedMarks": 2
+        },
+        "totalPerCharacter": 24,
+        "hardOnlyPerCharacter": 13,
+        "note": "For 'true completion' count Hard marks + Greed marks (13 per char). Normal marks are superseded by Hard."
+    },
+    
     "fileSizeRange": {
-        "min": 20000,
-        "max": 50000
+        "min": 15000,
+        "max": 60000,
+        "typical": 25000
     },
-    "warning": "Offsets are estimates based on save file analysis. Verify with hex dump."
+    
+    "warningThresholds": {
+        "tooSmallForProgress": 18000,
+        "suspiciouslyLarge": 50000
+    }
 }

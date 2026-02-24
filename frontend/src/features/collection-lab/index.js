@@ -30,6 +30,7 @@ export { useBuildLab } from './hooks/useBuildLab';
 export { useItemEffects } from './hooks/useItemEffects';
 export { useUserItemProgress } from './hooks/useUserItemProgress';
 export { useInfiniteItems } from './hooks/useInfiniteItems';
+export { usePaginatedItems } from './hooks/usePaginatedItems';
 
 // Contexto
 export { BuildLabProvider, useBuildLabContext } from './context/BuildLabContext';

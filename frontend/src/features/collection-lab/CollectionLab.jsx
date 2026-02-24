@@ -2,14 +2,14 @@
  * CollectionLab - Página principal del Laboratorio Estratégico
  * THE COLLECTION reimaginado como herramienta de power user
  */
-import { useState, useCallback, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaFlask, FaBook, FaBalanceScale, FaChartBar, FaFilter } from 'react-icons/fa';
 
 import { BuildLabProvider, useBuildLabContext } from './context/BuildLabContext';
 import { useBuildLab } from './hooks/useBuildLab';
-import { useInfiniteItems } from './hooks/useInfiniteItems';
+import { usePaginatedItems } from './hooks/usePaginatedItems';
 import { useFeatures } from '../../hooks/useFeatures';
 
 import { BuildLabBar } from './components/BuildLabBar';
@@ -19,6 +19,7 @@ import { AdvancedFilters } from './components/AdvancedFilters';
 import { SmartFilterBar } from './components/SmartFilterBar';
 import { ItemCompareModal } from './components/ItemCompareModal';
 import { GlobalStatsPanel } from './components/GlobalStatsPanel';
+import { Pagination } from '../../components/ui/Pagination';
 
 import { cn } from '../../lib/utils';
 
@@ -26,41 +27,28 @@ import { cn } from '../../lib/utils';
 function CollectionLabContent() {
   const { t } = useTranslation();
   const { isPro } = useFeatures();
-  const { mode, setMode, compareItems, clearCompare } = useBuildLabContext();
+  const { mode, setMode, compareItems, clearCompare, filters } = useBuildLabContext();
   const { metrics, labState } = useBuildLab();
   
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [showStats, setShowStats] = useState(false);
   
   const containerRef = useRef(null);
   
-  // Infinite scroll data
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(0);
+  }, [search, filters.type, filters.quality, filters.smart]);
+  
+  // Paginated data
   const { 
     items, 
     meta, 
-    fetchNextPage, 
-    hasNextPage, 
     isLoading,
-    isFetchingNextPage 
-  } = useInfiniteItems({ search });
-  
-  // Intersection observer para infinite scroll
-  const loadMoreRef = useCallback((node) => {
-    if (!node) return;
-    
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+    isFetching 
+  } = usePaginatedItems({ search, page });
 
   return (
     <div ref={containerRef} className="min-h-screen bg-bg-paper text-text-ink">
@@ -199,17 +187,26 @@ function CollectionLabContent() {
               mode={mode}
             />
             
-            {/* Infinite Scroll Trigger */}
-            {hasNextPage && (
-              <div 
-                ref={loadMoreRef}
-                className="h-20 flex items-center justify-center mt-4"
-              >
-                {isFetchingNextPage && (
-                  <div className="font-pixel text-gray-500 animate-pulse">
-                    Loading more items...
-                  </div>
-                )}
+            {/* Pagination Controls */}
+            {meta.totalPages > 1 && (
+              <div className="mt-8">
+                <Pagination 
+                  currentPage={page}
+                  totalPages={meta.totalPages}
+                  onPageChange={setPage}
+                />
+                <div className="text-center mt-2">
+                  <span className="text-sm text-gray-500 font-handwriting">
+                    {meta.total} items total • Page {page + 1} of {meta.totalPages}
+                  </span>
+                </div>
+              </div>
+            )}
+            
+            {/* Loading indicator */}
+            {isFetching && !isLoading && (
+              <div className="text-center mt-4">
+                <span className="font-pixel text-gray-500 animate-pulse">Loading...</span>
               </div>
             )}
           </div>

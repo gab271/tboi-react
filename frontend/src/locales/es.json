@@ -160,6 +160,7 @@
     "heroGenericError": "Error al analizar el archivo. Por favor intenta de nuevo.",
     "heroLookForFile": "Busca el archivo",
     "heroNotAvailable": "No disponible",
+    "heroKeepPlaying": "¡Sigue jugando para desbloquear más!",
     "previewTitle": "Así se ve tu progreso",
     "previewSubtitle": "Ejemplo con datos reales de un jugador",
     "previewItems": "Ítems",
@@ -181,7 +182,22 @@
     "deadGodsToday": "Dead Gods hoy",
     "marksDone": "marks completados",
     "taintedLostCompleted": "Tainted Lost completados",
-    "newPlayers": "jugadores nuevos"
+    "newPlayers": "jugadores nuevos",
+    "ctaStartToday": "Empieza hoy.",
+    "ctaTomorrowKnow": "Mañana sabrás qué te falta.",
+    "ctaPathBegins": "Tu camino a Dead God comienza con un paso.",
+    "ctaSaveProgress": "Guarda progreso, builds y logros para siempre.",
+    "ctaItsFree": "Es gratis.",
+    "ctaBenefit1": "Sigue tu camino a Dead God",
+    "ctaBenefit2": "Comparte tus mejores builds",
+    "ctaBenefit3": "Celebra cada logro",
+    "ctaBenefit4": "Únete a {{count}} jugadores activos",
+    "ctaCreateAccount": "Crear mi cuenta gratis",
+    "ctaContinueDiscord": "Continuar con Discord",
+    "ctaJoinDiscord": "Únete a nuestro Discord",
+    "ctaEmailOnly": "Solo necesitamos tu email. Sin spam, prometido.",
+    "ctaAlreadyHaveAccount": "¿Ya tienes cuenta?",
+    "ctaSignIn": "Inicia sesión"
   },
   "liveActivity": {
     "deadGodsAchieved": "Dead Gods conseguidos",
@@ -1056,6 +1072,10 @@
     "byAuthor": "por"
   },
   "results": {
+    "parseError": "No se pudo leer el archivo de guardado",
+    "parseErrorDesc": "El archivo puede estar corrupto o ser de una versión no soportada.",
+    "tryAnotherFile": "Probar con otro archivo",
+    "needsCompletion": "necesita completion marks",
     "topPercentOfPlayers": "Top {{percent}}% de jugadores",
     "aboveCommunity": "Estás por encima del {{percent}}% de la comunidad",
     "costingYouMarks": "te está costando {{count}} completion marks",

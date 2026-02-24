@@ -1,51 +1,55 @@
 {
     "version": "repentance_plus",
-    "lastUpdated": "2024-01-15",
+    "lastUpdated": "2026-02-24",
     "total": 34,
     "vanillaCount": 17,
     "taintedCount": 17,
+    
     "characters": [
-        { "id": 0, "name": "Isaac", "isTainted": false, "hasGreed": true },
-        { "id": 1, "name": "Magdalene", "isTainted": false, "hasGreed": true },
-        { "id": 2, "name": "Cain", "isTainted": false, "hasGreed": true },
-        { "id": 3, "name": "Judas", "isTainted": false, "hasGreed": true },
-        { "id": 4, "name": "Blue Baby", "isTainted": false, "hasGreed": true },
-        { "id": 5, "name": "Eve", "isTainted": false, "hasGreed": true },
-        { "id": 6, "name": "Samson", "isTainted": false, "hasGreed": true },
-        { "id": 7, "name": "Azazel", "isTainted": false, "hasGreed": true },
-        { "id": 8, "name": "Lazarus", "isTainted": false, "hasGreed": true },
-        { "id": 9, "name": "Eden", "isTainted": false, "hasGreed": true },
-        { "id": 10, "name": "The Lost", "isTainted": false, "hasGreed": true },
-        { "id": 11, "name": "Lilith", "isTainted": false, "hasGreed": true },
-        { "id": 12, "name": "Keeper", "isTainted": false, "hasGreed": true },
-        { "id": 13, "name": "Apollyon", "isTainted": false, "hasGreed": true },
-        { "id": 14, "name": "The Forgotten", "isTainted": false, "hasGreed": true },
-        { "id": 15, "name": "Bethany", "isTainted": false, "hasGreed": true },
-        { "id": 16, "name": "Jacob & Esau", "isTainted": false, "hasGreed": true },
-        { "id": 17, "name": "Tainted Isaac", "isTainted": true, "hasGreed": true },
-        { "id": 18, "name": "Tainted Magdalene", "isTainted": true, "hasGreed": true },
-        { "id": 19, "name": "Tainted Cain", "isTainted": true, "hasGreed": true },
-        { "id": 20, "name": "Tainted Judas", "isTainted": true, "hasGreed": true },
-        { "id": 21, "name": "Tainted Blue Baby", "isTainted": true, "hasGreed": true },
-        { "id": 22, "name": "Tainted Eve", "isTainted": true, "hasGreed": true },
-        { "id": 23, "name": "Tainted Samson", "isTainted": true, "hasGreed": true },
-        { "id": 24, "name": "Tainted Azazel", "isTainted": true, "hasGreed": true },
-        { "id": 25, "name": "Tainted Lazarus", "isTainted": true, "hasGreed": true },
-        { "id": 26, "name": "Tainted Eden", "isTainted": true, "hasGreed": true },
-        { "id": 27, "name": "Tainted Lost", "isTainted": true, "hasGreed": true },
-        { "id": 28, "name": "Tainted Lilith", "isTainted": true, "hasGreed": true },
-        { "id": 29, "name": "Tainted Keeper", "isTainted": true, "hasGreed": true },
-        { "id": 30, "name": "Tainted Apollyon", "isTainted": true, "hasGreed": true },
-        { "id": 31, "name": "Tainted Forgotten", "isTainted": true, "hasGreed": true },
-        { "id": 32, "name": "Tainted Bethany", "isTainted": true, "hasGreed": true },
-        { "id": 33, "name": "Tainted Jacob", "isTainted": true, "hasGreed": true }
+        { "id": 0, "internalId": 0, "name": "Isaac", "isTainted": false, "hasGreed": true, "unlockAchievement": null },
+        { "id": 1, "internalId": 1, "name": "Magdalene", "isTainted": false, "hasGreed": true, "unlockAchievement": 1 },
+        { "id": 2, "internalId": 2, "name": "Cain", "isTainted": false, "hasGreed": true, "unlockAchievement": 2 },
+        { "id": 3, "internalId": 3, "name": "Judas", "isTainted": false, "hasGreed": true, "unlockAchievement": 3 },
+        { "id": 4, "internalId": 4, "name": "Blue Baby", "isTainted": false, "hasGreed": true, "unlockAchievement": 31 },
+        { "id": 5, "internalId": 5, "name": "Eve", "isTainted": false, "hasGreed": true, "unlockAchievement": 4 },
+        { "id": 6, "internalId": 6, "name": "Samson", "isTainted": false, "hasGreed": true, "unlockAchievement": 81 },
+        { "id": 7, "internalId": 7, "name": "Azazel", "isTainted": false, "hasGreed": true, "unlockAchievement": 135 },
+        { "id": 8, "internalId": 8, "name": "Lazarus", "isTainted": false, "hasGreed": true, "unlockAchievement": 96 },
+        { "id": 9, "internalId": 9, "name": "Eden", "isTainted": false, "hasGreed": true, "unlockAchievement": 30 },
+        { "id": 10, "internalId": 10, "name": "The Lost", "isTainted": false, "hasGreed": true, "unlockAchievement": 145 },
+        { "id": 11, "internalId": 13, "name": "Lilith", "isTainted": false, "hasGreed": true, "unlockAchievement": 182 },
+        { "id": 12, "internalId": 14, "name": "Keeper", "isTainted": false, "hasGreed": true, "unlockAchievement": 199 },
+        { "id": 13, "internalId": 15, "name": "Apollyon", "isTainted": false, "hasGreed": true, "unlockAchievement": 262 },
+        { "id": 14, "internalId": 16, "name": "The Forgotten", "isTainted": false, "hasGreed": true, "unlockAchievement": 324 },
+        { "id": 15, "internalId": 18, "name": "Bethany", "isTainted": false, "hasGreed": true, "unlockAchievement": 394 },
+        { "id": 16, "internalId": 19, "name": "Jacob & Esau", "isTainted": false, "hasGreed": true, "unlockAchievement": 428 },
+        
+        { "id": 17, "internalId": 21, "name": "Tainted Isaac", "isTainted": true, "hasGreed": true, "unlockAchievement": 552 },
+        { "id": 18, "internalId": 22, "name": "Tainted Magdalene", "isTainted": true, "hasGreed": true, "unlockAchievement": 553 },
+        { "id": 19, "internalId": 23, "name": "Tainted Cain", "isTainted": true, "hasGreed": true, "unlockAchievement": 554 },
+        { "id": 20, "internalId": 24, "name": "Tainted Judas", "isTainted": true, "hasGreed": true, "unlockAchievement": 555 },
+        { "id": 21, "internalId": 25, "name": "Tainted Blue Baby", "isTainted": true, "hasGreed": true, "unlockAchievement": 556 },
+        { "id": 22, "internalId": 26, "name": "Tainted Eve", "isTainted": true, "hasGreed": true, "unlockAchievement": 557 },
+        { "id": 23, "internalId": 27, "name": "Tainted Samson", "isTainted": true, "hasGreed": true, "unlockAchievement": 558 },
+        { "id": 24, "internalId": 28, "name": "Tainted Azazel", "isTainted": true, "hasGreed": true, "unlockAchievement": 559 },
+        { "id": 25, "internalId": 29, "name": "Tainted Lazarus", "isTainted": true, "hasGreed": true, "unlockAchievement": 560 },
+        { "id": 26, "internalId": 30, "name": "Tainted Eden", "isTainted": true, "hasGreed": true, "unlockAchievement": 561 },
+        { "id": 27, "internalId": 31, "name": "Tainted Lost", "isTainted": true, "hasGreed": true, "unlockAchievement": 562 },
+        { "id": 28, "internalId": 32, "name": "Tainted Lilith", "isTainted": true, "hasGreed": true, "unlockAchievement": 563 },
+        { "id": 29, "internalId": 33, "name": "Tainted Keeper", "isTainted": true, "hasGreed": true, "unlockAchievement": 564 },
+        { "id": 30, "internalId": 34, "name": "Tainted Apollyon", "isTainted": true, "hasGreed": true, "unlockAchievement": 565 },
+        { "id": 31, "internalId": 35, "name": "Tainted Forgotten", "isTainted": true, "hasGreed": true, "unlockAchievement": 566 },
+        { "id": 32, "internalId": 36, "name": "Tainted Bethany", "isTainted": true, "hasGreed": true, "unlockAchievement": 567 },
+        { "id": 33, "internalId": 37, "name": "Tainted Jacob", "isTainted": true, "hasGreed": true, "unlockAchievement": 568 }
     ],
+    
     "markNames": {
         "normal": ["momsHeart", "isaac", "blueBaby", "satan", "theLamb", "bossRush", "hush", "delirium", "mother", "beast", "megaSatan"],
         "hard": ["momsHeart", "isaac", "blueBaby", "satan", "theLamb", "bossRush", "hush", "delirium", "mother", "beast", "megaSatan"],
         "greed": ["ultraGreed"],
         "greedier": ["ultraGreedier"]
     },
+    
     "markLabels": {
         "momsHeart": "Mom's Heart/It Lives",
         "isaac": "Isaac",
@@ -61,6 +65,25 @@
         "ultraGreed": "Ultra Greed",
         "ultraGreedier": "Ultra Greedier"
     },
+    
+    "markOrder": [
+        "momsHeart", "isaac", "blueBaby", "satan", "theLamb", 
+        "bossRush", "hush", "delirium", "mother", "beast", "megaSatan"
+    ],
+    
     "totalMarksPerCharacter": 24,
-    "note": "Each character has 11 normal marks + 11 hard marks + 2 greed marks = 24 total"
+    "hardMarksPerCharacter": 11,
+    "normalMarksPerCharacter": 11,
+    "greedMarksPerCharacter": 2,
+    
+    "deadGodMarksPerCharacter": 13,
+    "deadGodMarksNote": "For Dead God: 11 Hard marks + 2 Greed marks = 13 meaningful marks per character",
+    
+    "totals": {
+        "allMarks": 816,
+        "hardMarks": 374,
+        "normalMarks": 374,
+        "greedMarks": 68,
+        "deadGodRelevantMarks": 442
+    }
 }

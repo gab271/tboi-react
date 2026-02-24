@@ -221,7 +221,7 @@ export function ItemHoverCard({ item, position, itemStatus }) {
         {/* Action Hint */}
         <div className="px-4 py-2 bg-black/50 text-center">
           <span className="text-xs text-gray-500">
-            Click to add • Right-click for details
+            Hover para ver detalles • Click para añadir
           </span>
         </div>
         

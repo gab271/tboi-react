@@ -1,16 +1,43 @@
 /**
- * Save File Analysis Routes
+ * Save File Analysis Routes V3
  * POST /api/save/analyze - Upload and parse Isaac save file
+ * 
+ * Features:
+ * - SHA-256 hash verification (client vs server)
+ * - Structured logging with requestId
+ * - Anti-cache headers
+ * - Never returns demo/fake data
  */
 
 const express = require('express');
 const multer = require('multer');
 const crypto = require('crypto');
-// Using Parser V2 with proper bitfield decoding
-const { parseSaveFile, detectSlot, validateSaveFile } = require('../lib/saveParserV2');
+// Using Parser V3 with proper bitfield decoding
+const { parseSaveFile, detectSlot, validateSaveFile, sha256 } = require('../lib/saveParserV2');
 const { incrementAnalyzeCount } = require('./stats');
 
 const router = express.Router();
+
+// Generate unique request ID
+function genRequestId() {
+    return crypto.randomUUID().substring(0, 8);
+}
+
+// Structured logger
+function log(requestId, level, msg, data = {}) {
+    const entry = {
+        ts: new Date().toISOString(),
+        reqId: requestId,
+        level,
+        msg,
+        ...data
+    };
+    if (level === 'error') {
+        console.error(JSON.stringify(entry));
+    } else {
+        console.log(JSON.stringify(entry));
+    }
+}
 
 // Configure multer for memory storage (we parse directly from buffer)
 const upload = multer({
@@ -36,41 +63,43 @@ const upload = multer({
  * POST /api/save/analyze
  * Uploads and parses an Isaac Repentance save file
  * 
- * Request: multipart/form-data with 'saveFile' field
- * Response: JSON with parsed data or error
+ * Request: 
+ *   - multipart/form-data with 'saveFile' field
+ *   - Optional header: x-file-sha256 (client-computed hash for verification)
+ * 
+ * Response: JSON with canonical save data or error
  */
 router.post('/analyze', upload.single('saveFile'), async (req, res) => {
+    const requestId = genRequestId();
+    
     // Anti-cache headers - CRITICAL
     res.set({
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0',
-        'Surrogate-Control': 'no-store'
+        'Surrogate-Control': 'no-store',
+        'X-Request-Id': requestId
     });
 
     const startTime = Date.now();
     
-    // Log request details
-    console.log('[SAVE_ANALYZE] Request received', {
-        timestamp: new Date().toISOString(),
+    log(requestId, 'info', 'ANALYZE_START', {
         hasFile: !!req.file,
         filename: req.file?.originalname,
         fileSize: req.file?.size,
-        mimetype: req.file?.mimetype,
+        clientHash: req.headers['x-file-sha256']?.substring(0, 16),
         ip: req.ip
     });
 
     try {
         // Validate file presence
         if (!req.file) {
-            console.log('[SAVE_ANALYZE] ERROR: No file uploaded');
+            log(requestId, 'warn', 'NO_FILE');
             return res.status(400).json({
                 ok: false,
                 source: 'error',
                 error_code: 'NO_FILE',
-                error_message: 'No save file was uploaded. Please select a .dat file.',
-                parsed: null,
-                metrics: null
+                error_message: 'No save file was uploaded. Please select a .dat file.'
             });
         }
 
@@ -78,69 +107,88 @@ router.post('/analyze', upload.single('saveFile'), async (req, res) => {
         
         // Validate file size
         if (size === 0) {
-            console.log('[SAVE_ANALYZE] ERROR: Empty file');
+            log(requestId, 'warn', 'EMPTY_FILE');
             return res.status(400).json({
                 ok: false,
                 source: 'error',
                 error_code: 'EMPTY_FILE',
-                error_message: 'The uploaded file is empty.',
-                parsed: null,
-                metrics: null
+                error_message: 'The uploaded file is empty.'
             });
         }
 
-        // Calculate hash for debugging/logging
-        const fileHash = crypto.createHash('md5').update(buffer).digest('hex');
+        // Calculate server-side SHA-256
+        const serverHash = sha256(buffer);
+        const clientHash = req.headers['x-file-sha256'];
         const slot = detectSlot(originalname);
         
-        console.log('[SAVE_ANALYZE] Processing file', {
+        // Log file details for debugging
+        log(requestId, 'info', 'FILE_RECEIVED', {
             filename: originalname,
             size,
-            hash: fileHash.substring(0, 8),
-            slot,
-            bufferLength: buffer.length
+            serverHash: serverHash.substring(0, 16),
+            clientHash: clientHash?.substring(0, 16),
+            first16Hex: buffer.slice(0, 16).toString('hex'),
+            first16Ascii: buffer.slice(0, 16).toString('ascii').replace(/[^\x20-\x7E]/g, '.'),
+            slot
         });
+
+        // Verify hash if client provided one
+        if (clientHash) {
+            const serverShort = serverHash.substring(0, 16);
+            const clientShort = clientHash.substring(0, 16);
+            
+            if (serverShort !== clientShort) {
+                log(requestId, 'error', 'HASH_MISMATCH', {
+                    server: serverShort,
+                    client: clientShort
+                });
+                return res.status(400).json({
+                    ok: false,
+                    source: 'error',
+                    error_code: 'HASH_MISMATCH',
+                    error_message: 'File hash mismatch - the upload may have been corrupted. Please try again.',
+                    details: {
+                        serverHash: serverShort,
+                        clientHash: clientShort
+                    }
+                });
+            }
+            log(requestId, 'info', 'HASH_VERIFIED', { hash: serverShort });
+        }
 
         // Validate it's an Isaac save
         const validation = validateSaveFile(buffer);
-        if (!validation.valid) {
-            console.log('[SAVE_ANALYZE] ERROR: Invalid save file', validation);
+        if (!validation.ok) {
+            log(requestId, 'warn', 'VALIDATION_FAIL', validation);
             return res.status(400).json({
                 ok: false,
                 source: 'error',
-                error_code: validation.error,
-                error_message: validation.message,
-                parsed: null,
-                metrics: null
+                error_code: validation.errorCode,
+                error_message: validation.reason || 'Invalid save file format'
             });
         }
 
-        // Parse the save file using V2 parser
-        const result = parseSaveFile(buffer, { filename: originalname });
+        // Parse the save file
+        const result = parseSaveFile(buffer, { 
+            filename: originalname,
+            clientHash: clientHash,
+            requestId
+        });
         
         const parseTime = Date.now() - startTime;
         
-        // Metadata is already included by V2 parser
-        if (result.ok) {
-            result.metadata.slot = slot;
-            result.metadata.filename = originalname;
-            result.parseTimeMs = parseTime;
-        }
-        
-        console.log('[SAVE_ANALYZE] Parse complete', {
+        log(requestId, 'info', 'PARSE_COMPLETE', {
             ok: result.ok,
             source: result.source,
             parseTimeMs: parseTime,
-            deadGodPercentage: result.metrics?.deadGodPercentage,
-            secretsCount: result.secrets?.count,
-            totalMarks: result.totalMarks,
-            fileHash: fileHash.substring(0, 8),
-            invariantsPassed: result.sanityChecks?.invariantsPassed
+            deadGodPercent: result.progress?.deadGodPercent,
+            achievementsCount: result.secrets?.count,
+            itemsCount: result.items?.collectedCount,
+            invariantsPassed: result.sanity?.ok
         });
 
         // Return appropriate status code
         if (result.ok) {
-            // Increment daily counter on successful analysis
             incrementAnalyzeCount();
             return res.status(200).json(result);
         } else {
@@ -148,19 +196,17 @@ router.post('/analyze', upload.single('saveFile'), async (req, res) => {
         }
 
     } catch (error) {
-        console.error('[SAVE_ANALYZE] CRITICAL ERROR', {
+        log(requestId, 'error', 'CRITICAL_ERROR', {
             error: error.message,
             stack: error.stack
         });
         
-        // IMPORTANT: Never return demo data on error - always return error response
+        // IMPORTANT: Never return demo data on error
         return res.status(500).json({
             ok: false,
             source: 'error',
             error_code: 'INTERNAL_ERROR',
-            error_message: 'An unexpected error occurred while parsing the save file.',
-            parsed: null,
-            metrics: null
+            error_message: 'An unexpected error occurred while parsing the save file.'
         });
     }
 });

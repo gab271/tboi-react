@@ -1,394 +1,654 @@
 /**
- * Isaac Repentance Save File Parser V2
- * Reescrito desde cero con:
- * - Decodificación BIT A BIT correcta
- * - Invariantes obligatorios
- * - Datasets versionados
- * - NUNCA fallback a demo
+ * Isaac Repentance+ Save File Parser V3
+ * =====================================
+ * 
+ * REWRITTEN FROM SCRATCH with:
+ * - Proper binary parsing (little-endian, LSB-first bitfields)
+ * - File variant detection (vanilla, rep, rep+)
+ * - SHA-256 hash verification
+ * - Strict invariant checks
+ * - NEVER returns fake/demo data
+ * - Canonical JSON response format
+ * 
+ * @version 3.0.0
+ * @author Senior Engineering Team
  */
 
 const crypto = require('crypto');
-const datasetLoader = require('../../data');
+const path = require('path');
+const fs = require('fs');
 
-const PARSER_VERSION = '2.0.0';
+const PARSER_VERSION = '3.0.0';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// ERROR CODES
+// ERROR CODES - Exhaustive list of failure modes
 // ═══════════════════════════════════════════════════════════════════════════
 
 const ERROR_CODES = {
-    NO_FILE: { code: 'NO_FILE', http: 400, message: 'No se subió ningún archivo' },
-    FILE_TOO_SMALL: { code: 'FILE_TOO_SMALL', http: 400, message: 'Archivo demasiado pequeño para ser un save válido' },
-    FILE_TOO_LARGE: { code: 'FILE_TOO_LARGE', http: 400, message: 'Archivo demasiado grande' },
-    EMPTY_FILE: { code: 'EMPTY_FILE', http: 400, message: 'El archivo está vacío' },
-    EMPTY_SAVE: { code: 'EMPTY_SAVE', http: 422, message: 'El save está vacío (sin datos de progreso)' },
-    BAD_HEADER: { code: 'BAD_HEADER', http: 422, message: 'Header inválido - no es un save de Isaac' },
-    WRONG_VERSION: { code: 'WRONG_VERSION', http: 422, message: 'Versión del save no soportada' },
-    PARSE_FAIL: { code: 'PARSE_FAIL', http: 422, message: 'Error al parsear el archivo' },
-    CORRUPTED: { code: 'CORRUPTED', http: 422, message: 'El archivo parece estar corrupto' },
-    INVARIANT_FAIL: { code: 'INVARIANT_FAIL', http: 422, message: 'Los datos parseados no pasan validación' },
-    INTERNAL: { code: 'INTERNAL', http: 500, message: 'Error interno del servidor' }
+    // Client errors (4xx)
+    NO_FILE: { code: 'NO_FILE', http: 400, message: 'No file uploaded' },
+    EMPTY_FILE: { code: 'EMPTY_FILE', http: 400, message: 'File is empty (0 bytes)' },
+    FILE_TOO_SMALL: { code: 'FILE_TOO_SMALL', http: 400, message: 'File too small - not a valid Isaac save' },
+    FILE_TOO_LARGE: { code: 'FILE_TOO_LARGE', http: 400, message: 'File too large - exceeds 100KB limit' },
+    HASH_MISMATCH: { code: 'HASH_MISMATCH', http: 400, message: 'File hash mismatch - upload corrupted' },
+    
+    // Parse errors (422)
+    INVALID_FORMAT: { code: 'INVALID_FORMAT', http: 422, message: 'Not a valid Isaac save file format' },
+    UNSUPPORTED_VERSION: { code: 'UNSUPPORTED_VERSION', http: 422, message: 'Save file version not supported' },
+    EMPTY_SAVE: { code: 'EMPTY_SAVE', http: 422, message: 'Save file contains no progress data' },
+    CORRUPTED: { code: 'CORRUPTED', http: 422, message: 'Save file appears corrupted' },
+    INVARIANT_FAIL: { code: 'INVARIANT_FAIL', http: 422, message: 'Parsed data fails sanity checks' },
+    OFFSET_ERROR: { code: 'OFFSET_ERROR', http: 422, message: 'Could not read data at expected offset' },
+    
+    // Server errors (5xx)
+    INTERNAL: { code: 'INTERNAL', http: 500, message: 'Internal parser error' },
+    DATASET_MISSING: { code: 'DATASET_MISSING', http: 500, message: 'Required dataset not found' }
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// BITFIELD DECODING - EL CORE DEL FIX
+// BINARY PARSING UTILITIES
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Decodifica un bitfield del buffer
- * CRÍTICO: Lee BIT A BIT, no byte a byte
+ * Decodes a bitfield from buffer using LSB-first ordering
+ * CRITICAL: This is the correct way to read Isaac's bitfields
  * 
- * @param {Buffer} buffer - El buffer del save
- * @param {number} offset - Offset en bytes donde empieza el bitfield
- * @param {number} nBits - Número total de bits a leer
- * @returns {number[]} Array de índices de bits que están en 1
+ * @param {Buffer} buffer - The save file buffer
+ * @param {number} offset - Byte offset where bitfield starts
+ * @param {number} nBits - Number of bits to read
+ * @returns {number[]} Array of bit indices that are set (1)
  */
 function decodeBitset(buffer, offset, nBits) {
-    const setIndices = [];
-
-    for (let bitIndex = 0; bitIndex < nBits; bitIndex++) {
-        const byteIndex = Math.floor(bitIndex / 8);
-        const bitPosition = bitIndex % 8;
-
-        if (offset + byteIndex >= buffer.length) {
-            // Buffer overflow - log pero continúa
-            console.warn(`[decodeBitset] Buffer overflow at byte ${offset + byteIndex}, bit ${bitIndex}`);
+    const setBits = [];
+    
+    for (let bitIdx = 0; bitIdx < nBits; bitIdx++) {
+        const byteIdx = Math.floor(bitIdx / 8);
+        const bitPos = bitIdx % 8; // LSB = bit 0
+        
+        if (offset + byteIdx >= buffer.length) {
+            // Buffer overflow - return what we have, don't crash
+            console.warn(`[decodeBitset] Buffer overflow at offset ${offset + byteIdx}, stopping at bit ${bitIdx}`);
             break;
         }
-
-        const byte = buffer[offset + byteIndex];
-        // LSB first (bit 0 es el menos significativo)
-        const isSet = (byte & (1 << bitPosition)) !== 0;
-
+        
+        const byte = buffer[offset + byteIdx];
+        const isSet = (byte & (1 << bitPos)) !== 0;
+        
         if (isSet) {
-            setIndices.push(bitIndex);
+            setBits.push(bitIdx);
         }
     }
-
-    return setIndices;
+    
+    return setBits;
 }
 
 /**
- * Cuenta bits en un rango del buffer (wrapper de decodeBitset)
+ * Count set bits in a range (convenience wrapper)
  */
-function countBitsInRange(buffer, offset, nBits) {
+function countBits(buffer, offset, nBits) {
     return decodeBitset(buffer, offset, nBits).length;
 }
 
 /**
- * Lee un solo bit del buffer
+ * Read a single bit from buffer
  */
-function readBit(buffer, byteOffset, bitIndex) {
-    if (byteOffset >= buffer.length) return false;
-    const byte = buffer[byteOffset];
-    return (byte & (1 << bitIndex)) !== 0;
+function readBit(buffer, offset, bitIndex) {
+    const byteIdx = Math.floor(bitIndex / 8);
+    const bitPos = bitIndex % 8;
+    
+    if (offset + byteIdx >= buffer.length) return false;
+    
+    return (buffer[offset + byteIdx] & (1 << bitPos)) !== 0;
 }
 
 /**
- * Lee un byte como boolean (legacy compatibility)
+ * Read a byte as boolean
  */
 function readBool(buffer, offset) {
     if (offset >= buffer.length) return false;
     return buffer[offset] !== 0;
 }
 
+/**
+ * Read uint32 little-endian
+ */
+function readUInt32LE(buffer, offset) {
+    if (offset + 4 > buffer.length) return 0;
+    return buffer.readUInt32LE(offset);
+}
+
+/**
+ * Read uint16 little-endian
+ */
+function readUInt16LE(buffer, offset) {
+    if (offset + 2 > buffer.length) return 0;
+    return buffer.readUInt16LE(offset);
+}
+
+/**
+ * Calculate SHA-256 hash of buffer
+ */
+function sha256(buffer) {
+    return crypto.createHash('sha256').update(buffer).digest('hex');
+}
+
+/**
+ * Calculate MD5 hash (for shorter display)
+ */
+function md5Short(buffer) {
+    return crypto.createHash('md5').update(buffer).digest('hex').substring(0, 8);
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
-// PARSER CLASS
+// DATASET LOADER
 // ═══════════════════════════════════════════════════════════════════════════
 
-class SaveParserV2 {
+class DatasetManager {
     constructor() {
-        this.debug = process.env.NODE_ENV !== 'production';
+        this.cache = new Map();
+        this.basePath = path.join(__dirname, '../../data/versions');
     }
+    
+    load(version, type) {
+        const key = `${version}:${type}`;
+        
+        if (this.cache.has(key)) {
+            return this.cache.get(key);
+        }
+        
+        const filePath = path.join(this.basePath, version, `${type}.json`);
+        
+        if (!fs.existsSync(filePath)) {
+            // Try fallback to repentance_plus
+            const fallback = path.join(this.basePath, 'repentance_plus', `${type}.json`);
+            if (fs.existsSync(fallback)) {
+                const data = JSON.parse(fs.readFileSync(fallback, 'utf8'));
+                this.cache.set(key, data);
+                return data;
+            }
+            throw new Error(`Dataset not found: ${key}`);
+        }
+        
+        const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        this.cache.set(key, data);
+        return data;
+    }
+    
+    getOffsets(version) {
+        return this.load(version, 'offsets');
+    }
+    
+    getCharacters(version) {
+        return this.load(version, 'characters');
+    }
+    
+    getEndings(version) {
+        try {
+            return this.load(version, 'endings');
+        } catch {
+            return { total: 17, endings: [] };
+        }
+    }
+    
+    getAchievements(version) {
+        try {
+            return this.load(version, 'achievements');
+        } catch {
+            return { total: 637, achievements: [] };
+        }
+    }
+}
 
+const datasets = new DatasetManager();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MAIN PARSER CLASS
+// ═══════════════════════════════════════════════════════════════════════════
+
+class IsaacSaveParser {
+    constructor(options = {}) {
+        this.debug = options.debug ?? (process.env.NODE_ENV !== 'production');
+        this.requestId = options.requestId ?? crypto.randomUUID().substring(0, 8);
+    }
+    
     /**
-     * Parsea un buffer de save file
-     * @param {Buffer} buffer - El buffer del archivo
-     * @param {Object} options - Opciones (filename, etc.)
-     * @returns {Object} Resultado del parsing
+     * Main entry point - parse a save file buffer
+     * 
+     * @param {Buffer} buffer - Raw file bytes
+     * @param {Object} options - { filename, clientHash }
+     * @returns {Object} Canonical response format
      */
     parse(buffer, options = {}) {
-        const startTime = Date.now();
-
+        const startMs = Date.now();
+        const log = (msg, data) => {
+            if (this.debug) {
+                console.log(`[Parser:${this.requestId}] ${msg}`, data || '');
+            }
+        };
+        
         try {
-            // 1. Validación básica del buffer
+            // ══════════════════════════════════════════════════════════════
+            // STEP 1: Validate buffer
+            // ══════════════════════════════════════════════════════════════
+            
             const validation = this._validateBuffer(buffer);
-            if (!validation.valid) {
-                return this._createError(validation.error, validation);
+            if (!validation.ok) {
+                log('Validation failed', validation);
+                return this._error(validation.errorCode, {
+                    size: buffer?.length,
+                    reason: validation.reason
+                });
             }
-
-            // 2. Extraer metadata
-            const metadata = this._extractMetadata(buffer, options.filename);
-
-            // 3. Detectar versión y cargar configuración
-            const versionInfo = this._detectVersion(buffer);
-            metadata.gameVersion = versionInfo.version;
-            metadata.versionConfidence = versionInfo.confidence;
-
-            let offsets, charDataset;
+            
+            // ══════════════════════════════════════════════════════════════
+            // STEP 2: Calculate hashes
+            // ══════════════════════════════════════════════════════════════
+            
+            const serverHash = sha256(buffer);
+            const shortHash = serverHash.substring(0, 16);
+            
+            log('File received', {
+                size: buffer.length,
+                sha256: shortHash,
+                first16Hex: buffer.slice(0, 16).toString('hex'),
+                first16Ascii: buffer.slice(0, 16).toString('ascii').replace(/[^\x20-\x7E]/g, '.')
+            });
+            
+            // Verify client hash if provided
+            if (options.clientHash) {
+                const clientShort = options.clientHash.substring(0, 16);
+                if (clientShort !== shortHash) {
+                    log('Hash mismatch!', { client: clientShort, server: shortHash });
+                    return this._error('HASH_MISMATCH', {
+                        clientHash: clientShort,
+                        serverHash: shortHash
+                    });
+                }
+                log('Hash verified', shortHash);
+            }
+            
+            // ══════════════════════════════════════════════════════════════
+            // STEP 3: Detect game variant
+            // ══════════════════════════════════════════════════════════════
+            
+            const variant = this._detectVariant(buffer, options.filename);
+            log('Detected variant', variant);
+            
+            if (!variant.supported) {
+                return this._error('UNSUPPORTED_VERSION', {
+                    detected: variant.variant,
+                    confidence: variant.confidence
+                });
+            }
+            
+            // ══════════════════════════════════════════════════════════════
+            // STEP 4: Load datasets
+            // ══════════════════════════════════════════════════════════════
+            
+            let offsets, charData, endingsData;
             try {
-                offsets = datasetLoader.getOffsets(versionInfo.version);
-                charDataset = datasetLoader.getCharacters(versionInfo.version);
-            } catch (err) {
-                console.error('[ParserV2] Failed to load datasets:', err);
-                return this._createError('WRONG_VERSION', { message: err.message });
+                offsets = datasets.getOffsets(variant.variant);
+                charData = datasets.getCharacters(variant.variant);
+                endingsData = datasets.getEndings(variant.variant);
+            } catch (e) {
+                log('Dataset load failed', e.message);
+                return this._error('DATASET_MISSING', { message: e.message });
             }
-
-            // 4. Parsear secciones
-            const secrets = this._parseSecrets(buffer, offsets);
+            
+            // ══════════════════════════════════════════════════════════════
+            // STEP 5: Parse each section
+            // ══════════════════════════════════════════════════════════════
+            
+            const achievements = this._parseAchievements(buffer, offsets);
             const items = this._parseItems(buffer, offsets);
             const trinkets = this._parseTrinkets(buffer, offsets);
             const challenges = this._parseChallenges(buffer, offsets);
-            const characters = this._parseCharacters(buffer, offsets, charDataset);
-            const endings = this._deriveEndings(characters, offsets);
-
-            // 5. Calcular totales
-            const totalMarks = this._calculateTotalMarks(characters);
-            const totalMarksExpected = charDataset.total * charDataset.totalMarksPerCharacter;
-
-            // 6. Construir resultado
-            const result = {
+            const characters = this._parseCharacters(buffer, offsets, charData);
+            const endings = this._deriveEndings(characters, endingsData);
+            
+            // ══════════════════════════════════════════════════════════════
+            // STEP 6: Calculate totals
+            // ══════════════════════════════════════════════════════════════
+            
+            const marksTotals = this._calculateMarkTotals(characters, charData);
+            
+            // ══════════════════════════════════════════════════════════════
+            // STEP 7: Run invariant checks
+            // ══════════════════════════════════════════════════════════════
+            
+            const sanity = this._checkInvariants({
+                achievements, items, trinkets, challenges, endings, marksTotals
+            }, offsets);
+            
+            if (!sanity.ok && sanity.critical) {
+                log('Critical invariant failure', sanity);
+                return this._error('INVARIANT_FAIL', {
+                    errors: sanity.errors,
+                    warnings: sanity.warnings
+                });
+            }
+            
+            // ══════════════════════════════════════════════════════════════
+            // STEP 8: Build canonical response
+            // ══════════════════════════════════════════════════════════════
+            
+            const parseMs = Date.now() - startMs;
+            
+            const response = {
                 ok: true,
-                source: 'real', // CRÍTICO: Siempre 'real' si OK
+                source: 'real', // NEVER 'demo'
                 error_code: null,
                 error_message: null,
-                metadata: {
-                    ...metadata,
-                    parseTimeMs: Date.now() - startTime
-                },
-                endings,
-                items,
-                trinkets,
-                characters,
-                secrets,
-                challenges,
-                totalMarks,
-                totalMarksExpected,
-                sanityChecks: null,
-                metrics: null
-            };
-
-            // 7. Validar invariantes
-            result.sanityChecks = this._runInvariants(result);
-
-            if (!result.sanityChecks.invariantsPassed) {
-                // Log detallado pero continuar si solo hay warnings
-                console.warn('[ParserV2] Invariant warnings:', result.sanityChecks);
                 
-                // Si hay errores críticos, fallar
-                if (result.sanityChecks.errors.length > 0) {
-                    return this._createError('INVARIANT_FAIL', {
-                        errors: result.sanityChecks.errors,
-                        warnings: result.sanityChecks.warnings
-                    });
+                meta: {
+                    fileName: options.filename || 'unknown',
+                    fileSize: buffer.length,
+                    sha256: serverHash,
+                    parsedAt: new Date().toISOString(),
+                    parserVersion: PARSER_VERSION,
+                    gameVariant: variant.variant,
+                    slot: this._detectSlot(options.filename),
+                    parseMs,
+                    warnings: sanity.warnings,
+                    invariantsPassed: sanity.ok
+                },
+                
+                progress: {
+                    deadGodPercent: this._calculateDeadGodPercent(achievements),
+                    isDeadGod: achievements.count >= achievements.total,
+                    breakdown: {
+                        achievements: {
+                            count: achievements.count,
+                            total: achievements.total,
+                            percent: this._percent(achievements.count, achievements.total)
+                        },
+                        marksHard: {
+                            count: marksTotals.hard,
+                            total: marksTotals.hardTotal,
+                            percent: this._percent(marksTotals.hard, marksTotals.hardTotal)
+                        },
+                        items: {
+                            count: items.count,
+                            total: items.total,
+                            percent: this._percent(items.count, items.total)
+                        },
+                        challenges: {
+                            count: challenges.count,
+                            total: challenges.total,
+                            percent: this._percent(challenges.count, challenges.total)
+                        },
+                        endings: {
+                            count: endings.count,
+                            total: endings.total,
+                            percent: this._percent(endings.count, endings.total)
+                        }
+                    },
+                    missing: {
+                        achievements: achievements.total - achievements.count,
+                        items: items.total - items.count,
+                        challenges: challenges.total - challenges.count,
+                        hardMarks: marksTotals.hardTotal - marksTotals.hard
+                    }
+                },
+                
+                characters: this._formatCharactersForResponse(characters, charData),
+                
+                items: {
+                    totalItems: items.total,
+                    collectedIds: items.collectedIds,
+                    seenIds: items.seenIds,
+                    collectedCount: items.count,
+                    seenCount: items.seenCount
+                },
+                
+                endings: {
+                    totalEndings: endings.total,
+                    unlockedIds: endings.unlockedIds,
+                    count: endings.count
+                },
+                
+                sanity: {
+                    computedChecks: sanity.checks,
+                    ok: sanity.ok,
+                    warnings: sanity.warnings,
+                    errors: sanity.errors
+                },
+                
+                // Legacy compatibility fields
+                secrets: achievements, // V2 called them secrets
+                trinkets,
+                challenges,
+                totalMarks: marksTotals.all,
+                totalMarksExpected: marksTotals.allTotal,
+                metrics: {
+                    deadGodPercentage: this._calculateDeadGodPercent(achievements),
+                    secretsPercentage: this._percent(achievements.count, achievements.total),
+                    marksPercentage: this._percent(marksTotals.all, marksTotals.allTotal),
+                    itemsPercentage: this._percent(items.count, items.total),
+                    challengesPercentage: this._percent(challenges.count, challenges.total),
+                    estimatedHoursRemaining: this._estimateHoursRemaining(achievements),
+                    taintedProgress: this._calculateTaintedProgress(characters)
+                },
+                metadata: {
+                    fileHash: shortHash,
+                    sha256: serverHash,
+                    slot: this._detectSlot(options.filename),
+                    filename: options.filename,
+                    parsedAt: new Date().toISOString(),
+                    parserVersion: PARSER_VERSION,
+                    gameVersion: variant.variant,
+                    parseTimeMs: parseMs
                 }
-            }
-
-            // 8. Calcular métricas finales
-            result.metrics = this._calculateMetrics(result);
-
-            // 9. Generar missing breakdown y next steps
-            result.missing = this._generateMissingBreakdown(result, charDataset);
-            result.nextSteps = this._generateNextSteps(result.missing, characters);
-
-            console.log('[ParserV2] Parse SUCCESS:', {
-                fileHash: metadata.fileHash,
-                deadGodPercentage: result.metrics.deadGodPercentage,
-                secretsCount: secrets.count,
-                totalMarks,
-                parseTimeMs: result.metadata.parseTimeMs
+            };
+            
+            log('Parse complete', {
+                deadGod: response.progress.deadGodPercent + '%',
+                achievements: `${achievements.count}/${achievements.total}`,
+                items: `${items.count}/${items.total}`,
+                parseMs
             });
-
-            return result;
-
+            
+            return response;
+            
         } catch (error) {
-            console.error('[ParserV2] Critical error:', error);
-            return this._createError('INTERNAL', {
+            console.error(`[Parser:${this.requestId}] CRITICAL ERROR:`, error);
+            return this._error('INTERNAL', {
                 message: error.message,
                 stack: this.debug ? error.stack : undefined
             });
         }
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
+    
+    // ══════════════════════════════════════════════════════════════════════
     // VALIDATION
-    // ═══════════════════════════════════════════════════════════════════════
-
+    // ══════════════════════════════════════════════════════════════════════
+    
     _validateBuffer(buffer) {
         if (!buffer) {
-            return { valid: false, error: 'NO_FILE' };
+            return { ok: false, errorCode: 'NO_FILE', reason: 'Buffer is null/undefined' };
         }
-
+        
         if (buffer.length === 0) {
-            return { valid: false, error: 'EMPTY_FILE' };
+            return { ok: false, errorCode: 'EMPTY_FILE', reason: 'Buffer length is 0' };
         }
-
+        
         if (buffer.length < 1000) {
-            return { valid: false, error: 'FILE_TOO_SMALL', size: buffer.length };
+            return { ok: false, errorCode: 'FILE_TOO_SMALL', reason: `Only ${buffer.length} bytes` };
         }
-
+        
         if (buffer.length > 100000) {
-            return { valid: false, error: 'FILE_TOO_LARGE', size: buffer.length };
+            return { ok: false, errorCode: 'FILE_TOO_LARGE', reason: `${buffer.length} bytes exceeds 100KB` };
         }
-
-        // Verificar que hay datos no-cero en secciones esperadas
-        const hasData = buffer.slice(16, 300).some(b => b !== 0);
+        
+        // Check for some non-zero data in expected locations
+        const hasData = buffer.slice(16, 200).some(b => b !== 0);
         if (!hasData) {
-            return { valid: false, error: 'EMPTY_SAVE' };
+            return { ok: false, errorCode: 'EMPTY_SAVE', reason: 'No data in progress section' };
         }
-
-        return { valid: true };
+        
+        return { ok: true };
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // METADATA
-    // ═══════════════════════════════════════════════════════════════════════
-
-    _extractMetadata(buffer, filename) {
-        return {
-            gameVersion: 'unknown',
-            versionConfidence: 'unknown',
-            platform: this._detectPlatform(filename),
-            slot: this._detectSlot(filename),
-            fileHash: crypto.createHash('md5').update(buffer).digest('hex').substring(0, 8),
-            fileSize: buffer.length,
-            parsedAt: new Date().toISOString(),
-            parserVersion: PARSER_VERSION,
-            headerHex: buffer.slice(0, 8).toString('hex')
-        };
+    
+    // ══════════════════════════════════════════════════════════════════════
+    // VARIANT DETECTION
+    // ══════════════════════════════════════════════════════════════════════
+    
+    _detectVariant(buffer, filename) {
+        // Check filename patterns first
+        if (filename) {
+            const fn = filename.toLowerCase();
+            if (fn.includes('rep+') || fn.includes('repentance+')) {
+                return { variant: 'repentance_plus', confidence: 'filename', supported: true };
+            }
+            if (fn.includes('rep_persistentgamedata')) {
+                return { variant: 'repentance_plus', confidence: 'filename', supported: true };
+            }
+            if (fn.includes('persistentgamedata') && !fn.includes('rep_')) {
+                return { variant: 'vanilla', confidence: 'filename', supported: false };
+            }
+        }
+        
+        // Heuristics based on file size
+        const size = buffer.length;
+        
+        if (size >= 20000) {
+            return { variant: 'repentance_plus', confidence: 'size_high', supported: true };
+        }
+        if (size >= 15000) {
+            return { variant: 'repentance_plus', confidence: 'size_medium', supported: true };
+        }
+        if (size >= 10000) {
+            return { variant: 'repentance_plus', confidence: 'size_low', supported: true };
+        }
+        
+        return { variant: 'unknown', confidence: 'guess', supported: false };
     }
-
+    
     _detectSlot(filename) {
         if (!filename) return 1;
         const match = filename.match(/(\d)/);
-        return match ? parseInt(match[1]) : 1;
+        return match ? parseInt(match[1], 10) : 1;
     }
-
-    _detectPlatform(filename) {
-        if (!filename) return 'unknown';
-        if (filename.includes('rep_')) return 'steam';
-        return 'unknown';
-    }
-
-    _detectVersion(buffer) {
-        const size = buffer.length;
-
-        // Heurística basada en tamaño del archivo
-        if (size > 25000) {
-            return { version: 'repentance_plus', confidence: 'high' };
-        }
-        if (size > 18000) {
-            return { version: 'repentance_plus', confidence: 'medium' };
-        }
-        if (size > 12000) {
-            return { version: 'repentance_plus', confidence: 'low' };
-        }
-
-        return { version: 'repentance_plus', confidence: 'guess' };
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
+    
+    // ══════════════════════════════════════════════════════════════════════
     // SECTION PARSERS
-    // ═══════════════════════════════════════════════════════════════════════
-
-    _parseSecrets(buffer, offsets) {
+    // ══════════════════════════════════════════════════════════════════════
+    
+    _parseAchievements(buffer, offsets) {
         const section = offsets.fileStructure.achievements;
         const bits = decodeBitset(buffer, section.offset, section.bitsUsed);
-
+        
         return {
             total: section.bitsUsed,
             unlockedIds: bits,
             count: bits.length
         };
     }
-
+    
     _parseItems(buffer, offsets) {
         const section = offsets.fileStructure.items;
-        const bits = decodeBitset(buffer, section.offset, section.bitsUsed);
-
+        const collectedBits = decodeBitset(buffer, section.offset, section.bitsUsed);
+        
+        // Items seen might be in a separate section
+        let seenBits = collectedBits;
+        let seenCount = collectedBits.length;
+        
+        if (offsets.fileStructure.itemsSeen) {
+            const seenSection = offsets.fileStructure.itemsSeen;
+            seenBits = decodeBitset(buffer, seenSection.offset, seenSection.bitsUsed);
+            seenCount = seenBits.length;
+        }
+        
         return {
             total: section.bitsUsed,
-            collectedIds: bits,
-            seenIds: bits, // En Repentance, collected = seen
-            count: bits.length, // Consistent with secrets/trinkets
-            countCollected: bits.length,
-            countSeen: bits.length
+            collectedIds: collectedBits,
+            seenIds: seenBits,
+            count: collectedBits.length,
+            seenCount
         };
     }
-
+    
     _parseTrinkets(buffer, offsets) {
         const section = offsets.fileStructure.trinkets;
         if (!section) {
             return { total: 189, collectedIds: [], count: 0 };
         }
-
+        
         const bits = decodeBitset(buffer, section.offset, section.bitsUsed);
-
+        
         return {
             total: section.bitsUsed,
             collectedIds: bits,
             count: bits.length
         };
     }
-
+    
     _parseChallenges(buffer, offsets) {
         const section = offsets.fileStructure.challenges;
         const bits = decodeBitset(buffer, section.offset, section.bitsUsed);
-
+        
         return {
             total: section.bitsUsed,
-            completedIds: bits.map(b => b + 1), // Challenges son 1-indexed en el juego
+            // Challenges are 1-indexed in game
+            completedIds: bits.map(b => b + 1),
             count: bits.length
         };
     }
-
-    _parseCharacters(buffer, offsets, charDataset) {
+    
+    _parseCharacters(buffer, offsets, charData) {
         const section = offsets.fileStructure.completionMarks;
         const characters = {};
-        const markNames = charDataset.markNames.normal;
-
-        for (let i = 0; i < charDataset.total; i++) {
-            const charDef = charDataset.characters[i];
+        const markOrder = charData.markOrder || charData.markNames.normal;
+        
+        for (let i = 0; i < charData.total; i++) {
+            const charDef = charData.characters[i];
+            if (!charDef) continue;
+            
             const charOffset = section.offset + (i * section.perCharacterSize);
-
-            // Estructura por personaje según offsets
             const struct = section.structure;
-
-            // Leer normal marks como bitfield
-            const normalBits = decodeBitset(buffer, charOffset + struct.normalMarks.relativeOffset, struct.normalMarks.bits);
-
-            // Leer hard marks como bitfield
-            const hardBits = decodeBitset(buffer, charOffset + struct.hardMarks.relativeOffset, struct.hardMarks.bits);
-
-            // Leer greed marks como booleans individuales
+            
+            // Read normal/hard marks as bitfields
+            const normalBits = decodeBitset(
+                buffer, 
+                charOffset + struct.normalMarks.relativeOffset, 
+                struct.normalMarks.bits
+            );
+            const hardBits = decodeBitset(
+                buffer, 
+                charOffset + struct.hardMarks.relativeOffset, 
+                struct.hardMarks.bits
+            );
+            
+            // Read greed marks as booleans
             const greedCompleted = readBool(buffer, charOffset + struct.greedMark.relativeOffset);
             const greedierCompleted = readBool(buffer, charOffset + struct.greedierMark.relativeOffset);
-
-            // Construir objetos de marks
+            
+            // Build mark objects
             const normalMarks = {};
             const hardMarks = {};
-
-            markNames.forEach((name, idx) => {
+            
+            markOrder.forEach((name, idx) => {
                 normalMarks[name] = normalBits.includes(idx);
                 hardMarks[name] = hardBits.includes(idx);
             });
-
+            
             const greedMarks = charDef.hasGreed ? {
                 ultraGreed: greedCompleted,
                 ultraGreedier: greedierCompleted
             } : null;
-
-            // Contar completados
+            
+            // Count marks
             const normalCount = normalBits.length;
             const hardCount = hardBits.length;
             const greedCount = (greedCompleted ? 1 : 0) + (greedierCompleted ? 1 : 0);
-            const completedCount = normalCount + hardCount + greedCount;
-
-            // Total esperado
-            const totalCount = charDef.hasGreed ? charDataset.totalMarksPerCharacter : 22;
-
+            
+            // Total per character
+            const totalMarks = charData.totalMarksPerCharacter || 24;
+            const completedMarks = normalCount + hardCount + greedCount;
+            
             characters[i] = {
                 id: i,
+                internalId: charDef.internalId || i,
                 name: charDef.name,
                 isTainted: charDef.isTainted,
                 marks: {
@@ -401,345 +661,258 @@ class SaveParserV2 {
                     hard: hardCount,
                     greed: greedCount
                 },
-                totalMarks: totalCount,
-                completedMarks: completedCount,
-                percentage: Math.round((completedCount / totalCount) * 100)
+                totalMarks,
+                completedMarks,
+                percentage: Math.round((completedMarks / totalMarks) * 100)
             };
         }
-
+        
         return characters;
     }
-
-    _deriveEndings(characters, offsets) {
-        /**
-         * Los endings en Isaac se derivan de los bosses derrotados
-         * NO hay una sección separada de endings en el save file
-         * Esto corrige el bug de "endings > total"
-         */
-        const TOTAL_ENDINGS = offsets.totals.endings || 17;
-
-        const endingConditions = [
-            { id: 1, name: 'Mom', requires: (chars) => true }, // Siempre desbloqueado si hay save
-            { id: 2, name: "Mom's Heart", requires: (chars) => this._anyCharHasMark(chars, 'momsHeart') },
-            { id: 3, name: 'Isaac', requires: (chars) => this._anyCharHasMark(chars, 'isaac') },
-            { id: 4, name: 'Satan', requires: (chars) => this._anyCharHasMark(chars, 'satan') },
-            { id: 5, name: '???', requires: (chars) => this._anyCharHasMark(chars, 'blueBaby') },
-            { id: 6, name: 'The Lamb', requires: (chars) => this._anyCharHasMark(chars, 'theLamb') },
-            { id: 7, name: 'Boss Rush', requires: (chars) => this._anyCharHasMark(chars, 'bossRush') },
-            { id: 8, name: 'Mega Satan', requires: (chars) => this._anyCharHasMark(chars, 'megaSatan') },
-            { id: 9, name: 'Hush', requires: (chars) => this._anyCharHasMark(chars, 'hush') },
-            { id: 10, name: 'Delirium', requires: (chars) => this._anyCharHasMark(chars, 'delirium') },
-            { id: 11, name: 'Ultra Greed', requires: (chars) => this._anyCharHasGreed(chars, 'ultraGreed') },
-            { id: 12, name: 'Ultra Greedier', requires: (chars) => this._anyCharHasGreed(chars, 'ultraGreedier') },
-            { id: 13, name: 'Mega Satan (All)', requires: (chars) => this._countCharsWithMark(chars, 'megaSatan') >= 17 },
-            { id: 14, name: 'Mother', requires: (chars) => this._anyCharHasMark(chars, 'mother') },
-            { id: 15, name: 'The Beast', requires: (chars) => this._anyCharHasMark(chars, 'beast') },
-            { id: 16, name: 'Epilogue', requires: (chars) => this._countEndings(chars) >= 10 },
-            { id: 17, name: 'True Ending', requires: () => false } // Requiere Dead God completo
-        ];
-
-        const unlockedIds = endingConditions
-            .filter(e => e.requires(characters))
-            .map(e => e.id);
-
+    
+    _deriveEndings(characters, endingsData) {
+        const TOTAL = endingsData.total || 17;
+        
+        // Endings are derived from completion marks, NOT read from separate section
+        const hasAnyMark = (markName) => {
+            return Object.values(characters).some(c => 
+                c.marks.normal[markName] || c.marks.hard[markName]
+            );
+        };
+        
+        const hasGreedMark = (markType) => {
+            return Object.values(characters).some(c => 
+                c.marks.greed && c.marks.greed[markType]
+            );
+        };
+        
+        const countCharsWithMark = (markName) => {
+            return Object.values(characters).filter(c => 
+                c.marks.normal[markName] || c.marks.hard[markName]
+            ).length;
+        };
+        
+        const unlockedIds = [];
+        
+        // Ending 1: Always unlocked if save exists
+        unlockedIds.push(1);
+        
+        // Endings 2-15: Based on specific marks
+        if (hasAnyMark('momsHeart')) unlockedIds.push(2);
+        if (countCharsWithMark('momsHeart') >= 10) unlockedIds.push(3); // It Lives ending
+        if (hasAnyMark('isaac')) unlockedIds.push(4);
+        if (hasAnyMark('blueBaby')) unlockedIds.push(5);
+        if (hasAnyMark('satan')) unlockedIds.push(6);
+        if (hasAnyMark('theLamb')) unlockedIds.push(7);
+        if (hasAnyMark('bossRush')) unlockedIds.push(8);
+        if (hasAnyMark('megaSatan')) unlockedIds.push(9);
+        if (hasAnyMark('hush')) unlockedIds.push(10);
+        if (hasAnyMark('delirium')) unlockedIds.push(11);
+        if (hasGreedMark('ultraGreed')) unlockedIds.push(12);
+        if (hasGreedMark('ultraGreedier')) unlockedIds.push(13);
+        if (hasAnyMark('mother')) unlockedIds.push(14);
+        if (hasAnyMark('beast')) unlockedIds.push(15);
+        
+        // Ending 16: Multiple boss endings (epilogue)
+        if (unlockedIds.length >= 10) unlockedIds.push(16);
+        
+        // Ending 17: True ending (Dead God) - would require checking all achievements
+        // Not adding this one as it requires 100% achievements
+        
         return {
-            total: TOTAL_ENDINGS,
-            unlockedIds,
-            count: Math.min(unlockedIds.length, TOTAL_ENDINGS), // NUNCA excede total
-            details: endingConditions
-                .filter(e => e.requires(characters))
-                .map(e => ({ id: e.id, name: e.name }))
+            total: TOTAL,
+            unlockedIds: unlockedIds.slice(0, TOTAL), // Never exceed total
+            count: Math.min(unlockedIds.length, TOTAL)
         };
     }
-
-    // Helper methods para endings
-    _anyCharHasMark(characters, markName) {
-        return Object.values(characters).some(c =>
-            c.marks.normal[markName] || c.marks.hard[markName]
-        );
-    }
-
-    _anyCharHasGreed(characters, greedType) {
-        return Object.values(characters).some(c =>
-            c.marks.greed && c.marks.greed[greedType]
-        );
-    }
-
-    _countCharsWithMark(characters, markName) {
-        return Object.values(characters).filter(c =>
-            c.marks.normal[markName] || c.marks.hard[markName]
-        ).length;
-    }
-
-    _countEndings(characters) {
-        // Cuenta endings básicos desbloqueados
-        let count = 1; // Mom siempre
-        const marks = ['momsHeart', 'isaac', 'satan', 'blueBaby', 'theLamb', 'bossRush', 'megaSatan', 'hush', 'delirium'];
-        for (const mark of marks) {
-            if (this._anyCharHasMark(characters, mark)) count++;
+    
+    // ══════════════════════════════════════════════════════════════════════
+    // TOTALS CALCULATION
+    // ══════════════════════════════════════════════════════════════════════
+    
+    _calculateMarkTotals(characters, charData) {
+        let allMarks = 0;
+        let hardMarks = 0;
+        let normalMarks = 0;
+        let greedMarks = 0;
+        
+        for (const char of Object.values(characters)) {
+            allMarks += char.completedMarks;
+            hardMarks += char.counts.hard;
+            normalMarks += char.counts.normal;
+            greedMarks += char.counts.greed;
         }
-        return count;
+        
+        const numChars = charData.total || 34;
+        const marksPerChar = charData.totalMarksPerCharacter || 24;
+        const hardPerChar = charData.hardMarksPerCharacter || 11;
+        
+        return {
+            all: allMarks,
+            allTotal: numChars * marksPerChar,
+            hard: hardMarks,
+            hardTotal: numChars * hardPerChar,
+            normal: normalMarks,
+            normalTotal: numChars * (charData.normalMarksPerCharacter || 11),
+            greed: greedMarks,
+            greedTotal: numChars * (charData.greedMarksPerCharacter || 2)
+        };
     }
-
-    _calculateTotalMarks(characters) {
-        return Object.values(characters).reduce((sum, c) => sum + c.completedMarks, 0);
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // INVARIANTS
-    // ═══════════════════════════════════════════════════════════════════════
-
-    _runInvariants(data) {
-        const warnings = [];
+    
+    // ══════════════════════════════════════════════════════════════════════
+    // INVARIANT CHECKS
+    // ══════════════════════════════════════════════════════════════════════
+    
+    _checkInvariants(data, offsets) {
         const errors = [];
-
-        // 1. Counts nunca exceden totales
-        if (data.endings.count > data.endings.total) {
-            errors.push(`endings.count (${data.endings.count}) > endings.total (${data.endings.total})`);
+        const warnings = [];
+        const checks = {};
+        
+        // Check: counts never exceed totals
+        checks.achievementsValid = data.achievements.count <= data.achievements.total;
+        if (!checks.achievementsValid) {
+            errors.push(`achievements.count (${data.achievements.count}) > total (${data.achievements.total})`);
         }
-        if (data.secrets.count > data.secrets.total) {
-            errors.push(`secrets.count (${data.secrets.count}) > secrets.total (${data.secrets.total})`);
+        
+        checks.itemsValid = data.items.count <= data.items.total;
+        if (!checks.itemsValid) {
+            errors.push(`items.count (${data.items.count}) > total (${data.items.total})`);
         }
-        if (data.items.countCollected > data.items.total) {
-            errors.push(`items.count (${data.items.countCollected}) > items.total (${data.items.total})`);
+        
+        checks.endingsValid = data.endings.count <= data.endings.total;
+        if (!checks.endingsValid) {
+            errors.push(`endings.count (${data.endings.count}) > total (${data.endings.total})`);
         }
-        if (data.challenges.count > data.challenges.total) {
-            errors.push(`challenges.count (${data.challenges.count}) > challenges.total (${data.challenges.total})`);
+        
+        checks.challengesValid = data.challenges.count <= data.challenges.total;
+        if (!checks.challengesValid) {
+            errors.push(`challenges.count (${data.challenges.count}) > total (${data.challenges.total})`);
         }
-
-        // 2. Counts nunca negativos
-        if (data.endings.count < 0) errors.push('Negative endings count');
-        if (data.secrets.count < 0) errors.push('Negative secrets count');
-        if (data.items.countCollected < 0) errors.push('Negative items count');
-
-        // 3. Marks nunca exceden total
-        if (data.totalMarks > data.totalMarksExpected) {
-            errors.push(`totalMarks (${data.totalMarks}) > expected (${data.totalMarksExpected})`);
+        
+        checks.marksValid = data.marksTotals.all <= data.marksTotals.allTotal;
+        if (!checks.marksValid) {
+            errors.push(`marks (${data.marksTotals.all}) > total (${data.marksTotals.allTotal})`);
         }
-
-        // 4. Cross-validation: alto marks = alto secrets
-        const marksPercent = (data.totalMarks / data.totalMarksExpected) * 100;
-        const secretsPercent = (data.secrets.count / data.secrets.total) * 100;
-
-        if (marksPercent > 80 && secretsPercent < 30) {
-            warnings.push(`Unusual: ${marksPercent.toFixed(0)}% marks but only ${secretsPercent.toFixed(0)}% secrets`);
+        
+        // Check: non-negative counts
+        checks.nonNegative = data.achievements.count >= 0 && data.items.count >= 0;
+        if (!checks.nonNegative) {
+            errors.push('Negative count detected');
         }
-
-        // 5. Bajo progreso con archivo grande = posible offset incorrecto
-        if (data.metadata.fileSize > 25000 && secretsPercent < 5 && marksPercent < 5) {
-            warnings.push('Large file but very low progress - possible offset mismatch');
+        
+        // Cross-validation: high marks should correlate with high achievements
+        const marksPercent = (data.marksTotals.all / data.marksTotals.allTotal) * 100;
+        const achievPercent = (data.achievements.count / data.achievements.total) * 100;
+        
+        checks.progressCorrelation = !(marksPercent > 80 && achievPercent < 30);
+        if (!checks.progressCorrelation) {
+            warnings.push(`Unusual correlation: ${marksPercent.toFixed(0)}% marks but only ${achievPercent.toFixed(0)}% achievements`);
         }
-
+        
+        // Warning: very low progress with large file
+        if (achievPercent < 5 && marksPercent < 5 && data.achievements.count < 20) {
+            warnings.push('Very low progress - possible new save or parse issue');
+        }
+        
+        const critical = errors.length > 0;
+        
         return {
-            warnings,
+            ok: errors.length === 0,
+            critical,
             errors,
-            invariantsPassed: errors.length === 0
+            warnings,
+            checks
         };
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // METRICS
-    // ═══════════════════════════════════════════════════════════════════════
-
-    _calculateMetrics(data) {
-        // Dead God = 100% secrets (achievements)
-        const secretsPercent = (data.secrets.count / data.secrets.total) * 100;
-
-        const marksPercent = (data.totalMarks / data.totalMarksExpected) * 100;
-        const itemsPercent = (data.items.countCollected / data.items.total) * 100;
-        const challengesPercent = (data.challenges.count / data.challenges.total) * 100;
-
-        return {
-            // Primary metric - ESTO ES DEAD GOD
-            deadGodPercentage: Math.round(secretsPercent * 100) / 100,
-            isDeadGod: data.secrets.count >= data.secrets.total,
-
-            // Secondary metrics
-            secretsPercentage: Math.round(secretsPercent * 100) / 100,
-            marksPercentage: Math.round(marksPercent * 100) / 100,
-            itemsPercentage: Math.round(itemsPercent * 100) / 100,
-            challengesPercentage: Math.round(challengesPercent * 100) / 100,
-
-            // Counts for display
-            secretsRemaining: data.secrets.total - data.secrets.count,
-            marksRemaining: data.totalMarksExpected - data.totalMarks,
-
-            // Tainted progress
-            taintedProgress: this._calculateTaintedProgress(data.characters),
-
-            // Estimated time (rough: 0.3h per missing secret on average)
-            estimatedHoursRemaining: Math.round((data.secrets.total - data.secrets.count) * 0.3)
-        };
+    
+    // ══════════════════════════════════════════════════════════════════════
+    // METRICS CALCULATION
+    // ══════════════════════════════════════════════════════════════════════
+    
+    _calculateDeadGodPercent(achievements) {
+        // Dead God = 100% of achievements
+        if (achievements.total === 0) return 0;
+        const percent = (achievements.count / achievements.total) * 100;
+        return Math.round(percent * 100) / 100; // 2 decimal places
     }
-
+    
+    _percent(count, total) {
+        if (total === 0) return 0;
+        return Math.round((count / total) * 10000) / 100; // 2 decimal places
+    }
+    
+    _estimateHoursRemaining(achievements) {
+        const remaining = achievements.total - achievements.count;
+        // Rough estimate: ~0.3 hours per achievement on average
+        return Math.round(remaining * 0.3);
+    }
+    
     _calculateTaintedProgress(characters) {
-        const taintedChars = Object.values(characters).filter(c => c.isTainted);
-        const totalTaintedMarks = taintedChars.reduce((sum, c) => sum + c.completedMarks, 0);
-        const expectedTaintedMarks = taintedChars.reduce((sum, c) => sum + c.totalMarks, 0);
-
+        const tainted = Object.values(characters).filter(c => c.isTainted);
+        const completed = tainted.filter(c => c.percentage === 100).length;
+        const totalMarks = tainted.reduce((sum, c) => sum + c.completedMarks, 0);
+        const expectedMarks = tainted.reduce((sum, c) => sum + c.totalMarks, 0);
+        
         return {
-            percentage: Math.round((totalTaintedMarks / expectedTaintedMarks) * 100),
-            completed: taintedChars.filter(c => c.completedMarks === c.totalMarks).length,
-            total: taintedChars.length
+            completed,
+            total: tainted.length,
+            percentage: expectedMarks > 0 ? Math.round((totalMarks / expectedMarks) * 100) : 0
         };
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // MISSING BREAKDOWN
-    // ═══════════════════════════════════════════════════════════════════════
-
-    _generateMissingBreakdown(data, charDataset) {
-        // Marks faltantes por personaje
-        const missingMarksByCharacter = [];
-
-        for (const char of Object.values(data.characters)) {
-            if (char.completedMarks >= char.totalMarks) continue;
-
-            const missing = [];
-
-            // Check normal marks
-            for (const [mark, completed] of Object.entries(char.marks.normal)) {
-                if (!completed) missing.push({ difficulty: 'normal', mark });
-            }
-
-            // Check hard marks
-            for (const [mark, completed] of Object.entries(char.marks.hard)) {
-                if (!completed) missing.push({ difficulty: 'hard', mark });
-            }
-
-            // Check greed marks
-            if (char.marks.greed) {
-                if (!char.marks.greed.ultraGreed) missing.push({ difficulty: 'greed', mark: 'ultraGreed' });
-                if (!char.marks.greed.ultraGreedier) missing.push({ difficulty: 'greedier', mark: 'ultraGreedier' });
-            }
-
-            if (missing.length > 0) {
-                missingMarksByCharacter.push({
-                    characterId: char.id,
-                    characterName: char.name,
-                    isTainted: char.isTainted,
-                    percentage: char.percentage,
-                    missingMarks: missing,
-                    count: missing.length
-                });
-            }
+    
+    _formatCharactersForResponse(characters, charData) {
+        const result = {};
+        
+        for (const [id, char] of Object.entries(characters)) {
+            result[id] = {
+                id: char.id,
+                name: char.name,
+                isTainted: char.isTainted,
+                completionMarks: {
+                    hard: char.marks.hard,
+                    normal: char.marks.normal,
+                    greed: char.marks.greed
+                },
+                counts: {
+                    hardCompleted: char.counts.hard,
+                    hardTotal: charData.hardMarksPerCharacter || 11,
+                    normalCompleted: char.counts.normal,
+                    normalTotal: charData.normalMarksPerCharacter || 11,
+                    greedCompleted: char.counts.greed,
+                    greedTotal: charData.greedMarksPerCharacter || 2
+                },
+                percentage: char.percentage
+            };
         }
-
-        // Ordenar por % completado (más cercanos a terminar primero)
-        missingMarksByCharacter.sort((a, b) => b.percentage - a.percentage);
-
-        return {
-            missingSecrets: {
-                count: data.secrets.total - data.secrets.count
-            },
-            missingMarksByCharacter,
-            missingItems: {
-                count: data.items.total - data.items.countCollected
-            },
-            missingChallenges: {
-                count: data.challenges.total - data.challenges.count
-            },
-            missingEndings: {
-                count: data.endings.total - data.endings.count
-            }
-        };
+        
+        return result;
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // NEXT STEPS
-    // ═══════════════════════════════════════════════════════════════════════
-
-    _generateNextSteps(missing, characters) {
-        const steps = [];
-
-        // Prioridad 1: Personajes casi completos (≤3 marks faltantes)
-        const almostDone = missing.missingMarksByCharacter
-            .filter(c => c.count <= 3 && c.count > 0)
-            .slice(0, 3);
-
-        for (const char of almostDone) {
-            const marksList = char.missingMarks
-                .slice(0, 3)
-                .map(m => `${m.mark} (${m.difficulty})`)
-                .join(', ');
-
-            steps.push({
-                priority: 1,
-                type: 'complete_character',
-                title: `Completar ${char.characterName}`,
-                description: `Solo ${char.count} marca(s): ${marksList}`,
-                estimatedTime: `~${char.count * 30} min`,
-                impact: 'high'
-            });
-        }
-
-        // Prioridad 2: Challenges (si hay pendientes)
-        if (missing.missingChallenges.count > 0 && missing.missingChallenges.count <= 10) {
-            steps.push({
-                priority: 2,
-                type: 'challenges',
-                title: `Completar challenges`,
-                description: `${missing.missingChallenges.count} challenges pendientes`,
-                estimatedTime: `~${missing.missingChallenges.count * 20} min`,
-                impact: 'medium'
-            });
-        }
-
-        // Prioridad 3: Items faltantes (si pocos)
-        if (missing.missingItems.count > 0 && missing.missingItems.count < 50) {
-            steps.push({
-                priority: 3,
-                type: 'items',
-                title: `Recoger items faltantes`,
-                description: `${missing.missingItems.count} items por encontrar`,
-                estimatedTime: 'Variable',
-                impact: 'medium'
-            });
-        }
-
-        // Prioridad 4: Tainted characters no empezados
-        const taintedNotStarted = missing.missingMarksByCharacter
-            .filter(c => c.isTainted && c.percentage === 0);
-
-        if (taintedNotStarted.length > 0) {
-            steps.push({
-                priority: 4,
-                type: 'start_tainted',
-                title: `Empezar Tainted characters`,
-                description: `${taintedNotStarted.length} personajes Tainted sin progreso`,
-                estimatedTime: `~${taintedNotStarted.length * 4}h (total)`,
-                impact: 'high'
-            });
-        }
-
-        return steps.sort((a, b) => a.priority - b.priority);
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // ERROR HANDLING
-    // ═══════════════════════════════════════════════════════════════════════
-
-    _createError(errorType, details = {}) {
-        const errorDef = ERROR_CODES[errorType] || ERROR_CODES.INTERNAL;
-
-        console.error('[ParserV2] Error:', errorType, details);
-
+    
+    // ══════════════════════════════════════════════════════════════════════
+    // ERROR RESPONSE
+    // ══════════════════════════════════════════════════════════════════════
+    
+    _error(errorCode, details = {}) {
+        const errDef = ERROR_CODES[errorCode] || ERROR_CODES.INTERNAL;
+        
         return {
             ok: false,
-            source: 'error', // NUNCA 'demo'
-            error_code: errorDef.code,
-            error_message: errorDef.message,
+            source: 'error', // NEVER 'demo'
+            error_code: errDef.code,
+            error_message: errDef.message,
             details,
-            metadata: null,
-            endings: null,
-            items: null,
+            meta: null,
+            progress: null,
             characters: null,
+            items: null,
+            endings: null,
+            sanity: { ok: false },
+            // Legacy fields
             secrets: null,
+            trinkets: null,
             challenges: null,
             metrics: null,
-            sanityChecks: null,
-            missing: null,
-            nextSteps: null
+            metadata: null
         };
     }
 }
@@ -748,23 +921,29 @@ class SaveParserV2 {
 // EXPORTS
 // ═══════════════════════════════════════════════════════════════════════════
 
-const parserInstance = new SaveParserV2();
+const defaultParser = new IsaacSaveParser();
 
 module.exports = {
     // Main parser
-    parseSaveFile: (buffer, options) => parserInstance.parse(buffer, options),
+    parseSaveFile: (buffer, options) => defaultParser.parse(buffer, options),
+    
+    // Create custom parser instance
+    createParser: (options) => new IsaacSaveParser(options),
     
     // Utilities
     decodeBitset,
-    countBitsInRange,
+    countBits,
     readBit,
     readBool,
+    sha256,
+    md5Short,
     
     // Config
     PARSER_VERSION,
     ERROR_CODES,
     
-    // Validation (for routes)
-    validateSaveFile: (buffer) => parserInstance._validateBuffer(buffer),
-    detectSlot: (filename) => parserInstance._detectSlot(filename)
+    // Validation helpers
+    validateSaveFile: (buffer) => defaultParser._validateBuffer(buffer),
+    detectSlot: (filename) => defaultParser._detectSlot(filename),
+    detectVariant: (buffer, filename) => defaultParser._detectVariant(buffer, filename)
 };

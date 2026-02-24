@@ -89,23 +89,55 @@ export const fetchRandomItems = async (n = 5) => {
  * }
  */
 export const analyzeSaveFile = async (file) => {
+  // ═══════════════════════════════════════════════════════════════════════
+  // STEP 1: Read file and calculate SHA-256 hash
+  // ═══════════════════════════════════════════════════════════════════════
+  
+  const arrayBuffer = await file.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const fileHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  
+  console.log('[API:analyzeSaveFile] File prepared', {
+    name: file.name,
+    size: file.size,
+    sha256: fileHash.substring(0, 16),
+    lastModified: new Date(file.lastModified).toISOString()
+  });
+  
+  // ═══════════════════════════════════════════════════════════════════════
+  // STEP 2: Create FormData with the file
+  // ═══════════════════════════════════════════════════════════════════════
+  
   const formData = new FormData();
   formData.append('saveFile', file);
   
-  // Use fetch directly to avoid axios cache issues
+  // ═══════════════════════════════════════════════════════════════════════
+  // STEP 3: Send request with SHA-256 header for verification
+  // ═══════════════════════════════════════════════════════════════════════
+  
   const response = await fetch(`${BACKEND_URL}/api/save/analyze`, {
     method: 'POST',
     body: formData,
-    // DON'T set Content-Type - browser will set multipart boundary automatically
     headers: {
-      'Cache-Control': 'no-cache',
+      // Send client-computed hash for server verification
+      'X-File-SHA256': fileHash,
+      'Cache-Control': 'no-cache, no-store',
       'Pragma': 'no-cache'
     },
     credentials: 'include',
-    cache: 'no-store' // Prevent fetch caching
+    cache: 'no-store'
   });
   
   const data = await response.json();
+  
+  console.log('[API:analyzeSaveFile] Response received', {
+    ok: data.ok,
+    source: data.source,
+    requestId: response.headers.get('X-Request-Id'),
+    serverHash: data.meta?.sha256?.substring(0, 16) || data.metadata?.sha256?.substring(0, 16),
+    hashMatch: (data.meta?.sha256 || data.metadata?.sha256)?.startsWith(fileHash.substring(0, 16))
+  });
   
   // Validate response structure
   if (!data || typeof data.ok === 'undefined') {
@@ -119,6 +151,9 @@ export const analyzeSaveFile = async (file) => {
     error.response = data;
     throw error;
   }
+  
+  // Attach client hash for verification in UI
+  data._clientHash = fileHash;
   
   return data;
 };

@@ -1,5 +1,5 @@
 /**
- * Dataset Loader - Carga datasets versionados para el parser
+ * Dataset Loader V2 - Carga datasets versionados para el parser
  * Permite mantener diferentes offsets/totales por versión del juego
  */
 const fs = require('fs');
@@ -14,7 +14,7 @@ class DatasetLoader {
     /**
      * Carga un dataset específico para una versión
      * @param {string} version - Versión del juego (repentance_plus, repentance, afterbirth_plus)
-     * @param {string} type - Tipo de dataset (offsets, characters, endings, items, secrets)
+     * @param {string} type - Tipo de dataset (offsets, characters, endings, items, secrets, achievements)
      * @returns {Object} Dataset parseado
      */
     getDataset(version, type) {
@@ -88,17 +88,24 @@ class DatasetLoader {
     }
 
     /**
-     * Obtiene los secretos/achievements para una versión
+     * Obtiene los achievements para una versión
      */
-    getSecrets(version) {
+    getAchievements(version) {
         try {
-            return this.getDataset(version, 'secrets');
+            return this.getDataset(version, 'achievements');
         } catch {
             return {
                 total: 637,
-                secrets: []
+                achievements: []
             };
         }
+    }
+
+    /**
+     * Obtiene los secretos/achievements para una versión (legacy alias)
+     */
+    getSecrets(version) {
+        return this.getAchievements(version);
     }
 
     /**
