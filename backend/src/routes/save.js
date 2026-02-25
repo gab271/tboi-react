@@ -12,11 +12,16 @@
 const express = require('express');
 const multer = require('multer');
 const crypto = require('crypto');
-// Using Parser V3 with proper bitfield decoding
-const { parseSaveFile, detectSlot, validateSaveFile, sha256 } = require('../lib/saveParserV2');
+// Using Parser V3 with correct chunk-based parsing (based on Zamiell's reference implementation)
+const { parseSaveFile, detectSlot, validateSaveFile } = require('../lib/saveParserV3');
 const { incrementAnalyzeCount } = require('./stats');
 
 const router = express.Router();
+
+// SHA-256 hash utility
+function sha256(buffer) {
+    return crypto.createHash('sha256').update(buffer).digest('hex');
+}
 
 // Generate unique request ID
 function genRequestId() {
@@ -158,13 +163,13 @@ router.post('/analyze', upload.single('saveFile'), async (req, res) => {
 
         // Validate it's an Isaac save
         const validation = validateSaveFile(buffer);
-        if (!validation.ok) {
+        if (!validation.valid) {
             log(requestId, 'warn', 'VALIDATION_FAIL', validation);
             return res.status(400).json({
                 ok: false,
                 source: 'error',
-                error_code: validation.errorCode,
-                error_message: validation.reason || 'Invalid save file format'
+                error_code: validation.error,
+                error_message: validation.message || 'Invalid save file format'
             });
         }
 
@@ -182,9 +187,8 @@ router.post('/analyze', upload.single('saveFile'), async (req, res) => {
             source: result.source,
             parseTimeMs: parseTime,
             deadGodPercent: result.progress?.deadGodPercent,
-            achievementsCount: result.secrets?.count,
-            itemsCount: result.items?.collectedCount,
-            invariantsPassed: result.sanity?.ok
+            achievementsCount: result.achievements?.unlocked,
+            itemsCount: result.items?.collected
         });
 
         // Return appropriate status code
