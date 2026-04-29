@@ -228,6 +228,86 @@ export const fetchPopularSynergies = async (limit = 10) => {
   return data;
 };
 
+// ─── User Save Progress ────────────────────────────────────────────────────────
+
+/**
+ * Persist the result of a parsed save file for the authenticated user.
+ * Maps the UI-transformed object (uiResult from HeroSection) to the
+ * shape expected by POST /api/users/:userId/progress.
+ *
+ * @param {string} userId - Supabase auth user ID
+ * @param {string} accessToken - Supabase session access_token
+ * @param {object} uiResult - Transformed save analysis result
+ */
+export const saveUserProgress = async (userId, accessToken, uiResult) => {
+  const payload = {
+    saveHash: uiResult.sha256Full || uiResult.fileHash || null,
+    deadGodPercent: uiResult.percentage ?? 0,
+    slot: uiResult.slot ?? 1,
+    items: {
+      collected: uiResult.itemsFound ?? 0,
+      total: uiResult.totalItems ?? 733,
+    },
+    achievements: {
+      unlocked: uiResult.achievementsUnlocked ?? 0,
+      total: uiResult.totalAchievements ?? 637,
+    },
+    characters: Object.fromEntries(
+      Object.entries(uiResult.characters || {}).map(([name, c]) => [
+        name,
+        {
+          percentage: c.percentage ?? 0,
+          isTainted: c.isTainted ?? false,
+          completedMarks: c.completedMarks ?? 0,
+        },
+      ])
+    ),
+    summary: {
+      endings: { seen: uiResult.endingsSeen ?? 0, total: uiResult.totalEndings ?? 17 },
+      completionMarks: uiResult.completionMarks ?? 0,
+      totalMarks: uiResult.totalMarks ?? 816,
+      vanillaCompleted: uiResult.vanillaCompleted ?? 0,
+      taintedCompleted: uiResult.taintedCompleted ?? 0,
+      hoursRemaining: uiResult.hoursRemaining ?? null,
+    },
+  };
+
+  const response = await fetch(`${BACKEND_URL}/api/users/${userId}/progress`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || 'Failed to save progress');
+  }
+
+  return response.json();
+};
+
+/**
+ * Fetch the user's latest saved progress.
+ *
+ * @param {string} userId
+ * @param {string} accessToken
+ */
+export const fetchUserProgress = async (userId, accessToken) => {
+  const response = await fetch(`${BACKEND_URL}/api/users/${userId}/progress`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (response.status === 404) return null;
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || 'Failed to fetch progress');
+  }
+
+  return response.json();
+};
+
 export default api;
-
-

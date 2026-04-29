@@ -137,12 +137,11 @@ function Header() {
             
             {/* My Progress - SIEMPRE visible (acción principal) */}
             <NavLink
-              to="/"
-              className={cn(
+              to="/progress"
+              className={({ isActive }) => cn(
                 "nav-primary font-heading hidden sm:flex",
-                isHomePage && "text-accent-blood bg-accent-blood/10"
+                isActive && "text-accent-blood bg-accent-blood/10"
               )}
-              data-active={isHomePage}
             >
               <span>{t('nav.myProgress')}</span>
             </NavLink>
@@ -413,7 +412,7 @@ function MobileMenu({ isOpen, onClose, user, profile, isPro, isSupporter, isAdmi
               {/* Navigation */}
               <nav className="flex flex-col gap-0.5">
                 {/* Primary Action */}
-                <MobileNavItem to="/" label={t('nav.myProgress')} onClick={onClose} primary />
+                <MobileNavItem to="/progress" label={t('nav.myProgress')} onClick={onClose} primary />
                 
                 <div className="h-3" />
                 

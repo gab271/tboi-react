@@ -6,7 +6,8 @@ import { FaUpload, FaQuestionCircle, FaChevronDown, FaExclamationTriangle, FaBol
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../../lib/utils';
-import { analyzeSaveFile, fetchDailyStats } from '../../../lib/api';
+import { analyzeSaveFile, fetchDailyStats, saveUserProgress } from '../../../lib/api';
+import { supabase } from '../../../lib/supabaseClient';
 
 export function HeroSection({ onUploadSuccess, resetRef }) {
     const navigate = useNavigate();
@@ -183,6 +184,14 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
             
             setUploadState('success');
             onUploadSuccess?.(uiResult);
+
+            // Silently persist progress for authenticated users
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                if (session?.user && session?.access_token) {
+                    saveUserProgress(session.user.id, session.access_token, uiResult)
+                        .catch(err => console.warn('[HeroSection] Progress save skipped:', err.message));
+                }
+            });
             
         } catch (error) {
             console.error('[HeroSection] Upload error:', error);

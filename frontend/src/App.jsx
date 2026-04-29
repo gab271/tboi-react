@@ -25,6 +25,7 @@ import AdminCharacters from './pages/admin/characters/AdminCharacters'
 import AdminCharacterEditor from './pages/admin/characters/AdminCharacterEditor'
 import AdminUsers from './pages/admin/users/AdminUsers'
 import PricingPage from './pages/pricing/PricingPage'
+import MyProgress from './pages/progress/MyProgress'
 
 function App() {
   return (
@@ -67,6 +68,12 @@ function App() {
           <Route path="account" element={
             <ProtectedRoute>
               <Account />
+            </ProtectedRoute>
+          } />
+
+          <Route path="progress" element={
+            <ProtectedRoute>
+              <MyProgress />
             </ProtectedRoute>
           } />
 
