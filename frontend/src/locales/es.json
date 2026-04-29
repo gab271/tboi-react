@@ -140,6 +140,7 @@
     "heroHowMuchLeft": "¿Cuánto te falta para",
     "heroUploadDescription": "Sube tu save file → Ve tu % exacto → Descubre qué te falta",
     "heroSavesAnalyzedToday": "saves analizados hoy",
+    "heroBeTheFirst": "Sé el primero hoy",
     "heroDropHere": "Suelta aquí",
     "heroDragSaveFile": "Arrastra tu save file",
     "heroOrClickToSelect": "o haz click para seleccionar",
@@ -1169,8 +1170,14 @@
     "uploadRealSave": "Sube tu save file real para ver tus datos",
     "fullProgressHistory": "Historial completo de progreso",
     "forDeadGod": "para Dead God",
-    "updatedMinutesAgo": "Actualizado hace {{count}} minutos",
-    "byAuthor": "por"
+    "updatedMinutesAgo": "Actualizado ahora mismo",
+    "byAuthor": "por",
+    "beTheFirst": "Sé el primero en analizar tu save file hoy",
+    "savesAnalyzedToday": "Saves analizados hoy",
+    "synergiesChecked": "Sinergias comprobadas hoy",
+    "buildsCreated": "Builds creadas hoy",
+    "usersActive": "Usuarios activos (últimos 15 min)",
+    "loading": "Cargando..."
   },
   "results": {
     "parseError": "No se pudo leer el archivo de guardado",

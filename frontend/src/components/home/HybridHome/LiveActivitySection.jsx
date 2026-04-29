@@ -3,24 +3,17 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { FaFire, FaBolt, FaTrophy, FaChevronRight, FaStar, FaComment } from 'react-icons/fa';
+import { FaFire, FaBolt, FaTrophy, FaChevronRight, FaStar, FaComment, FaUsers } from 'react-icons/fa';
 import { cn } from '../../../lib/utils';
+import { fetchActivityFeed, fetchLiveActivity } from '../../../lib/api';
 
-// Mock data - en producción vendría de la API
-// Uses translation keys for action and time
-const LIVE_ACTIVITIES = [
-    { id: 1, user: 'EdmundFan', actionKey: 'uploadedBuild', target: '"Brimstone Machine"', minutes: 3, type: 'build' },
-    { id: 2, user: 'NorthernLion', actionKey: 'achieved', target: 'Dead God', minutes: 12, type: 'achievement' },
-    { id: 3, user: 'SinVicta', actionKey: 'completed', target: 'Tainted Lost', minutes: 28, type: 'character' },
-    { id: 4, user: 'Hutts', actionKey: 'uploadedBuild', target: '"Tech X Chaos"', minutes: 34, type: 'build' },
-    { id: 5, user: 'LavolpeTV', actionKey: 'got', target: 'Guppy transformation', minutes: 45, type: 'achievement' },
-];
-
-const TOP_BUILDS = [
+// Placeholder builds shown while real builds API isn't wired up.
+// These are fictional — no real usernames.
+const PLACEHOLDER_BUILDS = [
     {
         id: 1,
         title: 'Brimstone Death Machine',
-        author: 'EdmundFan',
+        author: 'IronMaiden',
         character: { name: 'Tainted Lost', sprite: '/sprites/0_Characters/1_Tainted/Tainted Lost.png' },
         keyItems: [
             { name: 'Brimstone', sprite: '/sprites/1_Passive Items/Brimstone.png' },
@@ -32,7 +25,7 @@ const TOP_BUILDS = [
     {
         id: 2,
         title: 'Echo Chamber Infinite',
-        author: 'IsaacPro',
+        author: 'BasementRunner',
         character: { name: 'Bethany', sprite: '/sprites/0_Characters/0_Vanilla/Bethany.png' },
         keyItems: [
             { name: 'Book of Virtues', sprite: '/sprites/2_Active Items/Book Of Virtues.png' },
@@ -44,7 +37,7 @@ const TOP_BUILDS = [
     {
         id: 3,
         title: 'T. Keeper Greed Destroyer',
-        author: 'GoldenPenny',
+        author: 'TaintedSeeker',
         character: { name: 'Tainted Keeper', sprite: '/sprites/0_Characters/1_Tainted/Tainted Keeper.png' },
         keyItems: [
             { name: 'Pound of Flesh', sprite: '/sprites/1_Passive Items/Pound Of Flesh.png' },
@@ -54,25 +47,55 @@ const TOP_BUILDS = [
     },
 ];
 
-const TODAY_STATS = {
-    deadGods: 47,
-    completionMarks: 234,
-    taintedLostCompleted: 12,
-    newUsers: 89,
-};
+function timeAgo(timestamp) {
+    const diff = Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000 / 60);
+    if (diff < 1) return 'just now';
+    if (diff < 60) return `${diff}m ago`;
+    if (diff < 1440) return `${Math.floor(diff / 60)}h ago`;
+    return `${Math.floor(diff / 1440)}d ago`;
+}
+
+function feedItemText(item) {
+    switch (item.type) {
+        case 'build_created':    return { action: 'shared a build', target: item.metadata?.title || '' };
+        case 'dead_god_reached': return { action: 'achieved', target: 'Dead God 🏆' };
+        case 'achievement_unlocked': return { action: 'unlocked', target: item.metadata?.name || 'an achievement' };
+        case 'save_analyzed':    return { action: 'analyzed their save file', target: '' };
+        default:                 return { action: 'was active', target: '' };
+    }
+}
 
 export function LiveActivitySection() {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [currentActivityIndex, setCurrentActivityIndex] = useState(0);
+    const [feed, setFeed] = useState(null);       // null=loading, []=empty, [...]=data
+    const [liveStats, setLiveStats] = useState(null);
 
-    // Rotate live activity ticker
+    // Fetch real feed and stats on mount, refresh stats every 30s
     useEffect(() => {
+        fetchActivityFeed(8)
+            .then(d => setFeed(d.ok ? d.feed : []))
+            .catch(() => setFeed([]));
+
+        const loadStats = () =>
+            fetchLiveActivity()
+                .then(d => setLiveStats(d.ok ? d.stats : null))
+                .catch(() => {});
+
+        loadStats();
+        const statsInterval = setInterval(loadStats, 30000);
+        return () => clearInterval(statsInterval);
+    }, []);
+
+    // Rotate ticker only when we have real items
+    useEffect(() => {
+        if (!feed?.length) return;
         const interval = setInterval(() => {
-            setCurrentActivityIndex(prev => (prev + 1) % LIVE_ACTIVITIES.length);
+            setCurrentActivityIndex(prev => (prev + 1) % feed.length);
         }, 4000);
         return () => clearInterval(interval);
-    }, []);
+    }, [feed]);
 
     return (
         <section className="relative w-full px-4 md:px-8 py-16 bg-black/5">
@@ -112,26 +135,41 @@ export function LiveActivitySection() {
                         </div>
                         
                         <div className="flex-1 overflow-hidden">
-                            <motion.div
-                                key={currentActivityIndex}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="flex items-center gap-2 font-handwriting text-sm md:text-base"
-                            >
-                                <span className="text-accent-gold font-heading">
-                                    {LIVE_ACTIVITIES[currentActivityIndex].user}
+                            {feed === null ? (
+                                // Loading skeleton
+                                <div className="flex items-center gap-3">
+                                    <div className="h-4 w-24 bg-white/10 rounded animate-pulse" />
+                                    <div className="h-4 w-40 bg-white/10 rounded animate-pulse" />
+                                </div>
+                            ) : feed.length === 0 ? (
+                                // Empty — no fake data, neutral message
+                                <span className="font-handwriting text-sm text-white/60">
+                                    {t('liveActivity.beTheFirst', 'Be the first to analyze your save file today')}
                                 </span>
-                                <span className="text-white/70">
-                                    {t(`liveActivity.${LIVE_ACTIVITIES[currentActivityIndex].actionKey}`)}
-                                </span>
-                                <span className="text-white">
-                                    {LIVE_ACTIVITIES[currentActivityIndex].target}
-                                </span>
-                                <span className="text-white/50 text-xs">
-                                    · {t('liveActivity.minutesAgo', { count: LIVE_ACTIVITIES[currentActivityIndex].minutes })}
-                                </span>
-                            </motion.div>
+                            ) : (
+                                // Real feed item
+                                <motion.div
+                                    key={currentActivityIndex}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="flex items-center gap-2 font-handwriting text-sm md:text-base"
+                                >
+                                    <span className="text-accent-gold font-heading">
+                                        {feed[currentActivityIndex].user}
+                                    </span>
+                                    <span className="text-white/70">
+                                        {feedItemText(feed[currentActivityIndex]).action}
+                                    </span>
+                                    {feedItemText(feed[currentActivityIndex]).target && (
+                                        <span className="text-white">
+                                            {feedItemText(feed[currentActivityIndex]).target}
+                                        </span>
+                                    )}
+                                    <span className="text-white/50 text-xs ml-auto shrink-0">
+                                        · {timeAgo(feed[currentActivityIndex].timestamp)}
+                                    </span>
+                                </motion.div>
+                            )}
                         </div>
                     </div>
                 </motion.div>
@@ -166,7 +204,7 @@ export function LiveActivitySection() {
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-4">
-                            {TOP_BUILDS.map((build, index) => (
+                            {PLACEHOLDER_BUILDS.map((build, index) => (
                                 <BuildCard key={build.id} build={build} index={index} />
                             ))}
                         </div>
@@ -196,33 +234,50 @@ export function LiveActivitySection() {
                             viewport={{ once: true }}
                             className="bg-bg-paper border-[3px] border-black shadow-[4px_4px_0px_#000] p-5"
                         >
-                            <div className="space-y-4">
-                                <StatRow 
-                                    icon="🏆" 
-                                    value={TODAY_STATS.deadGods} 
-                                    label={t('liveActivity.deadGodsAchieved')} 
-                                    highlight
-                                />
-                                <StatRow 
-                                    icon="✅" 
-                                    value={TODAY_STATS.completionMarks} 
-                                    label={t('liveActivity.completionMarks')} 
-                                />
-                                <StatRow 
-                                    icon="💀" 
-                                    value={TODAY_STATS.taintedLostCompleted} 
-                                    label={t('liveActivity.taintedLostCompleted')} 
-                                />
-                                <StatRow 
-                                    icon="👤" 
-                                    value={TODAY_STATS.newUsers} 
-                                    label={t('liveActivity.newUsers')} 
-                                />
-                            </div>
+                            {liveStats === null ? (
+                                // Loading skeletons
+                                <div className="space-y-4">
+                                    {[...Array(4)].map((_, i) => (
+                                        <div key={i} className="flex items-center gap-3 p-3">
+                                            <div className="w-8 h-8 bg-black/10 rounded animate-pulse" />
+                                            <div className="flex-1 space-y-1">
+                                                <div className="h-5 w-16 bg-black/10 rounded animate-pulse" />
+                                                <div className="h-3 w-28 bg-black/10 rounded animate-pulse" />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <StatRow
+                                        icon="📁"
+                                        value={liveStats.savesToday ?? 0}
+                                        label={t('liveActivity.savesAnalyzedToday', 'Saves analyzed today')}
+                                        highlight
+                                    />
+                                    <StatRow
+                                        icon="⚡"
+                                        value={liveStats.synergiesChecked ?? 0}
+                                        label={t('liveActivity.synergiesChecked', 'Synergies checked today')}
+                                    />
+                                    <StatRow
+                                        icon="🏗️"
+                                        value={liveStats.buildsToday ?? 0}
+                                        label={t('liveActivity.buildsCreated', 'Builds created today')}
+                                    />
+                                    <StatRow
+                                        icon="👥"
+                                        value={liveStats.usersActive ?? 0}
+                                        label={t('liveActivity.usersActive', 'Active users (15 min)')}
+                                    />
+                                </div>
+                            )}
 
                             <div className="mt-6 pt-4 border-t-2 border-dashed border-black/10">
                                 <p className="text-xs text-text-dim font-handwriting text-center">
-                                    {t('liveActivity.updatedMinutesAgo', { count: 2 })}
+                                    {liveStats
+                                        ? t('liveActivity.updatedMinutesAgo', { count: 0 })
+                                        : t('liveActivity.loading', 'Loading...')}
                                 </p>
                             </div>
                         </motion.div>

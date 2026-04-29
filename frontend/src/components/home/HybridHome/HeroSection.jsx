@@ -281,28 +281,35 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                         {t('home.heroUploadDescription')}
                     </motion.p>
 
-                    {/* Live Counter */}
-                    {dailyCount !== null && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.25 }}
-                            className="flex items-center gap-2 mb-8 px-4 py-2 bg-black/5 border border-black/10 rounded-full"
-                        >
-                            <FaBolt className="w-3 h-3 text-accent-gold" />
-                            <span className="font-heading text-sm text-text-dim">
-                                <motion.span
-                                    key={dailyCount}
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="text-text-heading font-bold"
-                                >
-                                    {dailyCount.toLocaleString()}
-                                </motion.span>
-                                {' '}{t('home.heroSavesAnalyzedToday')}
-                            </span>
-                        </motion.div>
-                    )}
+                    {/* Live Counter — always visible */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.25 }}
+                        className="flex items-center gap-2 mb-8 px-4 py-2 bg-black/5 border border-black/10 rounded-full"
+                    >
+                        <FaBolt className="w-3 h-3 text-accent-gold" />
+                        <span className="font-heading text-sm text-text-dim">
+                            {dailyCount === null ? (
+                                // Loading — skeleton en lugar de desaparecer
+                                <span className="inline-block h-4 w-20 bg-black/10 rounded animate-pulse align-middle" />
+                            ) : dailyCount === 0 ? (
+                                <span className="text-text-heading font-bold">{t('home.heroBeTheFirst', 'Be the first today')}</span>
+                            ) : (
+                                <>
+                                    <motion.span
+                                        key={dailyCount}
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="text-text-heading font-bold"
+                                    >
+                                        {dailyCount.toLocaleString()}
+                                    </motion.span>
+                                    {' '}{t('home.heroSavesAnalyzedToday')}
+                                </>
+                            )}
+                        </span>
+                    </motion.div>
 
                     {/* Upload Zone */}
                     <AnimatePresence mode="wait">

@@ -154,6 +154,7 @@ router.post('/heartbeat', async (req, res) => {
  */
 router.get('/feed', async (req, res) => {
   try {
+    const limit = Math.min(parseInt(req.query.limit) || 10, 50);
     const { data } = await supabase
       .from('activity_log')
       .select(`
@@ -166,9 +167,9 @@ router.get('/feed', async (req, res) => {
           avatar_url
         )
       `)
-      .in('event_type', ['build_created', 'achievement_unlocked', 'dead_god_reached'])
+      .in('event_type', ['build_created', 'achievement_unlocked', 'dead_god_reached', 'save_analyzed'])
       .order('created_at', { ascending: false })
-      .limit(10);
+      .limit(limit);
     
     const feed = (data || []).map(item => ({
       id: item.id,
