@@ -34,6 +34,35 @@ const SYNERGY_DATABASE = {
         effectKey: 'dr_fetus_ipecac',
         isWarning: true,
     },
+    // Brimstone synergies
+    "brimstone+monstro's lung": { tier: 'S', effectKey: 'brimstone_monstros_lung' },
+    'brimstone+the ludovico technique': { tier: 'S', effectKey: 'brimstone_ludovico_technique' },
+    'brimstone+the inner eye': { tier: 'S', effectKey: 'brimstone_inner_eye' },
+    'brimstone+mutant spider': { tier: 'S', effectKey: 'brimstone_mutant_spider' },
+    "brimstone+jacob's ladder": { tier: 'A', effectKey: 'brimstone_jacobs_ladder' },
+    'brimstone+continuum': { tier: 'A', effectKey: 'brimstone_continuum' },
+    'brimstone+flat stone': { tier: 'A', effectKey: 'brimstone_flat_stone' },
+    'brimstone+haemolacria': { tier: 'A', effectKey: 'brimstone_haemolacria' },
+    'brimstone+godhead': { tier: 'A', effectKey: 'brimstone_godhead' },
+    "brimstone+death's touch": { tier: 'A', effectKey: 'brimstone_deaths_touch' },
+    'brimstone+eye of the occult': { tier: 'S', effectKey: 'brimstone_eye_of_the_occult' },
+    // Ipecac synergies
+    'ipecac+the ludovico technique': { tier: 'S', effectKey: 'ipecac_ludovico_technique' },
+    // Mom's Knife synergies
+    "mom's knife+mutant spider": { tier: 'S', effectKey: 'mom_knife_mutant_spider' },
+    "mom's knife+the ludovico technique": { tier: 'S', effectKey: 'mom_knife_ludovico_technique' },
+    "epic fetus+mom's knife": { tier: 'A', effectKey: 'epic_fetus_mom_knife' },
+    // Sacred Heart synergies
+    'proptosis+sacred heart': { tier: 'S', effectKey: 'proptosis_sacred_heart' },
+    'polyphemus+sacred heart': { tier: 'S', effectKey: 'polyphemus_sacred_heart' },
+    'epic fetus+sacred heart': { tier: 'S', effectKey: 'epic_fetus_sacred_heart' },
+    // Crown of Light synergies
+    'chocolate milk+crown of light': { tier: 'S', effectKey: 'chocolate_milk_crown_of_light' },
+    // Dr. Fetus synergies
+    "dr. fetus+monstro's lung": { tier: 'A', effectKey: 'dr_fetus_monstros_lung' },
+    'dr. fetus+polyphemus': { tier: 'A', effectKey: 'dr_fetus_polyphemus' },
+    // Misc
+    "dead cat+judas' shadow": { tier: 'A', effectKey: 'dead_cat_judas_shadow' },
 };
 
 // Mock item search data
@@ -50,6 +79,22 @@ const ITEMS_DATABASE = [
     { id: 10, name: 'Magic Mushroom', sprite: '/sprites/1_Passive Items/Magic Mushroom.png', tier: 'S' },
     { id: 11, name: 'Tech X', sprite: '/sprites/1_Passive Items/Tech X.png', tier: 'S' },
     { id: 12, name: 'Godhead', sprite: '/sprites/1_Passive Items/Godhead.png', tier: 'S' },
+    { id: 13, name: "Monstro's Lung", sprite: "/sprites/1_Passive Items/Monstro's Lung.png", tier: 'A' },
+    { id: 14, name: 'The Inner Eye', sprite: '/sprites/1_Passive Items/The Inner Eye.png', tier: 'A' },
+    { id: 15, name: 'Mutant Spider', sprite: '/sprites/1_Passive Items/Mutant Spider.png', tier: 'A' },
+    { id: 16, name: "Jacob's Ladder", sprite: "/sprites/1_Passive Items/Jacob's Ladder.png", tier: 'B' },
+    { id: 17, name: 'Continuum', sprite: '/sprites/1_Passive Items/Continuum.png', tier: 'B' },
+    { id: 18, name: 'Flat Stone', sprite: '/sprites/1_Passive Items/Flat Stone.png', tier: 'B' },
+    { id: 19, name: 'Haemolacria', sprite: '/sprites/1_Passive Items/Haemolacria.png', tier: 'A' },
+    { id: 20, name: "Death's Touch", sprite: "/sprites/1_Passive Items/Death's Touch.png", tier: 'B' },
+    { id: 21, name: 'Epic Fetus', sprite: '/sprites/1_Passive Items/Epic Fetus.png', tier: 'S' },
+    { id: 22, name: 'Proptosis', sprite: '/sprites/1_Passive Items/Proptosis.png', tier: 'A' },
+    { id: 23, name: 'Crown of Light', sprite: '/sprites/1_Passive Items/Crown of Light.png', tier: 'S' },
+    { id: 24, name: 'Eye of the Occult', sprite: '/sprites/1_Passive Items/Eye of the Occult.png', tier: 'A' },
+    { id: 25, name: 'Dead Cat', sprite: '/sprites/1_Passive Items/Dead Cat.png', tier: 'B' },
+    { id: 26, name: "Judas' Shadow", sprite: "/sprites/1_Passive Items/Judas' Shadow.png", tier: 'A' },
+    { id: 27, name: 'The Ludovico Technique', sprite: '/sprites/1_Passive Items/The Ludovico Technique.png', tier: 'A' },
+    { id: 28, name: 'Chocolate Milk', sprite: '/sprites/1_Passive Items/Chocolate Milk.png', tier: 'B' },
 ];
 
 const PLACEHOLDER_EXAMPLES = [

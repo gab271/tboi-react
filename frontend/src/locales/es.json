@@ -624,6 +624,19 @@
     "noInteractionsFound": "Estos items funcionan de forma independiente. No hay interacciones especiales documentadas.",
     "comboSaved": "¡Combo guardado!",
     "comboSavedSoon": "¡Combo guardado! (funcionalidad próximamente)",
+    "alreadySaved": "Ya guardado",
+    "buildStats": "Stats de Build",
+    "estimatedDps": "DPS Est.",
+    "tearType": "Tipo de Lágrima",
+    "transformations": "Transformaciones",
+    "contributeTitle": "Contribuir una Sinergia",
+    "contributeItemA": "Item A",
+    "contributeItemB": "Item B",
+    "contributeEffect": "¿Qué ocurre con estos ítems?",
+    "contributeSubmit": "Enviar",
+    "contributeSuccess": "¡Gracias! Revisaremos tu contribución en breve.",
+    "contributeError": "Error al enviar. Inténtalo de nuevo.",
+    "contributeCancel": "Cancelar",
     "backToHome": "Volver al inicio",
     "shareCombo": "Compartir",
     "viewInWiki": "Ver en Wiki",
@@ -722,6 +735,94 @@
       "mom_knife_brimstone": {
         "effect": "Se cancelan",
         "details": "Mom's Knife reemplaza el ataque de Brimstone"
+      },
+      "brimstone_monstros_lung": {
+        "effect": "Ráfaga de múltiples rayos Brimstone",
+        "details": "Tras una carga larga, dispara varios rayos Brimstone en abanico cubriendo casi toda la sala. Una de las sinergias más fuertes de Brimstone."
+      },
+      "brimstone_ludovico_technique": {
+        "effect": "Anillo de Brimstone orbitando a Isaac",
+        "details": "La lágrima controlada de Ludovico se convierte en un anillo de Brimstone que orbita a Isaac y daña continuamente a todo enemigo que toca."
+      },
+      "brimstone_inner_eye": {
+        "effect": "Triple rayo Brimstone simultáneo",
+        "details": "Dispara tres rayos Brimstone a la vez en abanico, triplicando la cobertura y el daño total."
+      },
+      "brimstone_mutant_spider": {
+        "effect": "Cuádruple rayo Brimstone simultáneo",
+        "details": "Dispara cuatro rayos Brimstone a la vez. La penalización de cadencia de Mutant Spider no afecta a un arma de carga."
+      },
+      "brimstone_jacobs_ladder": {
+        "effect": "Arcos eléctricos saltan del rayo a enemigos cercanos",
+        "details": "Jacob's Ladder añade arcos eléctricos al rayo Brimstone, extendiendo su rango de daño efectivo hacia los lados."
+      },
+      "brimstone_continuum": {
+        "effect": "El rayo rodea toda la pantalla",
+        "details": "El rayo Brimstone atraviesa las paredes y vuelve a entrar por el lado opuesto, golpeando enemigos desde ambas direcciones a la vez."
+      },
+      "brimstone_flat_stone": {
+        "effect": "El rayo Brimstone rebota en las paredes",
+        "details": "Flat Stone hace que el láser rebote en paredes y obstáculos, alcanzando enemigos detrás de esquinas. Solo en Repentance."
+      },
+      "brimstone_haemolacria": {
+        "effect": "El impacto del rayo genera ráfaga de bolas de sangre",
+        "details": "El láser Brimstone dispara normalmente, pero al impactar activa la explosión de bolas de sangre de Haemolacria, añadiendo daño en área. Solo en Repentance."
+      },
+      "brimstone_godhead": {
+        "effect": "Aura de Godhead rodea el rayo",
+        "details": "El aura de daño de Godhead viaja junto al rayo Brimstone, haciendo daño adicional por tick a cada enemigo que el rayo roza."
+      },
+      "brimstone_deaths_touch": {
+        "effect": "Rayo más ancho con daño plano extra",
+        "details": "Death's Touch ensancha visualmente el rayo Brimstone y aporta su bonificación de +1.5 de daño plano por tick."
+      },
+      "brimstone_eye_of_the_occult": {
+        "effect": "Dirige el rayo Brimstone en tiempo real",
+        "details": "Eye of the Occult da control direccional total del disparo. Con Brimstone, puedes girar el láser libremente para seguir a cualquier enemigo en movimiento."
+      },
+      "ipecac_ludovico_technique": {
+        "effect": "Orbe Ipecac controlable — daño de explosión constante",
+        "details": "La lágrima de Ludovico se convierte en un orbe Ipecac que aplica daño de explosión venenosa continuamente a cada enemigo que toca. Extremadamente letal."
+      },
+      "mom_knife_mutant_spider": {
+        "effect": "Cuatro cuchillos disparados simultáneamente",
+        "details": "Dispara cuatro proyectiles de Mom's Knife en abanico. Cada cuchillo hace daño completo, multiplicando drásticamente el daño total por lanzamiento."
+      },
+      "mom_knife_ludovico_technique": {
+        "effect": "Cuchillo flotante controlable",
+        "details": "La lágrima de Ludovico se reemplaza por un cuchillo flotante que puedes posicionar sobre los enemigos, haciendo daño de contacto continuo."
+      },
+      "epic_fetus_mom_knife": {
+        "effect": "Cuchillo lanzado como misil guiado",
+        "details": "El cuchillo se dispara como un misil de Epic Fetus, apuntando al objetivo del cursor y haciendo alto daño de impacto al llegar."
+      },
+      "proptosis_sacred_heart": {
+        "effect": "DPS extremo a corta distancia",
+        "details": "Las lágrimas de Proptosis hacen daño máximo al instante de dispararse. El multiplicador 2.3× y el daño plano de Sacred Heart lo elevan a niveles letales."
+      },
+      "polyphemus_sacred_heart": {
+        "effect": "Lágrima enorme con homing — one-shot casi todo",
+        "details": "El +2 daño de Polyphemus se apila multiplicativamente con el 2.3× de Sacred Heart, generando una sola lágrima con homing y daño extraordinario."
+      },
+      "epic_fetus_sacred_heart": {
+        "effect": "Misiles sagrados — daño enorme y homing fiable",
+        "details": "Los misiles de Epic Fetus heredan el multiplicador completo de Sacred Heart y su homing mejorado, convirtiendo cada misil en un impacto garantizado devastador."
+      },
+      "chocolate_milk_crown_of_light": {
+        "effect": "Disparos cargados con daño doblado a vida completa",
+        "details": "Crown of Light duplica el daño a vida completa. Los disparos totalmente cargados de Chocolate Milk multiplican eso aún más, generando burst muy alto."
+      },
+      "dr_fetus_monstros_lung": {
+        "effect": "Ráfaga de bombas simultáneas",
+        "details": "Tras carga completa, dispara varias bombas en el patrón de abanico de Monstro's Lung, cubriendo una zona amplia con explosiones simultáneas."
+      },
+      "dr_fetus_polyphemus": {
+        "effect": "Las bombas hacen daño plano extra",
+        "details": "El +2 daño plano de Polyphemus se aplica a las bombas de Dr. Fetus. La cadencia baja, pero cada explosión golpea bastante más fuerte."
+      },
+      "dead_cat_judas_shadow": {
+        "effect": "Nueve vidas extra como Black Judas",
+        "details": "Dead Cat reduce los corazones a 1, haciendo frecuente la muerte. Cada muerte activa la reaparición de Judas' Shadow como Black Judas, dando efectivamente 9 vidas."
       }
     }
   },

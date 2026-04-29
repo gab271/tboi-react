@@ -622,6 +622,19 @@
     "noInteractionsFound": "These items work independently. No special interactions documented.",
     "comboSaved": "Combo saved!",
     "comboSavedSoon": "Combo saved! (feature coming soon)",
+    "alreadySaved": "Already saved",
+    "buildStats": "Build Stats",
+    "estimatedDps": "Est. DPS",
+    "tearType": "Tear Type",
+    "transformations": "Transformations",
+    "contributeTitle": "Contribute a Synergy",
+    "contributeItemA": "Item A",
+    "contributeItemB": "Item B",
+    "contributeEffect": "What happens with these items?",
+    "contributeSubmit": "Submit",
+    "contributeSuccess": "Thanks! We'll review your contribution shortly.",
+    "contributeError": "Failed to submit. Please try again.",
+    "contributeCancel": "Cancel",
     "backToHome": "Back to home",
     "shareCombo": "Share",
     "viewInWiki": "View in Wiki",
@@ -720,6 +733,94 @@
       "mom_knife_brimstone": {
         "effect": "They cancel out",
         "details": "Mom's Knife replaces Brimstone attack"
+      },
+      "brimstone_monstros_lung": {
+        "effect": "Spread of multiple Brimstone beams",
+        "details": "After a long charge, fires multiple Brimstone beams in a wide spread, covering nearly the entire room. One of the strongest Brimstone synergies."
+      },
+      "brimstone_ludovico_technique": {
+        "effect": "Rotating Brimstone ring around Isaac",
+        "details": "The Ludovico-controlled tear becomes a Brimstone ring that orbits Isaac, dealing continuous laser damage to every enemy it touches."
+      },
+      "brimstone_inner_eye": {
+        "effect": "Triple simultaneous Brimstone beams",
+        "details": "Fires three Brimstone beams at once in a spread pattern, tripling coverage and damage output."
+      },
+      "brimstone_mutant_spider": {
+        "effect": "Quad simultaneous Brimstone beams",
+        "details": "Fires four Brimstone beams simultaneously. Fire rate penalty from Mutant Spider is irrelevant for a charge weapon."
+      },
+      "brimstone_jacobs_ladder": {
+        "effect": "Electric arcs jump from the beam to nearby enemies",
+        "details": "Jacob's Ladder adds electric arcs to the Brimstone beam, extending its effective damage range sideways."
+      },
+      "brimstone_continuum": {
+        "effect": "Beam wraps around the entire screen",
+        "details": "The Brimstone beam extends through walls and re-enters from the opposite side, hitting enemies from both directions at once."
+      },
+      "brimstone_flat_stone": {
+        "effect": "Brimstone beam bounces off walls",
+        "details": "Flat Stone makes the laser ricochet off walls and obstacles, allowing it to reach enemies around corners. Repentance only."
+      },
+      "brimstone_haemolacria": {
+        "effect": "Beam impact spawns blood ball burst",
+        "details": "The Brimstone laser fires normally but triggers a Haemolacria blood ball burst on impact, adding area-of-effect damage. Repentance only."
+      },
+      "brimstone_godhead": {
+        "effect": "Godhead damage aura surrounds the beam",
+        "details": "Godhead's damage aura travels alongside the Brimstone beam, dealing extra tick damage to every enemy the beam passes near."
+      },
+      "brimstone_deaths_touch": {
+        "effect": "Wider beam with extra flat damage",
+        "details": "Death's Touch visually widens the Brimstone beam and contributes its +1.5 flat damage bonus to each tick."
+      },
+      "brimstone_eye_of_the_occult": {
+        "effect": "Steer the Brimstone beam in real time",
+        "details": "Eye of the Occult gives full directional control of your shot. Combined with Brimstone, you can freely steer the laser to track any moving enemy."
+      },
+      "ipecac_ludovico_technique": {
+        "effect": "Controlled Ipecac orb — constant explosion damage",
+        "details": "The Ludovico tear becomes an Ipecac orb that continuously applies poison explosion damage to any enemy it overlaps. Extremely lethal."
+      },
+      "mom_knife_mutant_spider": {
+        "effect": "Four knives fired simultaneously",
+        "details": "Fires four Mom's Knife projectiles in a spread. Each knife deals full damage, dramatically multiplying total output per throw."
+      },
+      "mom_knife_ludovico_technique": {
+        "effect": "Freely floating knife",
+        "details": "The Ludovico tear is replaced by a floating knife that can be repositioned over enemies, dealing continuous Mom's Knife contact damage."
+      },
+      "epic_fetus_mom_knife": {
+        "effect": "Knife launched as a guided missile",
+        "details": "The knife is fired like an Epic Fetus missile, homing toward the crosshair target and dealing high impact damage on arrival."
+      },
+      "proptosis_sacred_heart": {
+        "effect": "Extreme close-range DPS",
+        "details": "Proptosis tears deal maximum damage immediately on spawn. Sacred Heart's 2.3× multiplier and flat damage bonus amplify this to lethal levels."
+      },
+      "polyphemus_sacred_heart": {
+        "effect": "Massive homing tear — one-shots almost everything",
+        "details": "Polyphemus's +2 damage stacks multiplicatively with Sacred Heart's 2.3× multiplier, producing a single homing tear with extraordinary damage."
+      },
+      "epic_fetus_sacred_heart": {
+        "effect": "Sacred missiles — huge damage, reliable homing",
+        "details": "Epic Fetus missiles inherit Sacred Heart's full damage multiplier and improved homing, making every missile a devastating guaranteed hit."
+      },
+      "chocolate_milk_crown_of_light": {
+        "effect": "Charged shots doubled while at full health",
+        "details": "Crown of Light doubles damage at full health. Chocolate Milk's fully charged shots multiply that further, producing very high burst damage."
+      },
+      "dr_fetus_monstros_lung": {
+        "effect": "Spread of simultaneous bombs",
+        "details": "After a full charge, fires multiple bombs in the Monstro's Lung spread pattern, blanketing a wide area with simultaneous explosions."
+      },
+      "dr_fetus_polyphemus": {
+        "effect": "Bombs deal extra flat damage",
+        "details": "Polyphemus's +2 flat damage applies to Dr. Fetus bombs. The bomb rate is also reduced, but each explosion hits significantly harder."
+      },
+      "dead_cat_judas_shadow": {
+        "effect": "Nine extra lives as Black Judas",
+        "details": "Dead Cat sets your heart containers to 1, making death frequent. Each death triggers Judas' Shadow's revival as Black Judas, effectively giving 9 lives."
       }
     }
   },

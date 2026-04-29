@@ -41,6 +41,33 @@ const SYNERGY_DATABASE = {
     'dr_fetus+ipecac': { rating: 'D', score: 2, effectKey: 'dr_fetus_ipecac', isAntiSynergy: true },
     'soy_milk+polyphemus': { rating: 'C', score: 4, effectKey: 'soy_milk_polyphemus', isAntiSynergy: true },
     'brimstone+chocolate_milk': { rating: 'C', score: 4, effectKey: 'brimstone_chocolate_milk', isAntiSynergy: true },
+    // Brimstone synergies
+    'brimstone+monstros_lung': { rating: 'S', score: 10, effectKey: 'brimstone_monstros_lung' },
+    'brimstone+the_ludovico_technique': { rating: 'S', score: 10, effectKey: 'brimstone_ludovico_technique' },
+    'brimstone+inner_eye': { rating: 'S', score: 10, effectKey: 'brimstone_inner_eye' },
+    'brimstone+mutant_spider': { rating: 'S', score: 10, effectKey: 'brimstone_mutant_spider' },
+    'brimstone+jacobs_ladder': { rating: 'A', score: 7, effectKey: 'brimstone_jacobs_ladder' },
+    'brimstone+continuum': { rating: 'A', score: 7, effectKey: 'brimstone_continuum' },
+    'brimstone+flat_stone': { rating: 'A', score: 7, effectKey: 'brimstone_flat_stone' },
+    'brimstone+haemolacria': { rating: 'A', score: 7, effectKey: 'brimstone_haemolacria' },
+    'brimstone+godhead': { rating: 'A', score: 7, effectKey: 'brimstone_godhead' },
+    'brimstone+deaths_touch': { rating: 'A', score: 7, effectKey: 'brimstone_deaths_touch' },
+    'brimstone+eye_of_the_occult': { rating: 'S', score: 9, effectKey: 'brimstone_eye_of_the_occult' },
+    // Ipecac synergies
+    'ipecac+the_ludovico_technique': { rating: 'S', score: 10, effectKey: 'ipecac_ludovico_technique' },
+    // Mom's Knife synergies
+    'mom_knife+mutant_spider': { rating: 'S', score: 10, effectKey: 'mom_knife_mutant_spider' },
+    'mom_knife+the_ludovico_technique': { rating: 'S', score: 10, effectKey: 'mom_knife_ludovico_technique' },
+    'epic_fetus+mom_knife': { rating: 'A', score: 7, effectKey: 'epic_fetus_mom_knife' },
+    // Sacred Heart synergies
+    'proptosis+sacred_heart': { rating: 'S', score: 10, effectKey: 'proptosis_sacred_heart' },
+    'polyphemus+sacred_heart': { rating: 'S', score: 10, effectKey: 'polyphemus_sacred_heart' },
+    'epic_fetus+sacred_heart': { rating: 'S', score: 10, effectKey: 'epic_fetus_sacred_heart' },
+    // Misc
+    'chocolate_milk+crown_of_light': { rating: 'S', score: 9, effectKey: 'chocolate_milk_crown_of_light' },
+    'dr_fetus+monstros_lung': { rating: 'A', score: 7, effectKey: 'dr_fetus_monstros_lung' },
+    'dr_fetus+polyphemus': { rating: 'A', score: 7, effectKey: 'dr_fetus_polyphemus' },
+    'dead_cat+judas_shadow': { rating: 'A', score: 7, effectKey: 'dead_cat_judas_shadow' },
 };
 
 // Items populares para sugerencias
@@ -53,6 +80,12 @@ const POPULAR_ITEMS = [
     { id: 'tech_x', name: 'Tech X', sprite: '/sprites/1_Passive Items/Tech X.png' },
     { id: 'mom_knife', name: "Mom's Knife", sprite: "/sprites/1_Passive Items/Mom's Knife.png" },
     { id: 'tammy_head', name: "Tammy's Head", sprite: '/sprites/2_Active Items/Tammys Head.png' },
+    { id: 'monstros_lung', name: "Monstro's Lung", sprite: "/sprites/1_Passive Items/Monstro's Lung.png" },
+    { id: 'mutant_spider', name: 'Mutant Spider', sprite: '/sprites/1_Passive Items/Mutant Spider.png' },
+    { id: 'epic_fetus', name: 'Epic Fetus', sprite: '/sprites/1_Passive Items/Epic Fetus.png' },
+    { id: 'proptosis', name: 'Proptosis', sprite: '/sprites/1_Passive Items/Proptosis.png' },
+    { id: 'the_ludovico_technique', name: 'The Ludovico Technique', sprite: '/sprites/1_Passive Items/The Ludovico Technique.png' },
+    { id: 'inner_eye', name: 'The Inner Eye', sprite: '/sprites/1_Passive Items/The Inner Eye.png' },
 ];
 
 export function SynergyAnalyzerMini() {

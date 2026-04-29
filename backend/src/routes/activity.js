@@ -76,6 +76,13 @@ router.get('/live', async (req, res) => {
     const usersActive = uniqueUsers.size;
     
     // Última actividad
+    // Sinergias analizadas hoy
+    const { count: synergiesChecked } = await supabase
+      .from('activity_log')
+      .select('*', { count: 'exact', head: true })
+      .eq('event_type', 'synergy_checked')
+      .gte('created_at', now24h);
+
     const { data: lastBuild } = await supabase
       .from('activity_log')
       .select('created_at')
@@ -98,7 +105,7 @@ router.get('/live', async (req, res) => {
       usersActive: usersActive || 0,
       lastBuildAt: lastBuild?.created_at ? new Date(lastBuild.created_at).getTime() : null,
       lastSaveAt: lastSave?.created_at ? new Date(lastSave.created_at).getTime() : null,
-      synergiesChecked: 0, // TODO: trackear
+      synergiesChecked: synergiesChecked || 0,
     };
     
     // Actualizar cache

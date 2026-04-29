@@ -23,6 +23,7 @@ import {
 } from 'react-icons/fa';
 import { cn } from '../../lib/utils';
 import { useAuth } from '../../hooks/useAuth';
+import { analyzeSynergies as analyzeSynergiesAPI, contributeSynergy } from '../../lib/api';
 
 // Extended synergy database - uses translation keys for effect/details
 const SYNERGY_DATABASE = {
@@ -98,13 +99,42 @@ const SYNERGY_DATABASE = {
         isAntiSynergy: true,
         wikiLink: null
     },
-    'brimstone+chocolate_milk': { 
-        rating: 'C', 
-        score: 4, 
+    'brimstone+chocolate_milk': {
+        rating: 'C',
+        score: 4,
         effectKey: 'brimstone_chocolate_milk',
         isAntiSynergy: true,
         wikiLink: null
     },
+    // Brimstone synergies
+    'brimstone+monstros_lung': { rating: 'S', score: 10, effectKey: 'brimstone_monstros_lung', wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Brimstone#Synergies' },
+    'brimstone+the_ludovico_technique': { rating: 'S', score: 10, effectKey: 'brimstone_ludovico_technique', wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Brimstone#Synergies' },
+    'brimstone+inner_eye': { rating: 'S', score: 10, effectKey: 'brimstone_inner_eye', wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Brimstone#Synergies' },
+    'brimstone+mutant_spider': { rating: 'S', score: 10, effectKey: 'brimstone_mutant_spider', wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Brimstone#Synergies' },
+    'brimstone+jacobs_ladder': { rating: 'A', score: 7, effectKey: 'brimstone_jacobs_ladder', wikiLink: null },
+    'brimstone+continuum': { rating: 'A', score: 7, effectKey: 'brimstone_continuum', wikiLink: null },
+    'brimstone+flat_stone': { rating: 'A', score: 7, effectKey: 'brimstone_flat_stone', wikiLink: null },
+    'brimstone+haemolacria': { rating: 'A', score: 7, effectKey: 'brimstone_haemolacria', wikiLink: null },
+    'brimstone+godhead': { rating: 'A', score: 7, effectKey: 'brimstone_godhead', wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Brimstone#Synergies' },
+    'brimstone+deaths_touch': { rating: 'A', score: 7, effectKey: 'brimstone_deaths_touch', wikiLink: null },
+    'brimstone+eye_of_the_occult': { rating: 'S', score: 9, effectKey: 'brimstone_eye_of_the_occult', wikiLink: null },
+    // Ipecac synergies
+    'ipecac+the_ludovico_technique': { rating: 'S', score: 10, effectKey: 'ipecac_ludovico_technique', wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Ipecac#Synergies' },
+    // Mom's Knife synergies
+    'mom_knife+mutant_spider': { rating: 'S', score: 10, effectKey: 'mom_knife_mutant_spider', wikiLink: "https://bindingofisaacrebirth.fandom.com/wiki/Mom%27s_Knife#Synergies" },
+    'mom_knife+the_ludovico_technique': { rating: 'S', score: 10, effectKey: 'mom_knife_ludovico_technique', wikiLink: "https://bindingofisaacrebirth.fandom.com/wiki/Mom%27s_Knife#Synergies" },
+    'epic_fetus+mom_knife': { rating: 'A', score: 7, effectKey: 'epic_fetus_mom_knife', wikiLink: null },
+    // Sacred Heart synergies
+    'proptosis+sacred_heart': { rating: 'S', score: 10, effectKey: 'proptosis_sacred_heart', wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Sacred_Heart#Synergies' },
+    'polyphemus+sacred_heart': { rating: 'S', score: 10, effectKey: 'polyphemus_sacred_heart', wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Sacred_Heart#Synergies' },
+    'epic_fetus+sacred_heart': { rating: 'S', score: 10, effectKey: 'epic_fetus_sacred_heart', wikiLink: 'https://bindingofisaacrebirth.fandom.com/wiki/Sacred_Heart#Synergies' },
+    // Crown of Light synergies
+    'chocolate_milk+crown_of_light': { rating: 'S', score: 9, effectKey: 'chocolate_milk_crown_of_light', wikiLink: null },
+    // Dr. Fetus synergies
+    'dr_fetus+monstros_lung': { rating: 'A', score: 7, effectKey: 'dr_fetus_monstros_lung', wikiLink: null },
+    'dr_fetus+polyphemus': { rating: 'A', score: 7, effectKey: 'dr_fetus_polyphemus', wikiLink: null },
+    // Misc
+    'dead_cat+judas_shadow': { rating: 'A', score: 7, effectKey: 'dead_cat_judas_shadow', wikiLink: null },
 };
 
 // All available items for selection
@@ -129,6 +159,20 @@ const ALL_ITEMS = [
     { id: 'soy_milk', name: 'Soy Milk', sprite: '/sprites/1_Passive Items/Soy Milk.png', quality: 2 },
     { id: 'chocolate_milk', name: 'Chocolate Milk', sprite: '/sprites/1_Passive Items/Chocolate Milk.png', quality: 3 },
     { id: 'my_reflection', name: 'My Reflection', sprite: '/sprites/1_Passive Items/My Reflection.png', quality: 1 },
+    { id: 'monstros_lung', name: "Monstro's Lung", sprite: "/sprites/1_Passive Items/Monstro's Lung.png", quality: 3 },
+    { id: 'inner_eye', name: 'The Inner Eye', sprite: '/sprites/1_Passive Items/The Inner Eye.png', quality: 3 },
+    { id: 'mutant_spider', name: 'Mutant Spider', sprite: '/sprites/1_Passive Items/Mutant Spider.png', quality: 3 },
+    { id: 'jacobs_ladder', name: "Jacob's Ladder", sprite: "/sprites/1_Passive Items/Jacob's Ladder.png", quality: 3 },
+    { id: 'continuum', name: 'Continuum', sprite: '/sprites/1_Passive Items/Continuum.png', quality: 3 },
+    { id: 'flat_stone', name: 'Flat Stone', sprite: '/sprites/1_Passive Items/Flat Stone.png', quality: 3 },
+    { id: 'haemolacria', name: 'Haemolacria', sprite: '/sprites/1_Passive Items/Haemolacria.png', quality: 3 },
+    { id: 'deaths_touch', name: "Death's Touch", sprite: "/sprites/1_Passive Items/Death's Touch.png", quality: 3 },
+    { id: 'epic_fetus', name: 'Epic Fetus', sprite: '/sprites/1_Passive Items/Epic Fetus.png', quality: 4 },
+    { id: 'proptosis', name: 'Proptosis', sprite: '/sprites/1_Passive Items/Proptosis.png', quality: 4 },
+    { id: 'crown_of_light', name: 'Crown of Light', sprite: '/sprites/1_Passive Items/Crown of Light.png', quality: 4 },
+    { id: 'eye_of_the_occult', name: 'Eye of the Occult', sprite: '/sprites/1_Passive Items/Eye of the Occult.png', quality: 3 },
+    { id: 'dead_cat', name: 'Dead Cat', sprite: '/sprites/1_Passive Items/Dead Cat.png', quality: 3 },
+    { id: 'judas_shadow', name: "Judas' Shadow", sprite: "/sprites/1_Passive Items/Judas' Shadow.png", quality: 4 },
 ];
 
 // Suggested combinations to try
@@ -136,6 +180,9 @@ const SUGGESTED_COMBOS = [
     { items: ['brimstone', 'tammy_head'], tag: 'CLASICO' },
     { items: ['sacred_heart', 'godhead'], tag: 'GOD TIER' },
     { items: ['dr_fetus', 'ipecac'], tag: 'PELIGRO' },
+    { items: ['brimstone', 'monstros_lung'], tag: 'MEGA LASER' },
+    { items: ['sacred_heart', 'proptosis'], tag: 'MAX DPS' },
+    { items: ['mom_knife', 'mutant_spider'], tag: 'MULTI-KNIFE' },
 ];
 
 export function SynergiesPage() {
@@ -149,6 +196,10 @@ export function SynergiesPage() {
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
     const [shareTooltip, setShareTooltip] = useState(false);
+    const [saveTooltip, setSaveTooltip] = useState(null); // null | 'saved' | 'already'
+    const [showContributeModal, setShowContributeModal] = useState(false);
+    const [contributeForm, setContributeForm] = useState({ itemA: '', itemB: '', description: '' });
+    const [contributeStatus, setContributeStatus] = useState(null); // null | 'loading' | 'success' | 'error'
 
     // Initialize with preloaded items from mini analyzer
     useEffect(() => {
@@ -212,26 +263,23 @@ export function SynergiesPage() {
             item_count: itemsToAnalyze.length
         });
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1200));
-        
-        // Find all pairwise synergies
+        // Client-side pairwise documented synergy lookup
         const synergies = [];
         const antiSynergies = [];
-        
+
         for (let i = 0; i < itemsToAnalyze.length; i++) {
             for (let j = i + 1; j < itemsToAnalyze.length; j++) {
                 const key = [itemsToAnalyze[i].id, itemsToAnalyze[j].id].sort().join('+');
                 const reverseKey = [itemsToAnalyze[i].id, itemsToAnalyze[j].id].sort().reverse().join('+');
-                
+
                 const synergy = SYNERGY_DATABASE[key] || SYNERGY_DATABASE[reverseKey];
-                
+
                 if (synergy) {
                     const entry = {
                         ...synergy,
                         items: [itemsToAnalyze[i], itemsToAnalyze[j]]
                     };
-                    
+
                     if (synergy.isAntiSynergy) {
                         antiSynergies.push(entry);
                     } else {
@@ -240,18 +288,33 @@ export function SynergiesPage() {
                 }
             }
         }
-        
-        // Sort by score
+
         synergies.sort((a, b) => b.score - a.score);
         antiSynergies.sort((a, b) => a.score - b.score);
-        
-        // Calculate overall rating
-        let overallScore = 5; // Neutral base
+
+        // API call for computed stats (DPS, transformations) — graceful fallback
+        let apiStats = null;
+        try {
+            const res = await analyzeSynergiesAPI(itemsToAnalyze.map(i => i.name));
+            if (res?.ok) apiStats = res.build.state;
+        } catch {
+            // backend unavailable or items not in engine — client-only mode
+        }
+
+        // Calculate overall score from documented synergies
+        let overallScore = 5;
         synergies.forEach(s => overallScore += (s.score - 5) * 0.5);
         antiSynergies.forEach(s => overallScore -= (5 - s.score) * 0.5);
+
+        // Blend with API DPS signal when no documented synergies found
+        if (apiStats && synergies.length === 0 && antiSynergies.length === 0) {
+            const dpsSignal = apiStats.dps > 1000 ? 9 : apiStats.dps > 600 ? 7 : apiStats.dps > 300 ? 5 : 3;
+            overallScore = (overallScore + dpsSignal) / 2;
+        }
+
         overallScore = Math.max(1, Math.min(10, overallScore));
-        
-        const overallRating = 
+
+        const overallRating =
             overallScore >= 9 ? 'S' :
             overallScore >= 7 ? 'A' :
             overallScore >= 5 ? 'B' :
@@ -262,9 +325,10 @@ export function SynergiesPage() {
             antiSynergies,
             overallRating,
             overallScore: Math.round(overallScore * 10) / 10,
-            itemCount: itemsToAnalyze.length
+            itemCount: itemsToAnalyze.length,
+            apiStats,
         });
-        
+
         setLoading(false);
     };
 
@@ -297,8 +361,45 @@ export function SynergiesPage() {
             return;
         }
         
-        // TODO: Implement actual save functionality
-        alert(t('synergies.comboSavedSoon'));
+        const storageKey = 'saved_synergies';
+        const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        const comboKey = selectedItems.map(i => i.id).sort().join('+');
+
+        if (saved.some(s => s.key === comboKey)) {
+            setSaveTooltip('already');
+            setTimeout(() => setSaveTooltip(null), 2000);
+            return;
+        }
+
+        saved.unshift({
+            key: comboKey,
+            items: selectedItems.map(i => ({ id: i.id, name: i.name, sprite: i.sprite })),
+            rating: results?.overallRating || '?',
+            savedAt: new Date().toISOString(),
+        });
+        localStorage.setItem(storageKey, JSON.stringify(saved.slice(0, 20)));
+
+        setSaveTooltip('saved');
+        setTimeout(() => setSaveTooltip(null), 2000);
+
+        window.gtag?.('event', 'synergy_saved', { items: comboKey });
+    };
+
+    // Submit community contribution
+    const submitContribution = async () => {
+        if (!contributeForm.itemA || !contributeForm.itemB || !contributeForm.description) return;
+        setContributeStatus('loading');
+        try {
+            await contributeSynergy(contributeForm);
+            setContributeStatus('success');
+            setTimeout(() => {
+                setShowContributeModal(false);
+                setContributeStatus(null);
+                setContributeForm({ itemA: '', itemB: '', description: '' });
+            }, 2000);
+        } catch {
+            setContributeStatus('error');
+        }
     };
 
     return (
@@ -582,17 +683,57 @@ export function SynergiesPage() {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <button
-                                                    onClick={saveCombo}
-                                                    className="flex items-center gap-2 px-4 py-2 bg-black text-white font-heading text-sm hover:bg-gray-800 transition-colors"
-                                                >
-                                                    <FaSave className="w-4 h-4" />
-                                                    {user ? t('synergies.save') : t('synergies.saveRegister')}
-                                                </button>
+                                                <div className="relative">
+                                                    <button
+                                                        onClick={saveCombo}
+                                                        className="flex items-center gap-2 px-4 py-2 bg-black text-white font-heading text-sm hover:bg-gray-800 transition-colors"
+                                                    >
+                                                        <FaSave className="w-4 h-4" />
+                                                        {user ? t('synergies.save') : t('synergies.saveRegister')}
+                                                    </button>
+                                                    {saveTooltip && (
+                                                        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs whitespace-nowrap">
+                                                            {saveTooltip === 'saved' ? t('synergies.comboSaved') : t('synergies.alreadySaved')}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     
+                                    {/* API Build Stats */}
+                                    {results.apiStats && (
+                                        <div className="bg-bg-paper border-2 border-black shadow-[4px_4px_0px_#000] p-4">
+                                            <h3 className="font-heading text-sm uppercase text-text-dim mb-3">{t('synergies.buildStats')}</h3>
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                                <div className="text-center p-2 bg-black/5">
+                                                    <div className="font-heading text-xl text-accent-gold">{results.apiStats.dps}</div>
+                                                    <div className="text-xs text-text-dim uppercase">{t('synergies.estimatedDps')}</div>
+                                                </div>
+                                                <div className="text-center p-2 bg-black/5">
+                                                    <div className="font-heading text-lg capitalize">{results.apiStats.tearType}</div>
+                                                    <div className="text-xs text-text-dim uppercase">{t('synergies.tearType')}</div>
+                                                </div>
+                                                <div className="text-center p-2 bg-black/5">
+                                                    <div className="font-heading text-xl">{Number(results.apiStats.damage).toFixed(1)}</div>
+                                                    <div className="text-xs text-text-dim uppercase">Damage</div>
+                                                </div>
+                                                <div className="text-center p-2 bg-black/5">
+                                                    <div className="font-heading text-xl">{Number(results.apiStats.tearsPerSecond).toFixed(1)}</div>
+                                                    <div className="text-xs text-text-dim uppercase">Tears/s</div>
+                                                </div>
+                                            </div>
+                                            {results.apiStats.transformations?.length > 0 && (
+                                                <div className="mt-3 flex flex-wrap gap-2">
+                                                    <span className="text-xs text-text-dim uppercase font-heading">{t('synergies.transformations')}:</span>
+                                                    {results.apiStats.transformations.map(t => (
+                                                        <span key={t} className="text-xs px-2 py-0.5 bg-accent-gold/20 text-accent-gold font-heading border border-accent-gold/30">{t}</span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
                                     {/* Synergies */}
                                     {results.synergies.length > 0 && (
                                         <div className="bg-bg-paper border-2 border-black shadow-[4px_4px_0px_#000]">
@@ -646,7 +787,12 @@ export function SynergiesPage() {
                                             className="text-sm font-heading text-accent-blood hover:underline"
                                             onClick={() => {
                                                 window.gtag?.('event', 'synergy_contribute_click');
-                                                // TODO: Open contribution form
+                                                setContributeForm({
+                                                    itemA: results?.synergies[0]?.items[0]?.name || '',
+                                                    itemB: results?.synergies[0]?.items[1]?.name || '',
+                                                    description: '',
+                                                });
+                                                setShowContributeModal(true);
                                             }}
                                         >
                                             {t('synergies.contributed')} →
@@ -658,6 +804,96 @@ export function SynergiesPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Contribution Modal */}
+            <AnimatePresence>
+                {showContributeModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+                        onClick={(e) => e.target === e.currentTarget && setShowContributeModal(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-bg-paper border-2 border-black shadow-[8px_8px_0px_#000] w-full max-w-md p-6"
+                        >
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="font-heading text-xl flex items-center gap-2">
+                                    <FaPlus className="text-accent-blood" />
+                                    {t('synergies.contributeTitle')}
+                                </h2>
+                                <button onClick={() => setShowContributeModal(false)} className="p-1 hover:text-accent-blood">
+                                    <FaTimes />
+                                </button>
+                            </div>
+
+                            {contributeStatus === 'success' ? (
+                                <div className="text-center py-6">
+                                    <FaCheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
+                                    <p className="font-heading">{t('synergies.contributeSuccess')}</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block font-heading text-xs uppercase text-text-dim mb-1">{t('synergies.contributeItemA')}</label>
+                                        <input
+                                            type="text"
+                                            value={contributeForm.itemA}
+                                            onChange={e => setContributeForm(f => ({ ...f, itemA: e.target.value }))}
+                                            className="w-full px-3 py-2 border-2 border-black/20 bg-white font-sans text-sm focus:outline-none focus:border-accent-gold"
+                                            placeholder="e.g. Brimstone"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block font-heading text-xs uppercase text-text-dim mb-1">{t('synergies.contributeItemB')}</label>
+                                        <input
+                                            type="text"
+                                            value={contributeForm.itemB}
+                                            onChange={e => setContributeForm(f => ({ ...f, itemB: e.target.value }))}
+                                            className="w-full px-3 py-2 border-2 border-black/20 bg-white font-sans text-sm focus:outline-none focus:border-accent-gold"
+                                            placeholder="e.g. Tammy's Head"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block font-heading text-xs uppercase text-text-dim mb-1">{t('synergies.contributeEffect')}</label>
+                                        <textarea
+                                            value={contributeForm.description}
+                                            onChange={e => setContributeForm(f => ({ ...f, description: e.target.value }))}
+                                            rows={3}
+                                            className="w-full px-3 py-2 border-2 border-black/20 bg-white font-sans text-sm focus:outline-none focus:border-accent-gold resize-none"
+                                            placeholder="Describe what happens when these items are combined..."
+                                        />
+                                    </div>
+                                    {contributeStatus === 'error' && (
+                                        <p className="text-accent-blood text-sm font-heading">{t('synergies.contributeError')}</p>
+                                    )}
+                                    <div className="flex gap-2 pt-2">
+                                        <button
+                                            onClick={() => setShowContributeModal(false)}
+                                            className="flex-1 py-2 border-2 border-black/20 font-heading text-sm hover:bg-black/5 transition-colors"
+                                        >
+                                            {t('synergies.contributeCancel')}
+                                        </button>
+                                        <button
+                                            onClick={submitContribution}
+                                            disabled={contributeStatus === 'loading' || !contributeForm.itemA || !contributeForm.itemB || !contributeForm.description}
+                                            className="flex-1 py-2 bg-accent-blood text-white font-heading text-sm hover:bg-accent-blood/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            {contributeStatus === 'loading' ? (
+                                                <FaSpinner className="w-4 h-4 animate-spin" />
+                                            ) : t('synergies.contributeSubmit')}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

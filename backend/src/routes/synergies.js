@@ -179,4 +179,20 @@ router.get('/popular', async (req, res) => {
   });
 });
 
+/**
+ * POST /api/synergies/contribute
+ * Registra una contribución de sinergia de la comunidad
+ */
+router.post('/contribute', async (req, res) => {
+  const { itemA, itemB, description } = req.body;
+
+  if (!itemA || !itemB || !description) {
+    return res.status(400).json({ ok: false, error: 'itemA, itemB and description are required' });
+  }
+
+  logActivity('synergy_contribution', req.user?.id || null, { itemA, itemB, description });
+
+  res.json({ ok: true });
+});
+
 module.exports = router;

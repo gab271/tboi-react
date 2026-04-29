@@ -204,11 +204,13 @@ export const fetchActivityFeed = async (limit = 5) => {
  * @param {number[]} itemIds - Array of item IDs
  * @param {Object} options - Optional character, previous items, etc.
  */
-export const analyzeSynergies = async (itemIds, options = {}) => {
-  const { data } = await api.post('/api/synergies/analyze', {
-    items: itemIds,
-    ...options
-  });
+export const analyzeSynergies = async (itemNames) => {
+  const { data } = await api.post('/api/synergies/analyze', { itemNames });
+  return data;
+};
+
+export const contributeSynergy = async ({ itemA, itemB, description }) => {
+  const { data } = await api.post('/api/synergies/contribute', { itemA, itemB, description });
   return data;
 };
 
