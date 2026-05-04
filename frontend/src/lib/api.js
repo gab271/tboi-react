@@ -312,4 +312,58 @@ export const fetchUserProgress = async (userId, accessToken) => {
   return response.json();
 };
 
+// ─── Tier List ────────────────────────────────────────────────────────────────
+
+/**
+ * Fetch aggregated tier scores for all items.
+ * @param {string} character_id  'ALL' or a character slug (e.g. 'the_lost')
+ * @param {string} run_type      'normal' | 'greed' | 'greedier' | 'challenge'
+ */
+export const fetchTierList = async ({ character_id = 'ALL', run_type = 'normal' } = {}) => {
+  const { data } = await api.get('/api/tierlist', { params: { character_id, run_type } });
+  return data;
+};
+
+/**
+ * Fetch the authenticated user's own votes.
+ * @param {string} accessToken
+ * @param {object} filters  Optional { character_id, run_type }
+ */
+export const fetchMyTierVotes = async (accessToken, { character_id, run_type } = {}) => {
+  const params = {};
+  if (character_id) params.character_id = character_id;
+  if (run_type)     params.run_type     = run_type;
+
+  const { data } = await api.get('/api/tierlist/my-votes', {
+    params,
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return data;
+};
+
+/**
+ * Cast or update a vote for an item.
+ * @param {string} accessToken
+ * @param {{ item_id: string, tier: string, character_id?: string, run_type?: string }} payload
+ */
+export const castTierVote = async (accessToken, payload) => {
+  const { data } = await api.post('/api/tierlist/vote', payload, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return data;
+};
+
+/**
+ * Remove the authenticated user's vote for an item.
+ * @param {string} accessToken
+ * @param {{ item_id: string, character_id?: string, run_type?: string }} payload
+ */
+export const removeTierVote = async (accessToken, payload) => {
+  const { data } = await api.delete('/api/tierlist/vote', {
+    data: payload,
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return data;
+};
+
 export default api;

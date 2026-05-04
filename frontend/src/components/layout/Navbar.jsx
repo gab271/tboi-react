@@ -54,6 +54,7 @@ export function Navbar() {
     { name: t('nav.bosses'), path: '/bosses' },
     { name: t('nav.characters'), path: '/characters' },
     { name: t('nav.builds'), path: '/builds' },
+    { name: t('nav.tierlist', 'Tier List'), path: '/tierlist' },
   ]
 
   return (
