@@ -47,8 +47,12 @@ function App() {
           <Route path="tierlist" element={<TierListPage />} />
           <Route path="pricing" element={<PricingPage />} />
           
-          {/* Builds - Public feed */}
-          <Route path="builds" element={<BuildsPage />} />
+          {/* Builds - feed requires login, detail is public for sharing */}
+          <Route path="builds" element={
+            <ProtectedRoute>
+              <BuildsPage />
+            </ProtectedRoute>
+          } />
           <Route path="builds/:id" element={<BuildDetailPage />} />
           
           {/* Public Profile */}

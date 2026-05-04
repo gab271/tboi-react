@@ -3,49 +3,27 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { FaFire, FaBolt, FaTrophy, FaChevronRight, FaStar, FaComment, FaUsers } from 'react-icons/fa';
+import { useQuery } from '@tanstack/react-query';
+import { FaFire, FaBolt, FaTrophy, FaChevronRight, FaStar, FaComment } from 'react-icons/fa';
 import { cn } from '../../../lib/utils';
 import { fetchActivityFeed, fetchLiveActivity } from '../../../lib/api';
+import { fetchBuildsFeed } from '../../../features/builds/api';
+import { charactersData } from '../../../features/characters/data/charactersData';
 
-// Placeholder builds shown while real builds API isn't wired up.
-// These are fictional — no real usernames.
-const PLACEHOLDER_BUILDS = [
-    {
-        id: 1,
-        title: 'Brimstone Death Machine',
-        author: 'IronMaiden',
-        character: { name: 'Tainted Lost', sprite: '/sprites/0_Characters/1_Tainted/Tainted Lost.png' },
-        keyItems: [
-            { name: 'Brimstone', sprite: '/sprites/1_Passive Items/Brimstone.png' },
-            { name: 'Polyphemus', sprite: '/sprites/1_Passive Items/Polyphemus.png' },
-        ],
-        votes: 234,
-        comments: 18,
-    },
-    {
-        id: 2,
-        title: 'Echo Chamber Infinite',
-        author: 'BasementRunner',
-        character: { name: 'Bethany', sprite: '/sprites/0_Characters/0_Vanilla/Bethany.png' },
-        keyItems: [
-            { name: 'Book of Virtues', sprite: '/sprites/2_Active Items/Book Of Virtues.png' },
-            { name: 'Echo Chamber', sprite: '/sprites/1_Passive Items/Echo Chamber.png' },
-        ],
-        votes: 189,
-        comments: 24,
-    },
-    {
-        id: 3,
-        title: 'T. Keeper Greed Destroyer',
-        author: 'TaintedSeeker',
-        character: { name: 'Tainted Keeper', sprite: '/sprites/0_Characters/1_Tainted/Tainted Keeper.png' },
-        keyItems: [
-            { name: 'Pound of Flesh', sprite: '/sprites/1_Passive Items/Pound Of Flesh.png' },
-        ],
-        votes: 156,
-        comments: 12,
-    },
-];
+// Map a character_slug from build_posts to a sprite from charactersData
+const charSpriteCache = new Map(charactersData.map(c => [c.id, c.image]));
+
+function getCharSprite(slug) {
+    if (!slug) return null;
+    // Direct match
+    if (charSpriteCache.has(slug)) return charSpriteCache.get(slug);
+    // Fuzzy: find by normalized name
+    const norm = slug.toLowerCase().replace(/[^a-z]/g, '');
+    for (const [id, img] of charSpriteCache) {
+        if (id.replace(/[^a-z]/g, '') === norm) return img;
+    }
+    return null;
+}
 
 function timeAgo(timestamp) {
     const diff = Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000 / 60);
@@ -69,8 +47,15 @@ export function LiveActivitySection() {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [currentActivityIndex, setCurrentActivityIndex] = useState(0);
-    const [feed, setFeed] = useState(null);       // null=loading, []=empty, [...]=data
+    const [feed, setFeed] = useState(null);
     const [liveStats, setLiveStats] = useState(null);
+
+    // Real top builds from DB
+    const { data: topBuildsData, isLoading: buildsLoading } = useQuery({
+        queryKey: ['top-builds-home'],
+        queryFn: () => fetchBuildsFeed({ sort: 'top', limit: 3 }),
+        staleTime: 5 * 60_000,
+    });
 
     // Fetch real feed and stats on mount, refresh stats every 30s
     useEffect(() => {
@@ -204,9 +189,32 @@ export function LiveActivitySection() {
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-4">
-                            {PLACEHOLDER_BUILDS.map((build, index) => (
-                                <BuildCard key={build.id} build={build} index={index} />
-                            ))}
+                            {buildsLoading ? (
+                                // Skeleton cards
+                                Array.from({ length: 3 }).map((_, i) => (
+                                    <div key={i} className="bg-bg-paper border-[3px] border-black shadow-[4px_4px_0px_#000] p-3 space-y-3 animate-pulse">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-black/10 rounded" />
+                                            <div className="flex-1 space-y-1.5">
+                                                <div className="h-3 bg-black/10 rounded w-3/4" />
+                                                <div className="h-2 bg-black/10 rounded w-1/2" />
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <div className="w-8 h-8 bg-black/10 rounded" />
+                                            <div className="w-8 h-8 bg-black/10 rounded" />
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (topBuildsData || []).length === 0 ? (
+                                <div className="col-span-3 text-center py-8 text-text-dim font-handwriting text-lg opacity-60">
+                                    No builds yet — be the first to share one!
+                                </div>
+                            ) : (
+                                (topBuildsData || []).map((build, index) => (
+                                    <BuildCard key={build.id} build={build} index={index} />
+                                ))
+                            )}
                         </div>
                     </div>
 
@@ -292,66 +300,52 @@ function BuildCard({ build, index }) {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
+    const charSprite = getCharSprite(build.character_slug);
+    const authorName = build.author?.username || 'Anonymous';
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.1 }}
-            whileHover={{ 
-                y: -4, 
-                boxShadow: '6px 6px 0px #000',
-                backgroundColor: 'rgba(var(--color-accent-gold-rgb), 0.05)'
-            }}
+            whileHover={{ y: -4, boxShadow: '6px 6px 0px #000' }}
             onClick={() => navigate(`/builds/${build.id}`)}
             className="bg-bg-paper border-[3px] border-black shadow-[4px_4px_0px_#000] cursor-pointer transition-all group"
         >
             {/* Header with character */}
             <div className="flex items-center gap-3 p-3 border-b-2 border-black/10 group-hover:border-accent-gold/30 transition-colors">
-                <motion.img 
-                    src={build.character.sprite}
-                    alt={build.character.name}
-                    className="w-10 h-10 pixelated"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    onError={(e) => { e.target.src = '/sprites/placeholder.png'; }}
-                />
+                {charSprite ? (
+                    <img
+                        src={charSprite}
+                        alt={build.character_slug}
+                        className="w-10 h-10 object-contain flex-shrink-0"
+                        style={{ imageRendering: 'pixelated' }}
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                ) : (
+                    <div className="w-10 h-10 bg-black/10 flex-shrink-0" />
+                )}
                 <div className="flex-1 min-w-0">
                     <h4 className="font-heading text-sm text-text-heading truncate group-hover:text-accent-blood transition-colors">
                         {build.title}
                     </h4>
                     <p className="text-xs text-text-dim font-handwriting">
-                        {t('liveActivity.byAuthor')} @{build.author}
+                        {t('liveActivity.byAuthor', 'by')} @{authorName}
                     </p>
                 </div>
             </div>
 
-            {/* Key items */}
-            <div className="p-3">
-                <div className="flex gap-2 mb-3">
-                    {build.keyItems.map((item, i) => (
-                        <motion.img 
-                            key={i}
-                            src={item.sprite}
-                            alt={item.name}
-                            title={item.name}
-                            className="w-8 h-8 pixelated bg-black/5 p-1 group-hover:bg-accent-gold/10 transition-colors"
-                            whileHover={{ scale: 1.15 }}
-                            onError={(e) => { e.target.src = '/sprites/placeholder.png'; }}
-                        />
-                    ))}
-                </div>
-
-                {/* Stats */}
-                <div className="flex items-center justify-between text-xs text-text-dim">
-                    <span className="flex items-center gap-1 group-hover:text-accent-gold transition-colors">
-                        <FaStar className="text-accent-gold" />
-                        {build.votes}
-                    </span>
-                    <span className="flex items-center gap-1">
-                        <FaComment />
-                        {build.comments}
-                    </span>
-                </div>
+            {/* Stats */}
+            <div className="flex items-center justify-between px-3 py-2 text-xs text-text-dim">
+                <span className="flex items-center gap-1 group-hover:text-accent-gold transition-colors">
+                    <FaStar className="text-accent-gold" />
+                    {build.score ?? 0}
+                </span>
+                <span className="flex items-center gap-1">
+                    <FaComment />
+                    {build.comments_count ?? 0}
+                </span>
             </div>
         </motion.div>
     );
