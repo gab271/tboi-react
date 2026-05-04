@@ -25,21 +25,21 @@ export default function PricingPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-heading text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-heading text-text-heading mb-4">
             {t('pricing.title')}
           </h1>
-          <p className="text-lg text-text-dim max-w-2xl mx-auto">
+          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
             {t('pricing.subtitle')}
           </p>
-          
+
           {/* Billing toggle */}
           <div className="flex items-center justify-center gap-4 mt-8">
             <button
               onClick={() => setBillingCycle('monthly')}
               className={`px-4 py-2 rounded-lg font-heading transition ${
-                billingCycle === 'monthly' 
-                  ? 'bg-isaac-red text-white' 
-                  : 'text-text-dim hover:text-white'
+                billingCycle === 'monthly'
+                  ? 'bg-isaac-red text-white'
+                  : 'text-text-secondary hover:text-text-ink'
               }`}
             >
               {t('pricing.monthly')}
@@ -47,13 +47,13 @@ export default function PricingPage() {
             <button
               onClick={() => setBillingCycle('yearly')}
               className={`px-4 py-2 rounded-lg font-heading transition relative ${
-                billingCycle === 'yearly' 
-                  ? 'bg-isaac-red text-white' 
-                  : 'text-text-dim hover:text-white'
+                billingCycle === 'yearly'
+                  ? 'bg-isaac-red text-white'
+                  : 'text-text-secondary hover:text-text-ink'
               }`}
             >
               {t('pricing.yearly')}
-              <span className="absolute -top-2 -right-2 px-1.5 py-0.5 bg-green-500 text-white text-xs rounded">
+              <span className="absolute -top-2 -right-2 px-1.5 py-0.5 bg-green-600 text-white text-xs rounded">
                 -{yearlyDiscount}%
               </span>
             </button>
@@ -96,7 +96,7 @@ export default function PricingPage() {
         
         {/* FAQ Section */}
         <div className="mt-20">
-          <h2 className="text-2xl font-heading text-white text-center mb-8">
+          <h2 className="text-2xl font-heading text-text-heading text-center mb-8">
             {t('pricing.faq')}
           </h2>
           
@@ -157,9 +157,9 @@ function PricingCard({ tier, config, billingCycle, isCurrentTier, isFeatured, us
           : 'bg-surface-raised border border-border'
       }`}
     >
-      {/* Featured badge */}
+      {/* Featured badge — Improvement 3: pushed higher so it doesn't overlap title */}
       {isFeatured && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-sm font-heading rounded-full">
+        <div className="absolute -top-5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-heading rounded-full whitespace-nowrap shadow-md">
           {t('pricing.mostPopular')}
         </div>
       )}
@@ -177,26 +177,24 @@ function PricingCard({ tier, config, billingCycle, isCurrentTier, isFeatured, us
           {config.badge && (
             <span className="text-2xl">{config.badge.icon}</span>
           )}
-          <h3 
-            className="text-2xl font-heading"
-            style={{ color: config.color || '#fff' }}
-          >
+          {/* Title always in dark ink — brand color only for the icon accent */}
+          <h3 className="text-2xl font-heading text-text-heading">
             {config.name}
           </h3>
         </div>
-        
+
         {/* Price */}
         <div className="mt-4">
           {config.price === 0 ? (
-            <span className="text-4xl font-heading text-white">{t('pricing.free')}</span>
+            <span className="text-4xl font-heading text-text-heading">{t('pricing.free')}</span>
           ) : (
             <>
-              <span className="text-4xl font-heading text-white">
+              <span className="text-4xl font-heading text-text-heading">
                 €{price.toFixed(2)}
               </span>
-              <span className="text-text-dim">{t('pricing.perMonth')}</span>
+              <span className="text-text-secondary text-sm">{t('pricing.perMonth')}</span>
               {billingCycle === 'yearly' && (
-                <p className="text-sm text-text-dim mt-1">
+                <p className="text-sm text-text-secondary mt-1">
                   {t('pricing.billedAnnually', { total: totalPrice.toFixed(2) })}
                 </p>
               )}
@@ -204,18 +202,22 @@ function PricingCard({ tier, config, billingCycle, isCurrentTier, isFeatured, us
           )}
         </div>
       </div>
-      
-      {/* Features */}
+
+      {/* Features — Improvement 5: heavier weight, darker inactive */}
       <ul className="space-y-3 mb-8">
         {getDisplayFeatures(tier, t).map((feature, i) => (
           <li key={i} className="flex items-start gap-2 text-sm">
-            <span className={feature.included ? 'text-green-500' : 'text-text-dim'}>
+            <span className={feature.included ? 'text-green-600 font-bold' : 'text-text-secondary'}>
               {feature.included ? '✓' : '—'}
             </span>
-            <span className={feature.included ? 'text-text' : 'text-text-dim'}>
+            <span className={
+              feature.included
+                ? 'text-text-ink font-medium'
+                : 'text-text-secondary'
+            }>
               {feature.label}
               {feature.isNew && (
-                <span className="ml-1 px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded">
+                <span className="ml-1 px-1.5 py-0.5 bg-amber-500/20 text-amber-700 text-xs rounded font-semibold">
                   {t('pricing.features.new')}
                 </span>
               )}
@@ -223,19 +225,19 @@ function PricingCard({ tier, config, billingCycle, isCurrentTier, isFeatured, us
           </li>
         ))}
       </ul>
-      
-      {/* CTA */}
+
+      {/* CTA — Improvement 4: fix button contrast */}
       {isCurrentTier ? (
-        <button 
+        <button
           disabled
-          className="w-full py-3 bg-green-500/20 text-green-400 font-heading rounded-lg cursor-default"
+          className="w-full py-3 bg-green-100 text-green-800 font-heading rounded-lg cursor-default border border-green-300"
         >
           {t('pricing.currentPlanButton')}
         </button>
       ) : tier === TIERS.FREE ? (
         <Link
           to={user ? '/' : '/login'}
-          className="block w-full py-3 bg-surface text-text-dim font-heading text-center rounded-lg border border-border hover:border-white/30 transition"
+          className="block w-full py-3 bg-bg-paper-dark text-text-ink font-heading text-center rounded-lg border-2 border-text-ink/30 hover:border-text-ink transition"
         >
           {user ? t('pricing.alreadyHaveAccess') : t('pricing.createFreeAccount')}
         </Link>
@@ -248,7 +250,7 @@ function PricingCard({ tier, config, billingCycle, isCurrentTier, isFeatured, us
             }
             handleSubscribe(tier, billingCycle, t);
           }}
-          className={`w-full py-3 font-heading text-center rounded-lg transition ${
+          className={`w-full py-3 font-heading text-center rounded-lg transition font-bold ${
             isFeatured
               ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-lg shadow-amber-500/20'
               : 'bg-isaac-red text-white hover:bg-isaac-red/80'
@@ -269,19 +271,20 @@ function FAQ({ question, answer }) {
       className="bg-surface-raised rounded-lg border border-border overflow-hidden cursor-pointer"
       onClick={() => setIsOpen(!isOpen)}
     >
+      {/* Improvement 2: dark text on light FAQ background */}
       <div className="flex items-center justify-between p-4">
-        <h3 className="font-heading text-white">{question}</h3>
-        <span className={`text-text-dim transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+        <h3 className="font-heading text-text-heading text-sm">{question}</h3>
+        <span className={`text-text-secondary transition-transform flex-shrink-0 ml-2 ${isOpen ? 'rotate-180' : ''}`}>
           ▼
         </span>
       </div>
-      
+
       <motion.div
         initial={false}
         animate={{ height: isOpen ? 'auto' : 0 }}
         className="overflow-hidden"
       >
-        <p className="px-4 pb-4 text-text-dim">{answer}</p>
+        <p className="px-4 pb-4 text-text-secondary text-sm">{answer}</p>
       </motion.div>
     </div>
   );
