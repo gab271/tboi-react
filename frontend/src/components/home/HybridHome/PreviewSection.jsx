@@ -56,9 +56,23 @@ const PREVIEW_DATA = {
     hoursRemaining: 23,
 };
 
-export function PreviewSection({ onCTAClick }) {
+export function PreviewSection({ onCTAClick, uploadResult }) {
     const { t } = useTranslation();
-    const { count: animatedPercentage, ref: percentRef } = useCountUp(PREVIEW_DATA.percentage, 2000, 300);
+
+    // Use real upload data when available, fall back to example
+    const isReal = !!uploadResult;
+    const data = isReal ? {
+        percentage: Math.round(uploadResult.percentage ?? 0),
+        topPercentile: uploadResult.topPercentile ?? null,
+        characters: { current: uploadResult.charactersUnlocked ?? 0, total: uploadResult.totalCharacters ?? 34 },
+        items: { current: uploadResult.itemsFound ?? 0, total: uploadResult.totalItems ?? 733 },
+        marks: { current: uploadResult.completionMarks ?? 0, total: uploadResult.totalMarks ?? 816 },
+        endings: { current: uploadResult.endingsSeen ?? 0, total: uploadResult.totalEndings ?? 17 },
+        blocker: null,
+        hoursRemaining: uploadResult.hoursRemaining ?? null,
+    } : PREVIEW_DATA;
+
+    const { count: animatedPercentage, ref: percentRef } = useCountUp(data.percentage, 2000, 300);
     
     return (
         <section id="preview-section" className="relative w-full px-4 md:px-8 py-20 md:py-24 bg-gradient-to-b from-transparent via-black/5 to-transparent">
@@ -70,11 +84,17 @@ export function PreviewSection({ onCTAClick }) {
                     viewport={{ once: true }}
                     className="text-center mb-10"
                 >
+                    {isReal && (
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/30 text-green-600 font-heading text-xs uppercase tracking-wider mb-3">
+                            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                            {t('home.previewYourData', 'Your Real Data')}
+                        </div>
+                    )}
                     <h2 className="font-heading text-2xl md:text-3xl text-text-heading uppercase tracking-wider mb-2">
-                        {t('home.previewTitle')}
+                        {isReal ? t('home.previewTitleReal', 'Your Dead God Progress') : t('home.previewTitle')}
                     </h2>
                     <p className="font-handwriting text-lg text-text-dim">
-                        {t('home.previewSubtitle')}
+                        {isReal ? t('home.previewSubtitleReal', 'Analyzed from your save file') : t('home.previewSubtitle')}
                     </p>
                 </motion.div>
 
@@ -113,7 +133,7 @@ export function PreviewSection({ onCTAClick }) {
                             <div className="h-4 bg-white/10 rounded-full overflow-hidden">
                                 <motion.div
                                     initial={{ width: 0 }}
-                                    whileInView={{ width: `${PREVIEW_DATA.percentage}%` }}
+                                    whileInView={{ width: `${data.percentage}%` }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 1.5, ease: 'easeOut', delay: 0.5 }}
                                     className="h-full bg-gradient-to-r from-accent-gold to-accent-blood rounded-full"
@@ -125,28 +145,28 @@ export function PreviewSection({ onCTAClick }) {
                     {/* Stats grid */}
                     <div className="p-6 md:p-8">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                            <StatBox 
-                                label={t('home.charactersLabel')} 
-                                current={PREVIEW_DATA.characters.current} 
-                                total={PREVIEW_DATA.characters.total}
+                            <StatBox
+                                label={t('home.charactersLabel')}
+                                current={data.characters.current}
+                                total={data.characters.total}
                                 delay={0.1}
                             />
-                            <StatBox 
-                                label={t('home.previewItems')} 
-                                current={PREVIEW_DATA.items.current} 
-                                total={PREVIEW_DATA.items.total}
+                            <StatBox
+                                label={t('home.previewItems')}
+                                current={data.items.current}
+                                total={data.items.total}
                                 delay={0.2}
                             />
-                            <StatBox 
-                                label={t('characters.completionMarks')} 
-                                current={PREVIEW_DATA.marks.current} 
-                                total={PREVIEW_DATA.marks.total}
+                            <StatBox
+                                label={t('characters.completionMarks')}
+                                current={data.marks.current}
+                                total={data.marks.total}
                                 delay={0.3}
                             />
-                            <StatBox 
-                                label={t('home.endingsLabel')} 
-                                current={PREVIEW_DATA.endings.current} 
-                                total={PREVIEW_DATA.endings.total}
+                            <StatBox
+                                label={t('home.endingsLabel')}
+                                current={data.endings.current}
+                                total={data.endings.total}
                                 delay={0.4}
                             />
                         </div>
@@ -154,49 +174,55 @@ export function PreviewSection({ onCTAClick }) {
                         {/* Insights row */}
                         <div className="grid md:grid-cols-3 gap-4 mb-6">
                             {/* Social comparison */}
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.5 }}
-                                className="flex items-center gap-3 p-4 bg-accent-gold/10 border-2 border-accent-gold/30"
-                            >
-                                <FaTrophy className="w-6 h-6 text-accent-gold flex-shrink-0" />
-                                <div>
-                                    <p className="font-heading text-lg text-text-heading">Top {PREVIEW_DATA.topPercentile}%</p>
-                                    <p className="text-xs text-text-dim font-handwriting">{t('home.ofAllPlayers')}</p>
-                                </div>
-                            </motion.div>
+                            {data.topPercentile && (
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.5 }}
+                                    className="flex items-center gap-3 p-4 bg-accent-gold/10 border-2 border-accent-gold/30"
+                                >
+                                    <FaTrophy className="w-6 h-6 text-accent-gold flex-shrink-0" />
+                                    <div>
+                                        <p className="font-heading text-lg text-text-heading">Top {data.topPercentile}%</p>
+                                        <p className="text-xs text-text-dim font-handwriting">{t('home.ofAllPlayers')}</p>
+                                    </div>
+                                </motion.div>
+                            )}
 
-                            {/* Blocker */}
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.6 }}
-                                className="flex items-center gap-3 p-4 bg-accent-blood/10 border-2 border-accent-blood/30"
-                            >
-                                <FaSkull className="w-6 h-6 text-accent-blood flex-shrink-0" />
-                                <div>
-                                    <p className="font-heading text-sm text-text-heading">{PREVIEW_DATA.blocker.character}</p>
-                                    <p className="text-xs text-text-dim font-handwriting">{t('home.previewBlockerCosts', { count: PREVIEW_DATA.blocker.marks })}</p>
-                                </div>
-                            </motion.div>
+                            {/* Blocker — only shown with example data */}
+                            {data.blocker && (
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.6 }}
+                                    className="flex items-center gap-3 p-4 bg-accent-blood/10 border-2 border-accent-blood/30"
+                                >
+                                    <FaSkull className="w-6 h-6 text-accent-blood flex-shrink-0" />
+                                    <div>
+                                        <p className="font-heading text-sm text-text-heading">{data.blocker.character}</p>
+                                        <p className="text-xs text-text-dim font-handwriting">{t('home.previewBlockerCosts', { count: data.blocker.marks })}</p>
+                                    </div>
+                                </motion.div>
+                            )}
 
                             {/* Hours remaining */}
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.7 }}
-                                className="flex items-center gap-3 p-4 bg-green-500/10 border-2 border-green-500/30"
-                            >
-                                <FaClock className="w-6 h-6 text-green-500 flex-shrink-0" />
-                                <div>
-                                    <p className="font-heading text-lg text-text-heading">~{PREVIEW_DATA.hoursRemaining}h</p>
-                                    <p className="text-xs text-text-dim font-handwriting">{t('home.previewForDeadGod')}</p>
-                                </div>
-                            </motion.div>
+                            {data.hoursRemaining && (
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.7 }}
+                                    className="flex items-center gap-3 p-4 bg-green-500/10 border-2 border-green-500/30"
+                                >
+                                    <FaClock className="w-6 h-6 text-green-500 flex-shrink-0" />
+                                    <div>
+                                        <p className="font-heading text-lg text-text-heading">~{data.hoursRemaining}h</p>
+                                        <p className="text-xs text-text-dim font-handwriting">{t('home.previewForDeadGod')}</p>
+                                    </div>
+                                </motion.div>
+                            )}
                         </div>
 
                         {/* CTA */}
@@ -214,9 +240,11 @@ export function PreviewSection({ onCTAClick }) {
                                 {t('home.previewViewMyProgress')}
                                 <FaChevronRight className="w-4 h-4" />
                             </button>
-                            <p className="mt-3 text-sm text-text-dim font-handwriting">
-                                {t('home.previewUploadToDiscover')}
-                            </p>
+                            {!isReal && (
+                                <p className="mt-3 text-sm text-text-dim font-handwriting">
+                                    {t('home.previewUploadToDiscover')}
+                                </p>
+                            )}
                         </motion.div>
                     </div>
                 </motion.div>

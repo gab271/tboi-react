@@ -92,7 +92,7 @@ export const charactersData = [
     unlock_method: "Haz 3 tratos con el Diablo en una sola partida.",
     description: "Dispara un Brimstone de corto alcance y puede volar.",
     starting_stats: { coins: 0, bombs: 0, keys: 0 },
-    starting_items: ["The Fool (Carta)"],
+    starting_items: [],
     health_type: "3 Corazones Negros",
     difficulty: 1
   },
@@ -128,7 +128,7 @@ export const charactersData = [
     unlock_method: "Muere en una Sala de Sacrificio llevando el trinket Missing Poster.",
     description: "Muere de un golpe (dos con Holy Mantle). Vuelo espectral y lágrimas.",
     starting_stats: { coins: 1, bombs: 0, keys: 0 },
-    starting_items: ["Eternal D6", "Holy Mantle"],
+    starting_items: ["Holy Mantle"],
     health_type: "Sin Vida",
     difficulty: 3
   },

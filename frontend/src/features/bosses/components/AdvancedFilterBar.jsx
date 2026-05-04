@@ -161,7 +161,7 @@ export function AdvancedFilterBar({
   className 
 }) {
   const { t } = useTranslation();
-  const { hasPremium } = useFeatures();
+  const { isPro: hasPremium } = useFeatures();
   const { hasSaveLoaded } = useBossProgress();
   const [expanded, setExpanded] = useState(false);
   

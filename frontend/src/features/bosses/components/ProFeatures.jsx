@@ -39,8 +39,8 @@ export function ProFeatureLock({
   showPreview = true 
 }) {
   const { t } = useTranslation();
-  const { hasPremium, getUpgradeInfo } = useFeatures();
-  
+  const { isPro: hasPremium, getUpgradeInfo } = useFeatures();
+
   if (hasPremium) {
     return children;
   }
@@ -76,7 +76,7 @@ export function ProFeatureLock({
           </p>
           
           <Link
-            to="/upgrade"
+            to="/pricing"
             className={cn(
               "inline-flex items-center gap-2 px-4 py-2",
               "bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] text-[#2a1a10]",
@@ -96,12 +96,12 @@ export function ProFeatureLock({
 /**
  * PRO insight section with subtle badge
  */
-export function ProInsightSection({ 
-  title, 
-  children, 
-  className 
+export function ProInsightSection({
+  title,
+  children,
+  className
 }) {
-  const { hasPremium } = useFeatures();
+  const { isPro: hasPremium } = useFeatures();
   
   return (
     <div className={cn(
@@ -141,7 +141,7 @@ export function ProInsightSection({
  */
 export function ProUpsellBanner({ className }) {
   const { t } = useTranslation();
-  const { hasPremium } = useFeatures();
+  const { isPro: hasPremium } = useFeatures();
   
   if (hasPremium) return null;
   
@@ -169,7 +169,7 @@ export function ProUpsellBanner({ className }) {
       </div>
       
       <Link
-        to="/upgrade"
+        to="/pricing"
         className={cn(
           "shrink-0 px-3 py-1.5",
           "bg-[#fbbf24] text-[#2a1a10]",

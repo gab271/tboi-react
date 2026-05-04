@@ -63,11 +63,13 @@ export function usePaginatedItems(options = {}) {
   // ═══════════════════════════════════════════════════════════
   
   const meta = useMemo(() => {
+    const total = data?.meta?.total || 0;
+    const ps = data?.meta?.pageSize || pageSize;
     return {
-      total: data?.meta?.total || 0,
+      total,
       page: data?.meta?.page || 1,
-      pageSize: data?.meta?.pageSize || pageSize,
-      totalPages: data?.meta?.totalPages || 0,
+      pageSize: ps,
+      totalPages: total > 0 ? Math.ceil(total / ps) : 0,
     };
   }, [data, pageSize]);
   

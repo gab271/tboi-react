@@ -235,28 +235,30 @@ export function CompletionMarksGrid({
   // Calcular progreso - con filtrado por modo
   const completion = useMemo(() => {
     const base = calculateCompletion({ marks });
-    
-    // Contadores filtrados
+
     if (viewMode === 'normal') {
-      const normalOnly = Object.values(marks).filter(m => m?.status === MARK_STATUS.NORMAL).length;
+      const filteredCompleted = Object.values(marks).filter(m => m?.status === MARK_STATUS.NORMAL).length;
       return {
         ...base,
-        filteredCompleted: normalOnly,
-        filterLabel: 'Normal'
+        filteredCompleted,
+        filterLabel: 'Normal',
+        filteredPercentage: base.total > 0 ? Math.round((filteredCompleted / base.total) * 100) : 0
       };
     } else if (viewMode === 'hard') {
-      const hardOnly = Object.values(marks).filter(m => m?.status === MARK_STATUS.HARD).length;
+      const filteredCompleted = Object.values(marks).filter(m => m?.status === MARK_STATUS.HARD).length;
       return {
         ...base,
-        filteredCompleted: hardOnly,
-        filterLabel: 'Hard'
+        filteredCompleted,
+        filterLabel: 'Hard',
+        filteredPercentage: base.total > 0 ? Math.round((filteredCompleted / base.total) * 100) : 0
       };
     }
-    
+
     return {
       ...base,
       filteredCompleted: base.completed,
-      filterLabel: 'All'
+      filterLabel: 'All',
+      filteredPercentage: base.percentage
     };
   }, [marks, viewMode]);
   
@@ -428,7 +430,7 @@ export function CompletionMarksGrid({
             isTainted ? "bg-red-600" : "bg-amber-500"
           )}
           initial={{ width: 0 }}
-          animate={{ width: `${completion.percentage}%` }}
+          animate={{ width: `${completion.filteredPercentage}%` }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
         />
       </div>
@@ -439,18 +441,31 @@ export function CompletionMarksGrid({
         role="grid"
         aria-label={`Completion marks for ${characterName}`}
       >
-        {COMPLETION_MARKS.map((mark, index) => (
-          <MarkCell
-            key={mark.id}
-            mark={mark}
-            status={marks[mark.id]?.status || MARK_STATUS.NONE}
-            source={marks[mark.id]?.source}
-            isEditing={isEditing}
-            isTainted={isTainted}
-            onToggle={handleToggle}
-            tabIndex={index}
-          />
-        ))}
+        {COMPLETION_MARKS.map((mark, index) => {
+          const rawStatus = marks[mark.id]?.status || MARK_STATUS.NONE;
+          let displayStatus = rawStatus;
+
+          if (!isEditing) {
+            if (viewMode === 'normal') {
+              displayStatus = rawStatus === MARK_STATUS.NORMAL ? MARK_STATUS.NORMAL : MARK_STATUS.NONE;
+            } else if (viewMode === 'hard') {
+              displayStatus = rawStatus === MARK_STATUS.HARD ? MARK_STATUS.HARD : MARK_STATUS.NONE;
+            }
+          }
+
+          return (
+            <MarkCell
+              key={mark.id}
+              mark={mark}
+              status={displayStatus}
+              source={marks[mark.id]?.source}
+              isEditing={isEditing}
+              isTainted={isTainted}
+              onToggle={handleToggle}
+              tabIndex={index}
+            />
+          );
+        })}
       </div>
       
       {/* Source indicator */}

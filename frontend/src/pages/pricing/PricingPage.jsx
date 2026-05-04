@@ -6,7 +6,7 @@
  */
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TIERS, TIER_CONFIG } from '../../config/subscriptions';
 import { useFeatures } from '../../hooks/useFeatures';
@@ -138,7 +138,8 @@ export default function PricingPage() {
 }
 
 function PricingCard({ tier, config, billingCycle, isCurrentTier, isFeatured, user, t }) {
-  const price = billingCycle === 'yearly' 
+  const navigate = useNavigate();
+  const price = billingCycle === 'yearly'
     ? (config.yearlyPrice || config.price * 12 * 0.67) / 12 
     : config.price;
     
@@ -233,14 +234,20 @@ function PricingCard({ tier, config, billingCycle, isCurrentTier, isFeatured, us
         </button>
       ) : tier === TIERS.FREE ? (
         <Link
-          to={user ? '/' : '/auth/login'}
+          to={user ? '/' : '/login'}
           className="block w-full py-3 bg-surface text-text-dim font-heading text-center rounded-lg border border-border hover:border-white/30 transition"
         >
           {user ? t('pricing.alreadyHaveAccess') : t('pricing.createFreeAccount')}
         </Link>
       ) : (
         <button
-          onClick={() => handleSubscribe(tier, billingCycle, t)}
+          onClick={() => {
+            if (!user) {
+              navigate('/login');
+              return;
+            }
+            handleSubscribe(tier, billingCycle, t);
+          }}
           className={`w-full py-3 font-heading text-center rounded-lg transition ${
             isFeatured
               ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-lg shadow-amber-500/20'

@@ -24,7 +24,7 @@ import { FaBolt, FaSearch, FaTimes, FaArrowRight, FaExclamationTriangle, FaCheck
 import { cn } from '../../../lib/utils';
 
 // Sinergias precalculadas para demo rápido (sin DB) - uses translation keys
-const SYNERGY_DATABASE = {
+export const SYNERGY_DATABASE = {
     // Tier S Synergies
     'brimstone+tammy_head': { rating: 'S', score: 10, effectKey: 'brimstone_tammy_head' },
     'ipecac+my_reflection': { rating: 'S', score: 10, effectKey: 'ipecac_my_reflection' },
@@ -71,7 +71,7 @@ const SYNERGY_DATABASE = {
 };
 
 // Items populares para sugerencias
-const POPULAR_ITEMS = [
+export const POPULAR_ITEMS = [
     { id: 'brimstone', name: 'Brimstone', sprite: '/sprites/1_Passive Items/Brimstone.png' },
     { id: 'sacred_heart', name: 'Sacred Heart', sprite: '/sprites/1_Passive Items/Sacred Heart.png' },
     { id: 'godhead', name: 'Godhead', sprite: '/sprites/1_Passive Items/Godhead.png' },

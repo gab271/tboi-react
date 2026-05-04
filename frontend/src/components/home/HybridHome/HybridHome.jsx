@@ -22,6 +22,10 @@ export function HybridHome() {
     const handleUploadSuccess = (result) => {
         setUploadResult(result);
         setShowResultModal(true);
+        // Scroll to preview after modal closes or after a short delay
+        setTimeout(() => {
+            document.getElementById('preview-section')?.scrollIntoView({ behavior: 'smooth' });
+        }, 400);
     };
     
     const handleCloseModal = () => {
@@ -53,7 +57,7 @@ export function HybridHome() {
             {/* 2. PREVIEW RESULT (60vh)
                 Objetivo: Anticipación de recompensa
                 Usuario siente: "Quiero ver mis datos así" */}
-            <PreviewSection onCTAClick={handlePreviewCTA} />
+            <PreviewSection onCTAClick={handlePreviewCTA} uploadResult={uploadResult} />
 
             {/* 3. LIVE ACTIVITY (50vh)
                 Objetivo: Prueba social + comunidad viva

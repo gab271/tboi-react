@@ -502,30 +502,37 @@ function UserStatusTab({ boss, onMarkDefeated }) {
               </select>
             </div>
             
-            {/* Mark Button */}
-            <motion.button
-              className={cn(
-                "w-full py-3 font-heading text-xl uppercase tracking-wider",
-                "bg-[#8b0000] text-[#f4e4bc] border-4 border-[#5c0000]",
-                "shadow-[4px_4px_0_rgba(0,0,0,0.4)] active:shadow-none active:translate-y-1",
-                "transition-all duration-200"
-              )}
-              onClick={handleMark}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <GiBroadsword className="inline mr-2" />
-              {t('bosses.markDefeated', 'Mark as Defeated')}
-            </motion.button>
-            
-            {/* Reset button */}
-            {isDefeated && (
-              <button
-                className="w-full py-2 font-handwriting text-sm text-[#8b0000] hover:underline"
+            {/* Mark / Unmark toggle button */}
+            {isDefeated ? (
+              <motion.button
+                className={cn(
+                  "w-full py-3 font-heading text-xl uppercase tracking-wider",
+                  "bg-[#4a2c10] text-[#f4e4bc] border-4 border-[#2a1a10]",
+                  "shadow-[4px_4px_0_rgba(0,0,0,0.4)] active:shadow-none active:translate-y-1",
+                  "transition-all duration-200"
+                )}
                 onClick={() => removeManualMark(boss.id)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                {t('bosses.resetProgress', 'Reset progress for this boss')}
-              </button>
+                <FaTimes className="inline mr-2" />
+                {t('bosses.removeDefeatedMark', 'Remove Defeat Mark')}
+              </motion.button>
+            ) : (
+              <motion.button
+                className={cn(
+                  "w-full py-3 font-heading text-xl uppercase tracking-wider",
+                  "bg-[#8b0000] text-[#f4e4bc] border-4 border-[#5c0000]",
+                  "shadow-[4px_4px_0_rgba(0,0,0,0.4)] active:shadow-none active:translate-y-1",
+                  "transition-all duration-200"
+                )}
+                onClick={handleMark}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <GiBroadsword className="inline mr-2" />
+                {t('bosses.markDefeated', 'Mark as Defeated')}
+              </motion.button>
             )}
           </div>
         </div>
@@ -582,7 +589,7 @@ function UnlockReward({ boss }) {
  */
 export function BossDetailModal({ boss, onClose }) {
   const { t } = useTranslation();
-  const { hasPremium } = useFeatures();
+  const { isPro: hasPremium } = useFeatures();
   const [activeTab, setActiveTab] = useState('overview');
   
   if (!boss) return null;

@@ -2,11 +2,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { FaUpload, FaQuestionCircle, FaChevronDown, FaExclamationTriangle, FaBolt } from 'react-icons/fa';
+import { FaUpload, FaQuestionCircle, FaChevronDown, FaExclamationTriangle, FaBolt, FaSpinner, FaTimes } from 'react-icons/fa';
+import { SYNERGY_DATABASE, POPULAR_ITEMS } from './SynergyAnalyzerMini';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../../lib/utils';
-import { analyzeSaveFile, fetchDailyStats, saveUserProgress } from '../../../lib/api';
+import { analyzeSaveFile, fetchDailyStats, saveUserProgress, fetchUserProgress } from '../../../lib/api';
 import { supabase } from '../../../lib/supabaseClient';
 
 export function HeroSection({ onUploadSuccess, resetRef }) {
@@ -16,6 +17,10 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [dailyCount, setDailyCount] = useState(null);
+    const [authUser, setAuthUser] = useState(null);
+    const [userProgress, setUserProgress] = useState(null);
+    const [forceUpload, setForceUpload] = useState(false);
+    const [activeTab, setActiveTab] = useState('tracker'); // 'tracker' | 'synergy'
 
     // Expose reset function to parent via ref
     useEffect(() => {
@@ -45,6 +50,17 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
         // Refresh every 60 seconds
         const interval = setInterval(loadStats, 60000);
         return () => clearInterval(interval);
+    }, []);
+
+    // Load saved progress for logged-in users
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session?.user) return;
+            setAuthUser(session.user);
+            fetchUserProgress(session.user.id, session.access_token)
+                .then(data => { if (data?.progress) setUserProgress(data.progress); })
+                .catch(() => {});
+        });
     }, []);
 
     const onDrop = useCallback(async (acceptedFiles) => {
@@ -221,26 +237,43 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
     };
 
     return (
-        <section className="relative w-full min-h-[85vh] flex items-center py-8 md:py-16 overflow-hidden">
-            {/* Background decorations */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-20 left-10 w-64 h-64 bg-accent-blood opacity-5 rounded-full blur-3xl" />
-                <div className="absolute bottom-20 right-20 w-96 h-96 bg-black opacity-10 rounded-full blur-3xl" />
-                
-                {/* Floating sprites */}
-                <motion.img
-                    src="/sprites/1_Passive Items/Brimstone.png"
-                    alt=""
-                    className="absolute top-1/4 right-[15%] w-12 h-12 pixelated opacity-15 hidden lg:block"
-                    animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        <section className="relative w-full min-h-[85vh] flex items-center py-8 md:py-16 overflow-hidden bg-[#0d0908]">
+            {/* Background — dungeon atmosphere */}
+            <div className="absolute inset-0 pointer-events-none select-none">
+                {/* Stone tile grid */}
+                <div className="absolute inset-0" style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.5' y='0.5' width='47' height='47' fill='none' stroke='%23ffffff' stroke-width='0.5' stroke-opacity='0.04'/%3E%3C/svg%3E")`,
+                    backgroundSize: '48px 48px',
+                }} />
+                {/* Blood glow from below */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[260px] bg-accent-blood rounded-full blur-3xl" style={{ opacity: 0.09 }} />
+                {/* Top-left corner warmth */}
+                <div className="absolute -top-16 -left-16 w-72 h-72 bg-accent-blood rounded-full blur-3xl" style={{ opacity: 0.06 }} />
+                {/* Radial vignette */}
+                <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 90% 85% at 50% 45%, transparent 35%, rgba(0,0,0,0.75) 100%)' }} />
+                {/* Blood strip at top */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-accent-blood opacity-50" />
+
+                {/* Floating item sprites — visible, atmospheric */}
+                <motion.img src="/sprites/1_Passive Items/Brimstone.png" alt=""
+                    className="absolute top-[22%] right-[13%] w-14 h-14 pixelated opacity-30 hidden lg:block"
+                    animate={{ y: [0, -12, 0], rotate: [0, 5, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 />
-                <motion.img
-                    src="/sprites/1_Passive Items/Sacred Heart.png"
-                    alt=""
-                    className="absolute top-1/2 right-[8%] w-10 h-10 pixelated opacity-10 hidden lg:block"
+                <motion.img src="/sprites/1_Passive Items/Sacred Heart.png" alt=""
+                    className="absolute top-[48%] right-[6%] w-11 h-11 pixelated opacity-25 hidden lg:block"
                     animate={{ y: [0, -8, 0], rotate: [0, -5, 0] }}
-                    transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                />
+                <motion.img src="/sprites/1_Passive Items/Godhead.png" alt=""
+                    className="absolute top-[30%] left-[9%] w-12 h-12 pixelated opacity-20 hidden lg:block"
+                    animate={{ y: [0, -8, 0], rotate: [0, 4, 0] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                />
+                <motion.img src="/sprites/1_Passive Items/Dead Cat.png" alt=""
+                    className="absolute bottom-[28%] left-[14%] w-10 h-10 pixelated opacity-20 hidden xl:block"
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
                 />
             </div>
 
@@ -264,7 +297,7 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-text-heading leading-[0.95] tracking-tight mb-4"
+                        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-white leading-[0.95] tracking-tight mb-4"
                     >
                         {t('home.heroHowMuchLeft')}
                         <br />
@@ -276,7 +309,7 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-lg md:text-xl lg:text-2xl font-handwriting text-text-ink/80 max-w-xl mb-4"
+                        className="text-lg md:text-xl lg:text-2xl font-handwriting text-white/65 max-w-xl mb-4"
                     >
                         {t('home.heroUploadDescription')}
                     </motion.p>
@@ -286,13 +319,12 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.25 }}
-                        className="flex items-center gap-2 mb-8 px-4 py-2 bg-black/5 border border-black/10 rounded-full"
+                        className="flex items-center gap-2 mb-8 px-4 py-2 bg-white/5 border border-white/10 rounded-full"
                     >
                         <FaBolt className="w-3 h-3 text-accent-gold" />
-                        <span className="font-heading text-sm text-text-dim">
+                        <span className="font-heading text-sm text-white/50">
                             {dailyCount === null ? (
-                                // Loading — skeleton en lugar de desaparecer
-                                <span className="inline-block h-4 w-20 bg-black/10 rounded animate-pulse align-middle" />
+                                <span className="inline-block h-4 w-20 bg-white/10 rounded animate-pulse align-middle" />
                             ) : dailyCount === 0 ? (
                                 <span className="text-text-heading font-bold">{t('home.heroBeTheFirst', 'Be the first today')}</span>
                             ) : (
@@ -301,7 +333,7 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                                         key={dailyCount}
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="text-text-heading font-bold"
+                                        className="text-white font-bold"
                                     >
                                         {dailyCount.toLocaleString()}
                                     </motion.span>
@@ -311,9 +343,140 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                         </span>
                     </motion.div>
 
-                    {/* Upload Zone */}
+                    {/* Tab switcher */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.35 }}
+                        className="flex w-full max-w-lg border border-white/10 mb-0"
+                    >
+                        <button
+                            onClick={() => setActiveTab('tracker')}
+                            className={cn(
+                                "flex-1 flex items-center justify-center gap-2 py-2.5 font-heading text-xs uppercase tracking-wider transition-all",
+                                activeTab === 'tracker'
+                                    ? "bg-accent-blood text-white"
+                                    : "text-white/35 hover:text-white/60 hover:bg-white/5"
+                            )}
+                        >
+                            <FaUpload className="w-3 h-3" />
+                            {t('home.tabTracker', 'Track Progress')}
+                        </button>
+                        <div className="w-px bg-white/10" />
+                        <button
+                            onClick={() => setActiveTab('synergy')}
+                            className={cn(
+                                "flex-1 flex items-center justify-center gap-2 py-2.5 font-heading text-xs uppercase tracking-wider transition-all",
+                                activeTab === 'synergy'
+                                    ? "bg-accent-gold text-black"
+                                    : "text-white/35 hover:text-white/60 hover:bg-white/5"
+                            )}
+                        >
+                            <FaBolt className="w-3 h-3" />
+                            {t('home.tabSynergy', 'Synergy Check')}
+                        </button>
+                    </motion.div>
+
+                    {/* Synergy tab */}
+                    {activeTab === 'synergy' && (
+                        <motion.div
+                            key="synergy-tab"
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            className="w-full max-w-lg"
+                        >
+                            <HeroSynergyTab t={t} navigate={navigate} />
+                        </motion.div>
+                    )}
+
+                    {/* Tracker tab */}
+                    {activeTab === 'tracker' && (
                     <AnimatePresence mode="wait">
-                        {uploadState === 'idle' && (
+
+                        {/* ── Personalized view: usuario logueado con progreso guardado ── */}
+                        {uploadState === 'idle' && authUser && userProgress && !forceUpload && (
+                            <motion.div
+                                key="personalized"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ delay: 0.3 }}
+                                className="w-full max-w-lg"
+                            >
+                                <div className="relative bg-[#1a0f0f] border-[3px] border-[#3d1a1a] p-8">
+                                    {/* Corner ornaments */}
+                                    <div className="absolute top-1 left-1 w-5 h-5 border-t-2 border-l-2 border-accent-blood/40" />
+                                    <div className="absolute top-1 right-1 w-5 h-5 border-t-2 border-r-2 border-accent-blood/40" />
+                                    <div className="absolute bottom-1 left-1 w-5 h-5 border-b-2 border-l-2 border-accent-blood/40" />
+                                    <div className="absolute bottom-1 right-1 w-5 h-5 border-b-2 border-r-2 border-accent-blood/40" />
+
+                                    <div className="text-center mb-6">
+                                        <p className="text-white/40 font-handwriting text-sm mb-1">
+                                            {t('home.heroWelcomeBack', 'Welcome back')}
+                                        </p>
+                                        <p className="font-heading text-2xl text-white">
+                                            {authUser.email?.split('@')[0]}
+                                        </p>
+                                    </div>
+
+                                    <div className="text-center mb-6">
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: 0.4, type: 'spring' }}
+                                            className="font-heading text-6xl text-accent-gold mb-1"
+                                        >
+                                            {Number(userProgress.dead_god_percent ?? 0).toFixed(1)}%
+                                        </motion.div>
+                                        <div className="font-handwriting text-white/50 text-sm mb-3">
+                                            {t('home.heroDeadGodProgress', 'Dead God Progress')}
+                                        </div>
+                                        <div className="h-2 bg-white/10 overflow-hidden mx-2">
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${userProgress.dead_god_percent ?? 0}%` }}
+                                                transition={{ duration: 1.2, ease: 'easeOut', delay: 0.5 }}
+                                                className="h-full bg-gradient-to-r from-accent-blood to-accent-gold"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 mb-6">
+                                        <div className="bg-white/5 p-3 text-center">
+                                            <div className="font-heading text-lg text-white">
+                                                {userProgress.items?.collected ?? '—'}<span className="text-white/30 text-sm">/{userProgress.items?.total ?? '—'}</span>
+                                            </div>
+                                            <div className="text-xs text-white/40 font-handwriting mt-0.5">Items</div>
+                                        </div>
+                                        <div className="bg-white/5 p-3 text-center">
+                                            <div className="font-heading text-lg text-white">
+                                                {userProgress.achievements?.unlocked ?? '—'}<span className="text-white/30 text-sm">/{userProgress.achievements?.total ?? '—'}</span>
+                                            </div>
+                                            <div className="text-xs text-white/40 font-handwriting mt-0.5">Achievements</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={() => navigate('/progress')}
+                                            className="flex-1 py-3 bg-accent-blood text-white font-heading text-sm hover:bg-accent-blood/80 transition-colors"
+                                        >
+                                            {t('home.heroViewProgress', 'View Full Progress')} →
+                                        </button>
+                                        <button
+                                            onClick={() => setForceUpload(true)}
+                                            className="px-4 py-3 border border-white/15 text-white/35 font-heading text-xs hover:border-white/30 hover:text-white/60 transition-colors"
+                                        >
+                                            {t('home.heroReupload', 'Re-upload')}
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {/* ── Upload zone ── */}
+                        {uploadState === 'idle' && !(authUser && userProgress && !forceUpload) && (
                             <motion.div
                                 id="upload-zone"
                                 key="upload"
@@ -321,32 +484,36 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
                                 transition={{ delay: 0.3 }}
-                                className="w-full max-w-lg transition-all duration-300"
+                                className="w-full max-w-lg"
                             >
                                 <div
                                     {...getRootProps()}
                                     className={cn(
-                                        "relative border-[3px] border-dashed p-8 md:p-10 cursor-pointer transition-all",
-                                        isDragActive 
-                                            ? "border-accent-gold bg-accent-gold/10" 
-                                            : "border-black/30 bg-bg-paper hover:border-accent-blood hover:bg-accent-blood/5"
+                                        "relative p-8 md:p-10 cursor-pointer transition-all duration-300 border-[3px] group",
+                                        isDragActive
+                                            ? "border-accent-gold bg-[#1f1800] shadow-[0_0_32px_rgba(200,160,0,0.12)]"
+                                            : "border-[#3d1a1a] bg-[#1a0f0f] hover:border-accent-blood hover:shadow-[0_0_24px_rgba(139,0,0,0.12)]"
                                     )}
                                 >
+                                    {/* Corner ornaments */}
+                                    <div className={cn("absolute top-1 left-1 w-5 h-5 border-t-2 border-l-2 transition-colors duration-300", isDragActive ? "border-accent-gold" : "border-accent-blood/35 group-hover:border-accent-blood/60")} />
+                                    <div className={cn("absolute top-1 right-1 w-5 h-5 border-t-2 border-r-2 transition-colors duration-300", isDragActive ? "border-accent-gold" : "border-accent-blood/35 group-hover:border-accent-blood/60")} />
+                                    <div className={cn("absolute bottom-1 left-1 w-5 h-5 border-b-2 border-l-2 transition-colors duration-300", isDragActive ? "border-accent-gold" : "border-accent-blood/35 group-hover:border-accent-blood/60")} />
+                                    <div className={cn("absolute bottom-1 right-1 w-5 h-5 border-b-2 border-r-2 transition-colors duration-300", isDragActive ? "border-accent-gold" : "border-accent-blood/35 group-hover:border-accent-blood/60")} />
+
                                     <input {...getInputProps()} />
-                                    
                                     <div className="flex flex-col items-center gap-4">
                                         <div className={cn(
-                                            "w-16 h-16 rounded-full flex items-center justify-center transition-colors",
-                                            isDragActive ? "bg-accent-gold text-black" : "bg-black text-white"
+                                            "w-16 h-16 flex items-center justify-center transition-all duration-300",
+                                            isDragActive ? "text-accent-gold scale-110" : "text-white/25 group-hover:text-accent-blood/60 group-hover:scale-105"
                                         )}>
-                                            <FaUpload className="w-6 h-6" />
+                                            <FaUpload className="w-7 h-7" />
                                         </div>
-                                        
                                         <div>
-                                            <p className="font-heading text-lg md:text-xl text-text-heading mb-1">
+                                            <p className="font-heading text-lg md:text-xl text-white mb-1">
                                                 {isDragActive ? t('home.heroDropHere') : t('home.heroDragSaveFile')}
                                             </p>
-                                            <p className="text-sm text-text-dim font-handwriting">
+                                            <p className="text-sm text-white/40 font-handwriting">
                                                 {t('home.heroOrClickToSelect')}
                                             </p>
                                         </div>
@@ -355,27 +522,21 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
 
                                 {/* Microcopy */}
                                 <div className="mt-4 flex flex-col items-center gap-3">
-                                    <div className="flex items-center gap-2 text-sm text-text-dim">
-                                        <span className="text-lg">🔒</span>
+                                    <div className="flex items-center gap-2 text-sm text-white/35">
+                                        <span>🔒</span>
                                         <span className="font-sans">{t('home.heroPrivacyNote')}</span>
                                     </div>
                                     <div className="flex items-center gap-4 text-sm">
                                         <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setShowHelpModal(true);
-                                            }}
-                                            className="flex items-center gap-1 text-accent-blood hover:underline"
+                                            onClick={(e) => { e.stopPropagation(); setShowHelpModal(true); }}
+                                            className="flex items-center gap-1 text-accent-blood/60 hover:text-accent-blood transition-colors"
                                         >
                                             <FaQuestionCircle className="w-3 h-3" />
                                             {t('home.heroWhereIsMySave')}
                                         </button>
                                         <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                scrollToPreview();
-                                            }}
-                                            className="text-text-dim hover:text-text-heading transition-colors"
+                                            onClick={(e) => { e.stopPropagation(); scrollToPreview(); }}
+                                            className="text-white/30 hover:text-white/60 transition-colors"
                                         >
                                             {t('home.heroSeeExample')}
                                         </button>
@@ -384,18 +545,19 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                             </motion.div>
                         )}
 
+                        {/* ── Uploading ── */}
                         {uploadState === 'uploading' && (
                             <motion.div
                                 key="uploading"
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
-                                className="w-full max-w-lg bg-bg-paper border-2 border-black p-8 shadow-[4px_4px_0px_#000]"
+                                className="w-full max-w-lg bg-[#1a0f0f] border-[3px] border-[#3d1a1a] p-8"
                             >
                                 <div className="flex flex-col items-center gap-4">
                                     <div className="w-12 h-12 border-4 border-accent-blood border-t-transparent rounded-full animate-spin" />
-                                    <p className="font-heading text-xl">{t('home.heroAnalyzingItems')}</p>
-                                    <div className="w-full h-2 bg-black/10 overflow-hidden">
+                                    <p className="font-heading text-xl text-white">{t('home.heroAnalyzingItems')}</p>
+                                    <div className="w-full h-2 bg-white/10 overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: '100%' }}
@@ -407,6 +569,7 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                             </motion.div>
                         )}
 
+                        {/* ── Error ── */}
                         {uploadState === 'error' && (
                             <motion.div
                                 key="error"
@@ -418,23 +581,24 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                                     <FaExclamationTriangle className="w-5 h-5 text-accent-blood flex-shrink-0 mt-0.5" />
                                     <div>
                                         <p className="font-heading text-accent-blood mb-1">{t('home.heroErrorTitle')}</p>
-                                        <p className="text-sm text-text-dim">
+                                        <p className="text-sm text-white/50">
                                             {errorMessage || t('home.heroErrorDefault')}
                                         </p>
                                     </div>
                                 </div>
-                                <p className="text-xs text-text-dim mb-4 pl-8">
-                                    {t('home.heroErrorHint')} <code className="bg-black/10 px-1 rounded">rep_persistentgamedata1.dat</code> {t('home.heroErrorHintSuffix')}
+                                <p className="text-xs text-white/40 mb-4 pl-8">
+                                    {t('home.heroErrorHint')} <code className="bg-white/10 px-1 rounded">rep_persistentgamedata1.dat</code> {t('home.heroErrorHintSuffix')}
                                 </p>
                                 <button
                                     onClick={resetUpload}
-                                    className="px-4 py-2 bg-black text-white font-heading text-sm hover:bg-accent-blood transition-colors"
+                                    className="px-4 py-2 bg-accent-blood text-white font-heading text-sm hover:bg-accent-blood/80 transition-colors"
                                 >
                                     {t('home.heroTryAgain')}
                                 </button>
                             </motion.div>
                         )}
                     </AnimatePresence>
+                    )} {/* end activeTab === 'tracker' */}
 
                     {/* Scroll hint - CRÍTICO para sugerir más contenido */}
                     <motion.div
@@ -445,7 +609,7 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                     >
                         <button
                             onClick={scrollToPreview}
-                            className="flex flex-col items-center gap-2 text-text-dim hover:text-accent-blood transition-colors group"
+                            className="flex flex-col items-center gap-2 text-white/30 hover:text-accent-blood transition-colors group"
                         >
                             <span className="text-sm font-handwriting">
                                 {t('home.heroScrollHint')}
@@ -463,6 +627,145 @@ export function HeroSection({ onUploadSuccess, resetRef }) {
                 )}
             </AnimatePresence>
         </section>
+    );
+}
+
+const RATING_STYLES = {
+    S: 'bg-accent-gold text-black',
+    A: 'bg-green-500 text-white',
+    B: 'bg-blue-500 text-white',
+    C: 'bg-orange-400 text-black',
+    D: 'bg-accent-blood text-white',
+};
+
+function HeroSynergyTab({ t, navigate }) {
+    const [selected, setSelected] = useState([]);
+    const [result, setResult] = useState(null);
+    const [analyzing, setAnalyzing] = useState(false);
+
+    const add = (item) => {
+        if (selected.length >= 3 || selected.find(i => i.id === item.id)) return;
+        setSelected(prev => [...prev, item]);
+        setResult(null);
+    };
+
+    const remove = (id) => {
+        setSelected(prev => prev.filter(i => i.id !== id));
+        setResult(null);
+    };
+
+    const analyze = async () => {
+        if (selected.length < 2) return;
+        setAnalyzing(true);
+        await new Promise(r => setTimeout(r, 600));
+        const key = selected.map(i => i.id).sort().join('+');
+        const rev = selected.map(i => i.id).sort().reverse().join('+');
+        setResult(SYNERGY_DATABASE[key] || SYNERGY_DATABASE[rev] || { rating: 'B', score: 5, isGeneric: true });
+        setAnalyzing(false);
+    };
+
+    const reset = () => { setSelected([]); setResult(null); };
+
+    const visibleChips = POPULAR_ITEMS.slice(0, 8).filter(i => !selected.find(s => s.id === i.id));
+
+    return (
+        <div className="w-full space-y-0">
+            <div className="bg-[#1a0f0f] border-[3px] border-[#3d1a1a] border-t-0 p-5">
+                {/* Slot row */}
+                <div className="flex items-center gap-1 flex-wrap min-h-[52px] mb-4">
+                    {selected.length === 0 && (
+                        <span className="text-white/30 font-handwriting text-sm">
+                            {t('synergy.selectAtLeast2', 'Pick 2–3 items below to check their synergy')}
+                        </span>
+                    )}
+                    {selected.map((item, idx) => (
+                        <span key={item.id} className="flex items-center">
+                            {idx > 0 && <span className="text-white/25 text-lg mx-1.5">+</span>}
+                            <motion.button
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                onClick={() => remove(item.id)}
+                                className="flex items-center gap-1.5 px-2 py-1.5 bg-white/5 border border-white/10 hover:border-accent-blood/50 group transition-colors"
+                            >
+                                <img src={item.sprite} alt={item.name} className="w-6 h-6 pixelated"
+                                    onError={e => { e.target.src = '/sprites/placeholder.png'; }} />
+                                <span className="font-heading text-xs text-white/65">{item.name}</span>
+                                <FaTimes className="w-2.5 h-2.5 text-white/25 group-hover:text-accent-blood transition-colors ml-0.5" />
+                            </motion.button>
+                        </span>
+                    ))}
+                </div>
+
+                {/* Popular chips */}
+                {!result && visibleChips.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                        {visibleChips.map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => add(item)}
+                                disabled={selected.length >= 3}
+                                className="flex items-center gap-1.5 px-2 py-1 bg-white/5 border border-white/[0.07] hover:border-accent-gold/40 hover:bg-accent-gold/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                            >
+                                <img src={item.sprite} alt={item.name} className="w-4 h-4 pixelated"
+                                    onError={e => { e.target.src = '/sprites/placeholder.png'; }} />
+                                <span className="text-[11px] font-heading text-white/55">{item.name}</span>
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {/* Result */}
+                <AnimatePresence>
+                    {result && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="pt-4 border-t border-white/10"
+                        >
+                            <div className="flex items-start gap-3">
+                                <span className={cn('w-10 h-10 flex-shrink-0 flex items-center justify-center font-heading text-xl', RATING_STYLES[result.rating] || 'bg-white/10 text-white')}>
+                                    {result.rating}
+                                </span>
+                                <p className="font-handwriting text-sm text-white/65 leading-relaxed pt-1">
+                                    {result.effectKey
+                                        ? t(`synergies.data.${result.effectKey}.effect`)
+                                        : t('synergy.neutralSynergy', 'No documented interaction — could still work well together.')}
+                                </p>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* Actions */}
+            {!result ? (
+                <button
+                    onClick={analyze}
+                    disabled={selected.length < 2 || analyzing}
+                    className="w-full py-3 bg-accent-gold text-black font-heading text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-accent-gold/90 transition-colors flex items-center justify-center gap-2"
+                >
+                    {analyzing
+                        ? <><FaSpinner className="w-4 h-4 animate-spin" />{t('synergy.analyzing', 'Analyzing...')}</>
+                        : <><FaBolt className="w-4 h-4" />{t('synergy.analyzeSynergy', 'Analyze Synergy')}</>
+                    }
+                </button>
+            ) : (
+                <div className="flex gap-px">
+                    <button
+                        onClick={() => navigate('/synergies', { state: { preloadedItems: selected } })}
+                        className="flex-1 py-3 bg-accent-gold text-black font-heading text-sm hover:bg-accent-gold/90 transition-colors flex items-center justify-center gap-2"
+                    >
+                        {t('synergy.viewFullAnalysis', 'Full Analysis')} →
+                    </button>
+                    <button
+                        onClick={reset}
+                        className="px-5 py-3 bg-white/5 border-l border-white/10 text-white/40 font-heading text-xs hover:bg-white/10 hover:text-white/65 transition-colors"
+                    >
+                        {t('synergy.tryAnother', 'Reset')}
+                    </button>
+                </div>
+            )}
+        </div>
     );
 }
 

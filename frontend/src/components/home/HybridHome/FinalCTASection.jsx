@@ -85,40 +85,32 @@ export function FinalCTASection() {
                                 ))}
                             </motion.div>
 
-                            {/* CTA buttons */}
+                            {/* CTA — single primary action */}
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.3 }}
-                                className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6"
+                                className="flex flex-col items-center gap-5 mb-6"
                             >
-                                {!user ? (
-                                    <>
-                                        <button
-                                            onClick={() => navigate('/register')}
-                                            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-accent-blood text-white font-heading text-lg border-2 border-white/20 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] hover:bg-white hover:text-accent-blood hover:shadow-[6px_6px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all"
-                                        >
-                                            <FaEnvelope className="w-5 h-5" />
-                                            {t('home.ctaCreateAccount')}
-                                        </button>
-                                        <button
-                                            onClick={() => window.open('https://discord.gg/bindingofisaac', '_blank')}
-                                            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#5865F2] text-white font-heading text-lg border-2 border-white/20 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] hover:bg-white hover:text-[#5865F2] hover:shadow-[6px_6px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all"
-                                        >
-                                            <FaDiscord className="w-5 h-5" />
-                                            {t('home.ctaJoinDiscord', 'Join Discord')}
-                                        </button>
-                                    </>
-                                ) : (
+                                {!user && (
                                     <button
-                                        onClick={() => window.open('https://discord.gg/bindingofisaac', '_blank')}
-                                        className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#5865F2] text-white font-heading text-lg border-2 border-white/20 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] hover:bg-white hover:text-[#5865F2] hover:shadow-[6px_6px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all"
+                                        onClick={() => navigate('/register')}
+                                        className="w-full sm:w-auto flex items-center justify-center gap-3 px-10 py-4 bg-accent-blood text-white font-heading text-lg border-2 border-white/20 shadow-[4px_4px_0px_rgba(255,255,255,0.1)] hover:bg-white hover:text-accent-blood hover:shadow-[6px_6px_0px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all"
                                     >
-                                        <FaDiscord className="w-5 h-5" />
-                                        {t('home.ctaJoinDiscord', 'Join Discord')}
+                                        <FaEnvelope className="w-5 h-5" />
+                                        {t('home.ctaCreateAccount')}
                                     </button>
                                 )}
+
+                                {/* Discord as a secondary text link */}
+                                <button
+                                    onClick={() => window.open('https://discord.gg/bindingofisaac', '_blank')}
+                                    className="flex items-center gap-2 text-sm text-white/40 hover:text-[#5865F2] transition-colors font-heading"
+                                >
+                                    <FaDiscord className="w-4 h-4" />
+                                    {t('home.ctaJoinDiscord', 'Join Discord')}
+                                </button>
                             </motion.div>
 
                             {/* Trust message */}
@@ -129,7 +121,7 @@ export function FinalCTASection() {
                                 {!user && (
                                     <p className="text-sm text-white/50">
                                         {t('home.ctaAlreadyHaveAccount')}{' '}
-                                        <button 
+                                        <button
                                             onClick={() => navigate('/login')}
                                             className="text-accent-gold hover:underline"
                                         >
