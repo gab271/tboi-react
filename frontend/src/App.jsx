@@ -27,6 +27,7 @@ import AdminUsers from './pages/admin/users/AdminUsers'
 import PricingPage from './pages/pricing/PricingPage'
 import MyProgress from './pages/progress/MyProgress'
 import TierListPage from './pages/tierlist/TierListPage'
+import SeedsPage from './pages/seeds/SeedsPage'
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path="characters" element={<CharactersList />} />
           <Route path="synergies" element={<SynergiesPage />} />
           <Route path="tierlist" element={<TierListPage />} />
+          <Route path="seeds"    element={<SeedsPage />} />
           <Route path="pricing" element={<PricingPage />} />
           
           {/* Builds - feed requires login, detail is public for sharing */}

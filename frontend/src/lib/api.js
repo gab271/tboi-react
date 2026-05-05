@@ -312,6 +312,44 @@ export const fetchUserProgress = async (userId, accessToken) => {
   return response.json();
 };
 
+// ─── Seeds ────────────────────────────────────────────────────────────────────
+
+export const fetchSeeds = async ({ version, platform, tags, sort = 'top', search, page = 1 } = {}) => {
+  const params = { sort, page };
+  if (version)  params.version  = version;
+  if (platform) params.platform = platform;
+  if (search)   params.search   = search;
+  if (tags?.length) params.tags = tags.join(',');
+  const { data } = await api.get('/api/seeds', { params });
+  return data;
+};
+
+export const fetchSeedTags = async () => {
+  const { data } = await api.get('/api/seeds/tags');
+  return data;
+};
+
+export const submitSeed = async (accessToken, payload) => {
+  const { data } = await api.post('/api/seeds', payload, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return data;
+};
+
+export const voteSeed = async (accessToken, seedId, value) => {
+  const { data } = await api.post(`/api/seeds/${seedId}/vote`, { value }, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return data;
+};
+
+export const fetchMySeedVotes = async (accessToken) => {
+  const { data } = await api.get('/api/seeds/my-votes', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return data;
+};
+
 // ─── Tier List ────────────────────────────────────────────────────────────────
 
 /**

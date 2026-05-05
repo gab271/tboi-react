@@ -19,6 +19,7 @@ const activityRoutes = require('./routes/activity');
 const marksRoutes = require('./routes/marks');
 const progressRoutes = require('./routes/progress');
 const tierlistRoutes = require('./routes/tierlist');
+const seedsRoutes    = require('./routes/seeds');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -58,6 +59,7 @@ app.use('/api/activity', activityRoutes);
 app.use('/api/users', marksRoutes);
 app.use('/api/users', progressRoutes);
 app.use('/api/tierlist', tierlistRoutes);
+app.use('/api/seeds',    seedsRoutes);
 // Mount specific admin sub-routes first
 app.use('/api/admin/items', adminItemsRoutes);
 // Mount general admin routes (stats, users, promote)

@@ -216,7 +216,7 @@ function Header() {
 // Dropdown "Explorar" - agrupa Wiki + Community
 function ExploreDropdown({ t }) {
   const location = useLocation();
-  const explorePaths = ['/items', '/bosses', '/characters', '/builds', '/tierlist'];
+  const explorePaths = ['/items', '/bosses', '/characters', '/builds', '/tierlist', '/seeds'];
   const isExploreActive = explorePaths.some(path => location.pathname.startsWith(path));
 
   return (
@@ -278,6 +278,11 @@ function ExploreDropdown({ t }) {
         <DropdownMenuItem asChild>
           <NavLink to="/tierlist" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-bg-paper-dark cursor-pointer text-[13px]">
             <span className="font-heading text-text-ink">{t('nav.tierlist', 'Tier List')}</span>
+          </NavLink>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <NavLink to="/seeds" className="flex items-center gap-2 px-3 py-2 rounded hover:bg-bg-paper-dark cursor-pointer text-[13px]">
+            <span className="font-heading text-text-ink">{t('nav.seeds', 'Seeds')}</span>
           </NavLink>
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -442,6 +447,7 @@ function MobileMenu({ isOpen, onClose, user, profile, isPro, isSupporter, isAdmi
                 </div>
                 <MobileNavItem to="/builds" label={t('nav.builds')} onClick={onClose} />
                 <MobileNavItem to="/tierlist" label={t('nav.tierlist', 'Tier List')} onClick={onClose} />
+                <MobileNavItem to="/seeds"    label={t('nav.seeds', 'Seeds')}      onClick={onClose} />
                 
                 {/* User Section */}
                 {user && (
