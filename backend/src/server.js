@@ -1,78 +1,99 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const helmet = require('helmet');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-const rateLimit = require('./middleware/rateLimiter');
-// const isaacRoutes = require('./routes/isaac'); // REMOVED
-const itemsRoutes = require('./routes/items');
-const bossesRoutes = require('./routes/bosses');
-const searchRoutes = require('./routes/search');
-const authAdminRoutes = require('./routes/auth-admin');
+const { apiLimiter, saveLimiter, voteLimiter, adminLimiter } = require('./middleware/rateLimiter');
+
+const itemsRoutes      = require('./routes/items');
+const bossesRoutes     = require('./routes/bosses');
+const searchRoutes     = require('./routes/search');
+const authAdminRoutes  = require('./routes/auth-admin');
 const adminItemsRoutes = require('./routes/admin-items');
-const saveRoutes = require('./routes/save');
+const saveRoutes       = require('./routes/save');
 const { router: statsRoutes } = require('./routes/stats');
-const synergiesRoutes = require('./routes/synergies');
-const activityRoutes = require('./routes/activity');
-const marksRoutes = require('./routes/marks');
-const progressRoutes = require('./routes/progress');
-const tierlistRoutes = require('./routes/tierlist');
-const seedsRoutes    = require('./routes/seeds');
+const synergiesRoutes  = require('./routes/synergies');
+const activityRoutes   = require('./routes/activity');
+const marksRoutes      = require('./routes/marks');
+const progressRoutes   = require('./routes/progress');
+const tierlistRoutes   = require('./routes/tierlist');
+const seedsRoutes      = require('./routes/seeds');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
+const IS_PROD = process.env.NODE_ENV === 'production';
 
-// Middleware
-app.use(morgan('dev'));
-app.use(express.json());
-
-// CORS
-app.use(cors({
-  origin: [FRONTEND_ORIGIN, 'http://localhost:5173'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+// ── Security headers ────────────────────────────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: false, // API puro JSON, sin HTML servido
+  crossOriginResourcePolicy: { policy: 'cross-origin' }, // necesario para imágenes Supabase Storage
 }));
 
-// Rate Limit
-app.use(rateLimit);
+// ── Logging ─────────────────────────────────────────────────────────────────
+// 'combined' en prod (incluye IP + UA para auditoría), 'dev' en local
+app.use(morgan(IS_PROD ? 'combined' : 'dev'));
 
-app.get('/', (req, res) => {
-  res.send('TBOI Codex Backend Running');
-});
+// ── Body parsing ─────────────────────────────────────────────────────────────
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: false, limit: '1mb' }));
 
-// Routes
+// ── CORS ─────────────────────────────────────────────────────────────────────
+const allowedOrigins = [FRONTEND_ORIGIN];
+if (!IS_PROD) {
+  allowedOrigins.push('http://localhost:5173');
+}
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-File-SHA256'],
+  credentials: true,
+}));
+
+// ── Rate limiting global (backstop para todo lo demás) ───────────────────────
+app.use(apiLimiter);
+
+// ── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// app.use('/api/isaac', isaacRoutes); // REMOVED
-app.use('/api/items', itemsRoutes);
-app.use('/api/bosses', bossesRoutes);
-app.use('/api/search', searchRoutes);
-app.use('/api/save', saveRoutes);
-app.use('/api/stats', statsRoutes);
-app.use('/api/synergies', synergiesRoutes);
-app.use('/api/activity', activityRoutes);
-app.use('/api/users', marksRoutes);
-app.use('/api/users', progressRoutes);
-app.use('/api/tierlist', tierlistRoutes);
-app.use('/api/seeds',    seedsRoutes);
-// Mount specific admin sub-routes first
-app.use('/api/admin/items', adminItemsRoutes);
-// Mount general admin routes (stats, users, promote)
-app.use('/api/admin', authAdminRoutes);
+// ── Rutas con rate limiters específicos ──────────────────────────────────────
+app.use('/api/save',        saveLimiter,  saveRoutes);
+app.use('/api/seeds',       voteLimiter,  seedsRoutes);
+app.use('/api/tierlist',    voteLimiter,  tierlistRoutes);
+app.use('/api/admin/items', adminLimiter, adminItemsRoutes);
+app.use('/api/admin',       adminLimiter, authAdminRoutes);
 
-// Start server
+// ── Rutas estándar ────────────────────────────────────────────────────────────
+app.use('/api/items',      itemsRoutes);
+app.use('/api/bosses',     bossesRoutes);
+app.use('/api/search',     searchRoutes);
+app.use('/api/stats',      statsRoutes);
+app.use('/api/synergies',  synergiesRoutes);
+app.use('/api/activity',   activityRoutes);
+app.use('/api/users',      marksRoutes);
+app.use('/api/users',      progressRoutes);
+
+// ── Global error handler ─────────────────────────────────────────────────────
+// Captura cualquier error no manejado antes de que llegue al cliente con stack trace
+app.use((err, req, res, _next) => {
+  console.error('[Unhandled Error]', err);
+  res.status(err.status || 500).json({ error: 'Internal server error' });
+});
+
+// ── Servidor ──────────────────────────────────────────────────────────────────
 const server = app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
+  console.log(`Backend running on port ${PORT} [${IS_PROD ? 'production' : 'development'}]`);
 });
 
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use. Kill existing process with:`);
+    console.error(`Port ${PORT} is already in use.`);
     console.error(`  Windows: taskkill /IM node.exe /F`);
     console.error(`  Mac/Linux: pkill -f node`);
     process.exit(1);
@@ -82,13 +103,10 @@ server.on('error', (err) => {
   }
 });
 
-// Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down...');
   server.close(() => process.exit(0));
 });
 
 process.on('SIGINT', () => {
-  console.log('SIGINT received, shutting down...');
   server.close(() => process.exit(0));
 });
