@@ -7,12 +7,16 @@ const supabaseAdmin = require('../lib/supabaseAdmin');
  * List items with pagination and filters
  */
 router.get('/', async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 24;
-    const type = req.query.type; // filter by item_type
-    const search = req.query.search; // search term
-    const ids = req.query.ids; // comma separated ids
-    const quality = req.query.quality; // comma separated quality tiers (0,1,2,3,4)
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const pageSize = Math.min(Math.max(1, parseInt(req.query.pageSize) || 24), 100);
+    const type = req.query.type;
+    const search = req.query.search;
+    const ids = req.query.ids;
+    const quality = req.query.quality;
+
+    if (search && search.length > 100) {
+        return res.status(400).json({ error: 'Search term too long' });
+    }
     
     // Calculate range
     const from = (page - 1) * pageSize;
@@ -26,7 +30,7 @@ router.get('/', async (req, res) => {
             .order('name', { ascending: true });
 
         if (ids) {
-            const idList = ids.split(',');
+            const idList = ids.split(',').slice(0, 50).map(id => id.trim()).filter(Boolean);
             query = query.in('id', idList);
         }
 
@@ -40,7 +44,10 @@ router.get('/', async (req, res) => {
 
         // Filter by quality tiers
         if (quality) {
-            const qualityLevels = quality.split(',').map(q => parseInt(q)).filter(q => !isNaN(q));
+            const qualityLevels = quality.split(',')
+                .slice(0, 5)
+                .map(q => parseInt(q))
+                .filter(q => !isNaN(q) && q >= 0 && q <= 4);
             if (qualityLevels.length > 0) {
                 query = query.in('quality', qualityLevels);
             }
@@ -79,7 +86,7 @@ router.get('/', async (req, res) => {
  * Get N random items
  */
 router.get('/random', async (req, res) => {
-    const n = parseInt(req.query.n) || 3;
+    const n = Math.min(Math.max(1, parseInt(req.query.n) || 3), 20);
     
     try {
         const { data, error } = await supabaseAdmin.rpc('get_random_items', { limit_cnt: n });

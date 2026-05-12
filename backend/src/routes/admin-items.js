@@ -3,7 +3,25 @@ const router = express.Router();
 const multer = require('multer');
 const sharp = require('sharp');
 const supabaseAdmin = require('../lib/supabaseAdmin');
-const { requireAuth } = require('../middleware/authMiddleware'); // Check if this exports requireAuth
+const { requireAuth } = require('../middleware/authMiddleware');
+
+const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+
+function validateMagicBytes(buffer, mimetype) {
+    if (buffer.length < 12) return false;
+    if (mimetype === 'image/jpeg')
+        return buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF;
+    if (mimetype === 'image/png')
+        return buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E &&
+               buffer[3] === 0x47 && buffer[4] === 0x0D && buffer[5] === 0x0A &&
+               buffer[6] === 0x1A && buffer[7] === 0x0A;
+    if (mimetype === 'image/gif')
+        return buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x38;
+    if (mimetype === 'image/webp')
+        return buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+               buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50;
+    return false;
+}
 
 // Wrapper to check admin role
 const requireAdmin = async (req, res, next) => {
@@ -32,15 +50,14 @@ const requireAdmin = async (req, res, next) => {
     next();
 };
 
-// Memory storage for Multer - we process buffer directly
-const upload = multer({ 
+const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith('image/')) {
+        if (ALLOWED_MIME_TYPES.has(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error('Only images are allowed'));
+            cb(new Error('Only JPEG, PNG, GIF, and WebP images are allowed'));
         }
     }
 });
@@ -55,6 +72,14 @@ router.post('/:externalId/image', requireAuth, requireAdmin, upload.single('imag
 
     if (!file) {
         return res.status(400).json({ error: 'Image file is required' });
+    }
+
+    if (!/^\d+$/.test(externalId)) {
+        return res.status(400).json({ error: 'Invalid item ID' });
+    }
+
+    if (!validateMagicBytes(file.buffer, file.mimetype)) {
+        return res.status(400).json({ error: 'File content does not match declared type' });
     }
 
     try {
@@ -125,7 +150,7 @@ router.post('/:externalId/image', requireAuth, requireAdmin, upload.single('imag
 
     } catch (err) {
         console.error('Image upload error:', err);
-        res.status(500).json({ error: 'Failed to process image upload', details: err.message });
+        res.status(500).json({ error: 'Failed to process image upload' });
     }
 });
 

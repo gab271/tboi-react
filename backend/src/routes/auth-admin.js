@@ -5,6 +5,9 @@ const path = require('path'); // Added for local stats
 const supabaseAdmin = require('../lib/supabaseAdmin');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isValidUUID = (id) => UUID_REGEX.test(id);
+
 // ==========================================
 // ADMIN DASHBOARD ROUTES
 // ==========================================
@@ -60,7 +63,7 @@ router.get('/stats', requireAdmin, async (req, res) => {
 
   } catch (err) {
     console.error('Stats Error:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -70,6 +73,7 @@ router.post('/promote', requireAdmin, async (req, res) => {
   const { userId } = req.body;
 
   if (!userId) return res.status(400).json({ error: 'Missing userId' });
+  if (!isValidUUID(userId)) return res.status(400).json({ error: 'Invalid userId format' });
 
   try {
     const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
@@ -80,7 +84,8 @@ router.post('/promote', requireAdmin, async (req, res) => {
     if (error) throw error;
     res.json({ message: 'User promoted successfully', user: data.user });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Promote error:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -103,13 +108,16 @@ router.delete('/users/:id', requireAdmin, async (req, res) => {
     if (!supabaseAdmin) return res.status(503).json({ error: 'Config Error' });
     const { id } = req.params;
 
+    if (!isValidUUID(id)) return res.status(400).json({ error: 'Invalid user ID format' });
+
     try {
         const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
         if (error) throw error;
-        
+
         res.json({ message: 'User deleted successfully' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Delete user error:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 

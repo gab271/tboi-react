@@ -26,6 +26,10 @@ export default function AvatarUploader({ url, size, onUpload }) {
     }
   }
 
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp']);
+  const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+
   const uploadAvatar = async (event) => {
     try {
       setUploading(true);
@@ -35,9 +39,19 @@ export default function AvatarUploader({ url, size, onUpload }) {
       }
 
       const file = event.target.files[0];
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
+
+      if (file.size > MAX_SIZE) {
+        throw new Error('Avatar must be smaller than 2MB.');
+      }
+
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        throw new Error('Only JPEG, PNG, GIF, and WebP images are allowed.');
+      }
+
+      const rawExt = file.name.split('.').pop().toLowerCase();
+      const fileExt = ALLOWED_EXTENSIONS.has(rawExt) ? rawExt : 'jpg';
+      const fileName = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+      const filePath = fileName;
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')
@@ -48,8 +62,7 @@ export default function AvatarUploader({ url, size, onUpload }) {
       }
 
       onUpload(event, filePath);
-      
-      // Update local preview immediately
+
       const { data } = await supabase.storage.from('avatars').download(filePath);
       const url = URL.createObjectURL(data);
       setAvatarUrl(url);
