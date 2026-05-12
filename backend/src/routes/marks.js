@@ -14,6 +14,11 @@ const { requireAuth } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const CHAR_ID_REGEX = /^[a-z0-9_-]{1,50}$/i;
+const VALID_SOURCES = new Set(['manual', 'save', 'merged']);
+const MAX_CHARACTERS_IMPORT = 50;
+
 // ============================================
 // GET ALL MARKS FOR USER
 // ============================================
@@ -25,8 +30,11 @@ const router = express.Router();
 router.get('/:userId/marks', requireAuth, async (req, res) => {
   try {
     const { userId } = req.params;
-    
-    // Verify user matches authenticated user
+
+    if (!UUID_REGEX.test(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
     if (req.user.id !== userId) {
       return res.status(403).json({ error: 'Forbidden' });
     }
@@ -69,8 +77,15 @@ router.get('/:userId/marks', requireAuth, async (req, res) => {
 router.get('/:userId/marks/:characterId', requireAuth, async (req, res) => {
   try {
     const { userId, characterId } = req.params;
-    
-    // Verify user matches authenticated user
+
+    if (!UUID_REGEX.test(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    if (!CHAR_ID_REGEX.test(characterId)) {
+      return res.status(400).json({ error: 'Invalid character ID' });
+    }
+
     if (req.user.id !== userId) {
       return res.status(403).json({ error: 'Forbidden' });
     }
@@ -116,17 +131,25 @@ router.put('/:userId/marks/:characterId', requireAuth, async (req, res) => {
   try {
     const { userId, characterId } = req.params;
     const { marks, source, saveHash } = req.body;
-    
-    // Verify user matches authenticated user
+
+    if (!UUID_REGEX.test(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    if (!CHAR_ID_REGEX.test(characterId)) {
+      return res.status(400).json({ error: 'Invalid character ID' });
+    }
+
     if (req.user.id !== userId) {
       return res.status(403).json({ error: 'Forbidden' });
     }
-    
-    // Validate marks data structure
-    if (!marks || typeof marks !== 'object') {
+
+    if (!marks || typeof marks !== 'object' || Array.isArray(marks)) {
       return res.status(400).json({ error: 'Invalid marks data' });
     }
-    
+
+    const safeSource = VALID_SOURCES.has(source) ? source : 'manual';
+
     // Upsert the marks
     const { data, error } = await supabaseAdmin
       .from('completion_marks')
@@ -134,8 +157,8 @@ router.put('/:userId/marks/:characterId', requireAuth, async (req, res) => {
         user_id: userId,
         character_id: characterId,
         marks_data: marks,
-        source: source || 'manual',
-        save_hash: saveHash || null,
+        source: safeSource,
+        save_hash: saveHash ? String(saveHash).slice(0, 128) : null,
         updated_at: new Date().toISOString(),
       }, {
         onConflict: 'user_id,character_id',
@@ -170,8 +193,15 @@ router.put('/:userId/marks/:characterId', requireAuth, async (req, res) => {
 router.delete('/:userId/marks/:characterId', requireAuth, async (req, res) => {
   try {
     const { userId, characterId } = req.params;
-    
-    // Verify user matches authenticated user
+
+    if (!UUID_REGEX.test(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    if (!CHAR_ID_REGEX.test(characterId)) {
+      return res.status(400).json({ error: 'Invalid character ID' });
+    }
+
     if (req.user.id !== userId) {
       return res.status(403).json({ error: 'Forbidden' });
     }
@@ -209,23 +239,33 @@ router.post('/:userId/marks/import', requireAuth, async (req, res) => {
   try {
     const { userId } = req.params;
     const { saveHash, characters } = req.body;
-    
-    // Verify user matches authenticated user
+
+    if (!UUID_REGEX.test(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
     if (req.user.id !== userId) {
       return res.status(403).json({ error: 'Forbidden' });
     }
-    
-    if (!saveHash || !characters || typeof characters !== 'object') {
+
+    if (!saveHash || !characters || typeof characters !== 'object' || Array.isArray(characters)) {
       return res.status(400).json({ error: 'Invalid import data' });
     }
-    
+
+    const characterEntries = Object.entries(characters);
+    if (characterEntries.length > MAX_CHARACTERS_IMPORT) {
+      return res.status(400).json({ error: 'Too many characters in import' });
+    }
+
     // Prepare batch upsert
-    const records = Object.entries(characters).map(([characterId, charData]) => ({
+    const records = characterEntries
+      .filter(([charId]) => CHAR_ID_REGEX.test(charId))
+      .map(([characterId, charData]) => ({
       user_id: userId,
       character_id: characterId,
       marks_data: charData.marks,
       source: 'save',
-      save_hash: saveHash,
+      save_hash: String(saveHash).slice(0, 128),
       updated_at: new Date().toISOString(),
     }));
     

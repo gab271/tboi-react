@@ -8,6 +8,8 @@ import { FaEnvelope, FaLock, FaUser, FaArrowLeft, FaSkull, FaKey } from 'react-i
 import { LoginLayout } from '../../components/LoginLayout/LoginLayout';
 import { motion } from 'framer-motion';
 
+const USERNAME_REGEX = /^[a-zA-Z0-9_-]{3,20}$/;
+
 const Register = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -18,7 +20,7 @@ const Register = () => {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
+
   const lastSubmitTime = useRef(0);
 
   const handleSubmit = async (e) => {
@@ -31,40 +33,43 @@ const Register = () => {
 
     if (isSubmitting) return;
 
+    if (!USERNAME_REGEX.test(username)) {
+      return setError(t('auth.usernameInvalid', 'Username must be 3–20 characters: letters, numbers, _ or -'));
+    }
+
     if (password !== confirmPassword) {
       return setError(t('auth.passwordsNotMatch'));
     }
 
     if (password.length < 6) {
-        return setError(t('auth.passwordTooShort'));
+      return setError(t('auth.passwordTooShort'));
     }
 
     try {
       setError('');
       setIsSubmitting(true);
 
-      // Check if username exists
       const { count, error: checkError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
         .eq('username', username);
 
       if (checkError) {
-         console.error(checkError);
+        console.error(checkError);
       } else if (count > 0) {
-         setIsSubmitting(false);
-         return setError(t('auth.usernameAlreadyTaken'));
+        setIsSubmitting(false);
+        return setError(t('auth.usernameAlreadyTaken'));
       }
 
       const { data, error } = await signUp(email, password, { username });
-      
+
       if (error) throw error;
-      
+
       if (data?.user) {
         navigate('/');
       }
-    } catch (error) {
-      setError(error.message || t('auth.errorCreatingAccount'));
+    } catch (err) {
+      setError(t('auth.errorCreatingAccount'));
     } finally {
       setIsSubmitting(false);
     }
@@ -137,12 +142,13 @@ const Register = () => {
             {t('auth.username')}
           </label>
           <div className="relative group">
-            <Input 
-              type="text" 
+            <Input
+              type="text"
               placeholder="Isaac"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="bg-[#e8dcc4] border-2 border-[#5c4a32]/30 focus:border-[#8a1c1c] font-handwriting text-base sm:text-lg h-10 sm:h-11 pl-10 placeholder:text-[#5c4a32]/40 transition-all rounded-sm shadow-inner"
+              maxLength={20}
               required
             />
             <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5c4a32]/50 group-focus-within:text-[#8a1c1c] transition-colors" />
@@ -155,12 +161,13 @@ const Register = () => {
             Email
           </label>
           <div className="relative group">
-            <Input 
-              type="email" 
+            <Input
+              type="email"
               placeholder="isaac@basement.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="bg-[#e8dcc4] border-2 border-[#5c4a32]/30 focus:border-[#8a1c1c] font-handwriting text-base sm:text-lg h-10 sm:h-11 pl-10 placeholder:text-[#5c4a32]/40 transition-all rounded-sm shadow-inner"
+              maxLength={254}
               required
             />
             <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5c4a32]/50 group-focus-within:text-[#8a1c1c] transition-colors" />
@@ -173,12 +180,13 @@ const Register = () => {
             {t('auth.password')}
           </label>
           <div className="relative group">
-            <Input 
-              type="password" 
+            <Input
+              type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="bg-[#e8dcc4] border-2 border-[#5c4a32]/30 focus:border-[#8a1c1c] font-handwriting text-base sm:text-lg h-10 sm:h-11 pl-10 placeholder:text-[#5c4a32]/40 transition-all rounded-sm shadow-inner"
+              maxLength={128}
               required
             />
             <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5c4a32]/50 group-focus-within:text-[#8a1c1c] transition-colors" />
@@ -191,12 +199,13 @@ const Register = () => {
             {t('auth.confirm')}
           </label>
           <div className="relative group">
-            <Input 
-              type="password" 
+            <Input
+              type="password"
               placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="bg-[#e8dcc4] border-2 border-[#5c4a32]/30 focus:border-[#8a1c1c] font-handwriting text-base sm:text-lg h-10 sm:h-11 pl-10 placeholder:text-[#5c4a32]/40 transition-all rounded-sm shadow-inner"
+              maxLength={128}
               required
             />
             <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5c4a32]/50 group-focus-within:text-[#8a1c1c] transition-colors" />

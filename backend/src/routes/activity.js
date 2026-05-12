@@ -135,16 +135,26 @@ router.get('/live', async (req, res) => {
   }
 });
 
+const SAFE_PATH_REGEX = /^[a-zA-Z0-9\-._~:/?#@!$&'()*+,;=%[\]]{1,200}$/;
+const SAFE_SESSION_REGEX = /^[a-zA-Z0-9\-_]{1,64}$/;
+
+function sanitizeHeartbeatMeta(body) {
+  const rawPage = typeof body.page === 'string' ? body.page.trim() : null;
+  const rawSession = typeof body.sessionId === 'string' ? body.sessionId.trim() : null;
+  return {
+    page: rawPage && SAFE_PATH_REGEX.test(rawPage) ? rawPage : null,
+    sessionId: rawSession && SAFE_SESSION_REGEX.test(rawSession) ? rawSession : null,
+  };
+}
+
 /**
  * POST /api/activity/heartbeat
  * Registra que un usuario sigue activo
  */
 router.post('/heartbeat', async (req, res) => {
   const userId = req.user?.id || null;
-  await logActivity('session_heartbeat', userId, {
-    page: req.body.page,
-    sessionId: req.body.sessionId
-  });
+  const { page, sessionId } = sanitizeHeartbeatMeta(req.body);
+  await logActivity('session_heartbeat', userId, { page, sessionId });
   res.json({ ok: true });
 });
 

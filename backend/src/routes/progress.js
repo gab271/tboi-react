@@ -10,10 +10,17 @@ const { requireAuth } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const MAX_PROGRESS_BODY = 512 * 1024; // 512 KB
+
 // ── GET ────────────────────────────────────────────────────────────────────────
 
 router.get('/:userId/progress', requireAuth, async (req, res) => {
   const { userId } = req.params;
+
+  if (!UUID_REGEX.test(userId)) {
+    return res.status(400).json({ error: 'Invalid user ID' });
+  }
 
   if (req.user.id !== userId) {
     return res.status(403).json({ error: 'Forbidden' });
@@ -41,8 +48,16 @@ router.get('/:userId/progress', requireAuth, async (req, res) => {
 router.post('/:userId/progress', requireAuth, async (req, res) => {
   const { userId } = req.params;
 
+  if (!UUID_REGEX.test(userId)) {
+    return res.status(400).json({ error: 'Invalid user ID' });
+  }
+
   if (req.user.id !== userId) {
     return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  if (JSON.stringify(req.body).length > MAX_PROGRESS_BODY) {
+    return res.status(413).json({ error: 'Payload too large' });
   }
 
   const {
@@ -59,15 +74,37 @@ router.post('/:userId/progress', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields: deadGodPercent, items, achievements, characters' });
   }
 
+  const percent = Number(deadGodPercent);
+  if (isNaN(percent) || percent < 0 || percent > 100) {
+    return res.status(400).json({ error: 'deadGodPercent must be between 0 and 100' });
+  }
+
+  const slotNum = Number(slot);
+  if (isNaN(slotNum) || slotNum < 1 || slotNum > 3) {
+    return res.status(400).json({ error: 'slot must be 1, 2, or 3' });
+  }
+
+  if (typeof items !== 'object' || Array.isArray(items)) {
+    return res.status(400).json({ error: 'items must be an object' });
+  }
+
+  if (typeof achievements !== 'object' || Array.isArray(achievements)) {
+    return res.status(400).json({ error: 'achievements must be an object' });
+  }
+
+  if (typeof characters !== 'object' || Array.isArray(characters)) {
+    return res.status(400).json({ error: 'characters must be an object' });
+  }
+
   const record = {
     user_id: userId,
-    save_hash: saveHash || null,
-    dead_god_percent: Number(deadGodPercent) || 0,
-    slot: Number(slot) || 1,
+    save_hash: saveHash ? String(saveHash).slice(0, 128) : null,
+    dead_god_percent: percent,
+    slot: slotNum,
     items,
     achievements,
     characters,
-    summary: summary || {},
+    summary: (summary && typeof summary === 'object' && !Array.isArray(summary)) ? summary : {},
     updated_at: new Date().toISOString(),
   };
 

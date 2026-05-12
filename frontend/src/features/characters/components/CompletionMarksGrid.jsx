@@ -324,8 +324,8 @@ export function CompletionMarksGrid({
       isTainted && "border-red-900/30 bg-red-50/30",
       className
     )}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3">
+      {/* Header: título + contador + botón editar */}
+      <div className="flex items-start justify-between mb-1">
         <div>
           <h4 className="font-heading text-sm text-text-ink">
             Completion Marks
@@ -347,49 +347,9 @@ export function CompletionMarksGrid({
             )}
           </p>
         </div>
-        
-        <div className="flex items-center gap-2">
-          {/* Mode selector - Normal/Hard toggle */}
-          {!isEditing && (
-            <div className="flex items-center bg-bg-paper-dark/50 rounded-full p-0.5">
-              <button
-                onClick={() => setViewMode('all')}
-                className={cn(
-                  "px-2 py-0.5 text-[10px] font-heading rounded-full transition-colors",
-                  viewMode === 'all' 
-                    ? "bg-white text-text-ink shadow-sm" 
-                    : "text-text-dim hover:text-text-ink"
-                )}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setViewMode('normal')}
-                className={cn(
-                  "px-2 py-0.5 text-[10px] font-heading rounded-full transition-colors",
-                  viewMode === 'normal' 
-                    ? "bg-slate-600 text-white shadow-sm" 
-                    : "text-text-dim hover:text-text-ink"
-                )}
-              >
-                Normal
-              </button>
-              <button
-                onClick={() => setViewMode('hard')}
-                className={cn(
-                  "px-2 py-0.5 text-[10px] font-heading rounded-full transition-colors",
-                  viewMode === 'hard' 
-                    ? (isTainted ? "bg-red-600 text-white" : "bg-amber-500 text-white") + " shadow-sm"
-                    : "text-text-dim hover:text-text-ink"
-                )}
-              >
-                Hard
-              </button>
-            </div>
-          )}
-          
-          {/* Edit controls */}
-          {editable && (
+
+        {/* Edit controls — se quedan en la esquina superior derecha */}
+        {editable && (
           <div className="flex items-center gap-1">
             {isEditing ? (
               <>
@@ -419,8 +379,48 @@ export function CompletionMarksGrid({
             )}
           </div>
         )}
-        </div>
       </div>
+
+      {/* Barra de filtros — línea propia, centrada, siempre contenida */}
+      {!isEditing && (
+        <div className="flex justify-center mb-3">
+          <div className="flex items-center bg-bg-paper-dark/50 rounded-full p-0.5">
+            <button
+              onClick={() => setViewMode('all')}
+              className={cn(
+                "px-2 py-0.5 text-[10px] font-heading rounded-full transition-colors",
+                viewMode === 'all'
+                  ? "bg-white text-text-ink shadow-sm"
+                  : "text-text-dim hover:text-text-ink"
+              )}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setViewMode('normal')}
+              className={cn(
+                "px-2 py-0.5 text-[10px] font-heading rounded-full transition-colors",
+                viewMode === 'normal'
+                  ? "bg-slate-600 text-white shadow-sm"
+                  : "text-text-dim hover:text-text-ink"
+              )}
+            >
+              Normal
+            </button>
+            <button
+              onClick={() => setViewMode('hard')}
+              className={cn(
+                "px-2 py-0.5 text-[10px] font-heading rounded-full transition-colors",
+                viewMode === 'hard'
+                  ? (isTainted ? "bg-red-600 text-white shadow-sm" : "bg-amber-500 text-white shadow-sm")
+                  : "text-text-dim hover:text-text-ink"
+              )}
+            >
+              Hard
+            </button>
+          </div>
+        </div>
+      )}
       
       {/* Progress bar */}
       <div className="h-1.5 bg-bg-paper-dark rounded-full mb-3 overflow-hidden">
