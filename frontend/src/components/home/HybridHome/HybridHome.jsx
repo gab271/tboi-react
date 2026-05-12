@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { HeroSection } from './HeroSection';
 import { PreviewSection } from './PreviewSection';
 import { LiveActivitySection } from './LiveActivitySection';
-import { SynergyAnalyzerMini } from './SynergyAnalyzerMini';
 import { EcosystemSection } from './EcosystemSection';
 import { FinalCTASection } from './FinalCTASection';
 import { MobileStickyCTA } from '../MobileStickyCTA';
@@ -63,12 +62,6 @@ export function HybridHome() {
                 Objetivo: Prueba social + comunidad viva
                 Usuario siente: "La gente lo usa de verdad" */}
             <LiveActivitySection />
-
-            {/* 3.5. SYNERGY ANALYZER MINI (40vh)
-                Objetivo: Gratificación inmediata sin compromiso
-                Usuario siente: "Puedo probar esto ahora mismo"
-                JERARQUÍA: Secundaria al tracker - es un "bonus", no el protagonista */}
-            <SynergyAnalyzerMini />
 
             {/* 4. ECOSYSTEM TOOLS (70vh)
                 Objetivo: Percepción de profundidad

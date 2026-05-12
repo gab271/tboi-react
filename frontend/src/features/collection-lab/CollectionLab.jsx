@@ -2,14 +2,15 @@
  * CollectionLab - Página principal del Laboratorio Estratégico
  * THE COLLECTION reimaginado como herramienta de power user
  */
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaFlask, FaBook, FaBalanceScale, FaChartBar, FaFilter } from 'react-icons/fa';
+import { FaFlask, FaBook, FaBalanceScale, FaChartBar, FaFilter, FaDna } from 'react-icons/fa';
 
 import { BuildLabProvider, useBuildLabContext } from './context/BuildLabContext';
 import { useBuildLab } from './hooks/useBuildLab';
 import { usePaginatedItems } from './hooks/usePaginatedItems';
+import { useUserItemProgress } from './hooks/useUserItemProgress';
 import { useFeatures } from '../../hooks/useFeatures';
 
 import { BuildLabBar } from './components/BuildLabBar';
@@ -19,6 +20,7 @@ import { AdvancedFilters } from './components/AdvancedFilters';
 import { SmartFilterBar } from './components/SmartFilterBar';
 import { ItemCompareModal } from './components/ItemCompareModal';
 import { GlobalStatsPanel } from './components/GlobalStatsPanel';
+import { TransformationTracker } from './components/TransformationTracker';
 import { Pagination } from '../../components/ui/Pagination';
 
 import { cn } from '../../lib/utils';
@@ -29,11 +31,24 @@ function CollectionLabContent() {
   const { isPro } = useFeatures();
   const { mode, setMode, compareItems, clearCompare, filters } = useBuildLabContext();
   const { metrics, labState } = useBuildLab();
-  
+  const { progress } = useUserItemProgress();
+
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [showTransformations, setShowTransformations] = useState(false);
+
+  // IDs numéricos de Isaac de los ítems que el jugador tiene desbloqueados.
+  // Asume que las keys de progress.items son los IDs numéricos del juego
+  // (provenientes del save file parser). Ajustar si el formato difiere.
+  const collectedItemIds = useMemo(
+    () =>
+      Object.keys(progress?.items ?? {})
+        .filter(id => progress.items[id]?.unlocked)
+        .map(Number),
+    [progress],
+  );
   
   const containerRef = useRef(null);
   
@@ -87,15 +102,15 @@ function CollectionLabContent() {
               />
               {isPro && (
                 <>
-                  <ModeButton 
-                    active={mode === 'compare'} 
+                  <ModeButton
+                    active={mode === 'compare'}
                     onClick={() => setMode('compare')}
                     icon={<FaBalanceScale />}
                     label="Compare"
                     badge={compareItems.length > 0 ? compareItems.length : null}
                   />
-                  <ModeButton 
-                    active={showStats} 
+                  <ModeButton
+                    active={showStats}
                     onClick={() => setShowStats(!showStats)}
                     icon={<FaChartBar />}
                     label="Stats"
@@ -129,14 +144,29 @@ function CollectionLabContent() {
               </span>
             </div>
             
+            {/* Transforms Toggle */}
+            <button
+              onClick={() => setShowTransformations(!showTransformations)}
+              className={cn(
+                "flex items-center gap-2 px-4 py-4 font-heading text-lg uppercase tracking-wider",
+                "border-2 transition-all flex-shrink-0",
+                showTransformations
+                  ? "bg-black text-white border-black"
+                  : "bg-white text-black border-black hover:bg-black hover:text-white"
+              )}
+            >
+              <FaDna />
+              <span className="hidden sm:inline">Transf.</span>
+            </button>
+
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={cn(
                 "flex items-center gap-2 px-6 py-4 font-heading text-lg uppercase tracking-wider",
-                "border-2 transition-all",
-                showFilters 
-                  ? "bg-accent-gold text-black border-accent-gold" 
+                "border-2 transition-all flex-shrink-0",
+                showFilters
+                  ? "bg-accent-gold text-black border-accent-gold"
                   : "bg-white text-black border-black hover:bg-black hover:text-white"
               )}
             >
@@ -211,6 +241,21 @@ function CollectionLabContent() {
             )}
           </div>
           
+          {/* Transformation Tracker */}
+          <AnimatePresence>
+            {showTransformations && (
+              <motion.aside
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 260, opacity: 1 }}
+                exit={{ width: 0, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="hidden lg:block flex-shrink-0 overflow-hidden"
+              >
+                <TransformationTracker collectedItemIds={collectedItemIds} />
+              </motion.aside>
+            )}
+          </AnimatePresence>
+
           {/* Stats Panel (PRO) */}
           <AnimatePresence>
             {showStats && isPro && (
