@@ -37,7 +37,7 @@ export function CharactersList() {
       <div className="relative z-10 flex flex-col h-full">
           
           {/* Header Switch */}
-          <header className="relative z-50 flex flex-col items-center justify-center pt-2 pb-1 gap-1 sm:gap-2">
+          <header className="relative z-50 flex flex-col items-center justify-center pt-8 sm:pt-12 pb-4 sm:pb-6 gap-2 sm:gap-3">
               <h1 className={cn(
                   "font-heading text-lg sm:text-2xl md:text-4xl tracking-widest uppercase transition-all duration-500 drop-shadow-md text-center",
                   showTainted ? "text-red-600 scale-105" : "text-[#d4c5a9]"
