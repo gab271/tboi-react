@@ -1,11 +1,11 @@
 import { useState, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
-import { Input } from '../../components/ui/Input';
-import { FaEnvelope, FaArrowLeft, FaSkull, FaCheckCircle, FaQuestion } from 'react-icons/fa';
-import { LoginLayout } from '../../components/LoginLayout/LoginLayout';
+import { Link } from 'react-router-dom';
+import { FaSkull, FaCheckCircle, FaQuestion } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { LoginLayout } from '../../components/LoginLayout/LoginLayout';
+import { AuthField } from '../../components/LoginLayout/AuthField';
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
@@ -14,18 +14,16 @@ const ForgotPassword = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { resetPasswordForEmail } = useAuth();
-  const navigate = useNavigate();
 
   const lastSubmitTime = useRef(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Anti-spam
     const now = Date.now();
     if (now - lastSubmitTime.current < 2000) return;
     lastSubmitTime.current = now;
-
     if (isSubmitting) return;
 
     try {
@@ -34,9 +32,9 @@ const ForgotPassword = () => {
       setIsSubmitting(true);
       const { error } = await resetPasswordForEmail(email);
       if (error) throw error;
-      setMessage('Check your inbox for password reset instructions');
-    } catch (error) {
-      setError('Failed to reset password: ' + error.message);
+      setMessage(t('auth.resetEmailSent'));
+    } catch {
+      setError(t('auth.resetEmailError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -44,131 +42,91 @@ const ForgotPassword = () => {
 
   return (
     <LoginLayout>
-      {/* Back Link - Outside of paper but inside layout */}
-      <Link 
-        to="/login" 
-        className="absolute -top-12 left-0 flex items-center gap-2 text-white/50 hover:text-white text-sm font-handwriting transition-colors group"
-      >
-        <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> 
-        {t('auth.backToLogin')}
-      </Link>
-
-      {/* Header */}
-      <div className="text-center mb-6">
-        {/* Question Mark Icon */}
-        <motion.div 
-          className="inline-flex items-center justify-center w-16 h-16 mb-3"
-          animate={{ rotate: [0, -10, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+      <div className="mb-6 text-center">
+        <motion.div
+          className="mb-2 inline-flex h-14 w-14 items-center justify-center text-[#8a1c1c]"
+          animate={{ rotate: [0, -8, 8, 0] }}
+          transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
         >
-          <FaQuestion className="text-4xl text-[#8a1c1c]" />
+          <FaQuestion className="text-3xl" />
         </motion.div>
-        
-        <div className="relative inline-block">
-          <h1 className="text-3xl sm:text-4xl font-heading text-[#1a1a1a] tracking-widest uppercase">
-            RECUPERAR
-          </h1>
-          <svg 
-            className="absolute -bottom-1 left-0 w-full h-3" 
-            viewBox="0 0 200 10" 
-            preserveAspectRatio="none"
-          >
-            <path 
-              d="M0,5 Q25,2 50,6 T100,5 T150,6 T200,5" 
-              fill="none" 
-              stroke="#8a1c1c" 
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-        
-        <p className="text-[#5c4a32]/70 mt-4 font-handwriting text-lg italic">
-          Ingresa tu email para recibir instrucciones
+
+        <h1 className="font-heading text-xl uppercase tracking-widest text-[#1a1a1a] sm:text-2xl">
+          {t('auth.forgotTitle')}
+        </h1>
+        <p className="font-handwriting mt-3 text-lg italic text-[#5c4a32]/70">
+          {t('auth.forgotTagline')}
         </p>
       </div>
 
-      {/* Messages */}
       {error && (
-        <motion.div 
-          initial={{ x: -10, opacity: 0 }}
+        <motion.div
+          initial={{ x: -8, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          className="bg-red-900/10 border-l-4 border-red-800 text-red-900 p-3 mb-4 font-handwriting text-base flex items-center gap-2" 
+          className="font-handwriting mb-5 flex items-center gap-2 border-l-4 border-[#8a1c1c] bg-[#8a1c1c]/10 p-3 text-base text-[#8a1c1c]"
           role="alert"
         >
-          <FaSkull className="text-red-800 flex-shrink-0" />
+          <FaSkull className="flex-shrink-0" />
           <p>{error}</p>
         </motion.div>
       )}
-      
+
       {message && (
-        <motion.div 
-          initial={{ x: -10, opacity: 0 }}
+        <motion.div
+          initial={{ x: -8, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          className="bg-green-900/10 border-l-4 border-green-700 text-green-900 p-3 mb-4 font-handwriting text-base flex items-center gap-2"
+          className="font-handwriting mb-5 flex items-center gap-2 border-l-4 border-[#3f6212] bg-[#3f6212]/10 p-3 text-base text-[#3f6212]"
         >
-          <FaCheckCircle className="text-green-700 flex-shrink-0" />
+          <FaCheckCircle className="flex-shrink-0" />
           <p>{message}</p>
         </motion.div>
       )}
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-[#1a1a1a] uppercase tracking-wider ml-1 font-pixel">
-            Email
-          </label>
-          <div className="relative group">
-            <Input
-              type="email"
-              placeholder="isaac@basement.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-[#e8dcc4] border-2 border-[#5c4a32]/30 focus:border-[#8a1c1c] font-handwriting text-lg sm:text-xl h-11 sm:h-12 pl-10 placeholder:text-[#5c4a32]/40 transition-all rounded-sm shadow-inner"
-              required
-            />
-            <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5c4a32]/50 group-focus-within:text-[#8a1c1c] transition-colors" />
-          </div>
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <AuthField
+          id="email"
+          label={t('auth.email')}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t('auth.emailPlaceholder')}
+          autoComplete="email"
+          required
+        />
 
-        <motion.button 
-          type="submit" 
+        <motion.button
+          type="submit"
           disabled={isSubmitting}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full font-pixel text-lg sm:text-xl py-4 mt-4 bg-[#1a1a1a] text-[#f5edd8] hover:bg-[#8a1c1c] disabled:opacity-50 disabled:cursor-not-allowed transition-all tracking-widest uppercase shadow-lg relative overflow-hidden group"
+          whileHover={{ scale: isSubmitting ? 1 : 1.015 }}
+          whileTap={{ scale: isSubmitting ? 1 : 0.985 }}
+          className="font-pixel flex w-full items-center justify-center gap-2 bg-[#1a1a1a] py-3.5 text-lg uppercase tracking-widest text-[#f5edd8] shadow-[3px_3px_0_rgba(0,0,0,0.3)] transition-colors hover:bg-[#8a1c1c] disabled:cursor-not-allowed disabled:opacity-50"
+          style={{ borderRadius: '2px 255px 3px 25px / 255px 5px 225px 5px' }}
         >
-          <span className="relative z-10 flex items-center justify-center gap-2">
-            {isSubmitting ? (
-              <>
-                <motion.span
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                >
-                  ⟳
-                </motion.span>
-                {t('auth.sendingLink')}
-              </>
-            ) : (
-              t('auth.sendLink')
-            )}
-          </span>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+          {isSubmitting ? (
+            <>
+              <motion.span
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+                className="inline-block"
+              >
+                ⟳
+              </motion.span>
+              {t('auth.sending')}
+            </>
+          ) : (
+            t('auth.sendResetLink')
+          )}
         </motion.button>
       </form>
 
-      {/* Footer Link */}
-      <div className="mt-8 text-center">
-        <p className="text-[#5c4a32]/70 font-handwriting text-base sm:text-lg">
-          {t('auth.rememberedPassword')}{' '}
-          <Link 
-            to="/login" 
-            className="font-bold text-[#8a1c1c] hover:text-[#b91c1c] transition-colors relative inline-block group"
-          >
-            {t('auth.enterHere')}
-            <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-[#8a1c1c] group-hover:w-full transition-all duration-300" />
-          </Link>
-        </p>
+      <div className="mt-6 flex justify-center">
+        <Link
+          to="/login"
+          className="font-handwriting group flex items-center gap-2 text-sm text-[#5c4a32]/55 transition-colors hover:text-[#1a1a1a]"
+        >
+          <span className="transition-transform group-hover:-translate-x-1">←</span>
+          {t('auth.backToLogin')}
+        </Link>
       </div>
     </LoginLayout>
   );

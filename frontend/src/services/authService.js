@@ -12,7 +12,7 @@ const LOG_TAG = '[AuthService]';
 const log = (action, _details = {}) => {
   if (import.meta.env.DEV) {
     console.debug(`[AUTH_CALL] ${action}`, new Date().toISOString());
-    console.debug(new Error().stack); 
+    console.debug(new Error().stack);
   }
 };
 
@@ -26,12 +26,12 @@ export const authService = {
       email,
       password,
     });
-    
+
     if (error) {
       console.error(`${LOG_TAG} Error during signIn:`, error);
       return { data: null, error };
     }
-    
+
     return { data, error: null };
   },
 
@@ -75,8 +75,8 @@ export const authService = {
    */
   async sendPasswordReset(email) {
     log('sendPasswordReset called', { email });
-    const redirectTo = `${window.location.origin}/auth/reset-password`; // Ensure this route exists
-    
+    const redirectTo = `${window.location.origin}/reset-password`; // Debe coincidir con la ruta en App.jsx
+
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo,
     });
@@ -120,5 +120,5 @@ export const authService = {
   async getUser() {
     log('getUser called');
     return await supabase.auth.getUser();
-  }
+  },
 };
